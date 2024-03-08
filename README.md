@@ -1,22 +1,9 @@
-# mkdocs-material-template
+# wayback-ufldl
 
-mkdocs material template
+A backup of [Stanford | UFLDL Tutorial (Unsupervised Feature Learning and Deep Learning)](http://deeplearning.stanford.edu/).
 
+## Course List
 
-Example: 
-```shell
-# python 3
-# install dependencies
-pip install mkdocs-material
-
-# init project
-mkdir -p project && cd $_
-mkdocs new .
-echo "theme: material" >> mkdcos.yml
-
-# serve
-mkdocs serve
-
-# build
-mkdocs build
-```
+- Stanford UFLDL (by Andrew Ng)
+  - source: <http://ufldl.stanford.edu/>
+  - backup: <https://hantang.github.io/wayback-ufldl>

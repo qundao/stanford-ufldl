@@ -1,2 +1,224 @@
-site_name: My Docs
-theme: material
+# Site information
+site_name: Unsupervised Feature Learning and Deep Learning Tutorial
+site_url: https://hantang.github.io/wayback-ufldl/
+site_description: 
+copyright: A backup of <a href="http://deeplearning.stanford.edu/">Stanford | UFLDL Tutorial (Unsupervised Feature Learning and Deep Learning)</a>
+repo_url: https://github.com/hantang/wayback-ufldl
+
+theme:
+  name: material
+  # favicon: assets/favicon.ico
+  icon:
+      logo: material/slot-machine-outline
+  font:
+    text: Lora, Georgia, Times New Roman, Times, serif
+    code: Source Code Pro, monospace
+  palette:
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+    - media: "(prefers-color-scheme: light)"
+      primary: deep purple
+      scheme: default
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      primary: black
+      scheme: slate
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to system preference
+  features:
+    - navigation.footer
+    - navigation.indexes
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.path
+    - navigation.prune
+    - navigation.tabs
+    - navigation.top
+    - navigation.tracking
+    - search.highlight
+    - search.suggest
+    - toc.follow
+    - content.code.copy
+
+markdown_extensions:
+  - abbr
+  - attr_list
+  - footnotes
+  - md_in_html
+  - toc:
+      permalink: true
+      toc_depth: 4
+      slugify: !!python/object/apply:pymdownx.slugs.slugify
+        kwds:
+          case: lower
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+      auto_title: true
+      line_spans: __span
+      linenums_style: pymdownx-inline
+      linenums: true
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.arithmatex:
+      generic: true
+
+extra_javascript:
+  - static/js/katex.js
+  - https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.7/katex.min.js
+  - https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.7/contrib/auto-render.min.js
+
+extra_css:
+  - https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.7/katex.min.css
+
+plugins:
+  - search
+
+plugins:
+  - search
+
+nav:
+  - UFLDL: index.md
+  - Tutorial:
+    - tutorial/index.md
+    - tutorial/StarterCode.md
+    - Supervised Learning and Optimization:
+      - tutorial/supervised/LinearRegression.md
+      - tutorial/supervised/LogisticRegression.md
+      - tutorial/supervised/Vectorization.md
+      - tutorial/supervised/DebuggingGradientChecking.md
+      - tutorial/supervised/SoftmaxRegression.md
+      - tutorial/supervised/DebuggingBiasAndVariance.md
+      - tutorial/supervised/DebuggingOptimizersAndObjectives.md
+    - Supervised Neural Networks:
+      - tutorial/supervised/MultiLayerNeuralNetworks.md
+      - tutorial/supervised/ExerciseSupervisedNeuralNetwork.md
+    - Supervised Convolutional Neural Network:
+      - tutorial/supervised/FeatureExtractionUsingConvolution.md
+      - tutorial/supervised/Pooling.md
+      - tutorial/supervised/ExerciseConvolutionAndPooling.md
+      - tutorial/supervised/OptimizationStochasticGradientDescent.md
+      - tutorial/supervised/ConvolutionalNeuralNetwork.md
+      - tutorial/supervised/ExerciseConvolutionalNeuralNetwork.md
+    - Unsupervised Learning:
+      - tutorial/unsupervised/Autoencoders.md
+      - tutorial/unsupervised/PCAWhitening.md
+      - tutorial/unsupervised/ExercisePCAWhitening.md
+      - tutorial/unsupervised/SparseCoding.md
+      - tutorial/unsupervised/ICA.md
+      - tutorial/unsupervised/RICA.md
+      - tutorial/unsupervised/ExerciseRICA.md
+    - Self-Taught Learning:
+      - tutorial/selftaughtlearning/SelfTaughtLearning.md
+      - tutorial/selftaughtlearning/ExerciseSelfTaughtLearning.md
+
+  - Tutorial(OLD):
+    - wiki/Main_Page.md
+    - wiki/UFLDL_Tutorial.md
+    - wiki/UFLDL_Recommended_Readings.md
+    - wiki/Ufldl_About.md
+    - Sparse Autoencoder:
+      - wiki/Neural_Networks.md
+      - wiki/Backpropagation_Algorithm.md
+      - wiki/Gradient_checking_and_advanced_optimization.md
+      - wiki/Autoencoders_and_Sparsity.md
+      - wiki/Visualizing_a_Trained_Autoencoder.md
+      - wiki/Sparse_Autoencoder_Notation_Summary.md
+      - wiki/Exercise_Sparse_Autoencoder.md
+    - Vectorized implementation:
+      - wiki/Vectorization.md
+      - wiki/Logistic_Regression_Vectorization_Example.md
+      - wiki/Neural_Network_Vectorization.md
+      - wiki/Exercise_Vectorization.md
+    - "Preprocessing: PCA and Whitening":
+      - wiki/PCA.md
+      - wiki/Whitening.md
+      - wiki/Implementing_PCA_Whitening.md
+      - wiki/Exercise_PCA_in_2D.md
+      - wiki/Exercise_PCA_and_Whitening.md
+    - Softmax Regression:
+      - wiki/Softmax_Regression.md
+      - wiki/Exercise_Softmax_Regression.md
+    - Self-Taught Learning and Unsupervised Feature Learning:
+      - wiki/Self-Taught_Learning.md
+      - wiki/Exercise_Self-Taught_Learning.md
+    - Building Deep Networks for Classification:
+      - wiki/Self-Taught_Learning_to_Deep_Networks.md
+      - wiki/Deep_Networks__Overview.md
+      - wiki/Stacked_Autoencoders.md
+      - wiki/Fine-tuning_Stacked_AEs.md
+      - wiki/Exercise__Implement_deep_networks_for_digit_classification.md
+    - Linear Decoders with Autoencoders:
+      - wiki/Linear_Decoders.md
+      - wiki/Exercise_Learning_color_features_with_Sparse_Autoencoders.md
+    - Working with Large Images:
+      - wiki/Feature_extraction_using_convolution.md
+      - wiki/Pooling.md
+      - wiki/Exercise_Convolution_and_Pooling.md
+    - Miscellaneous:
+      - wiki/MATLAB_Modules.md
+      - wiki/Style_Guide.md
+      - wiki/Useful_Links.md
+    - Miscellaneous Topics:
+      - wiki/Data_Preprocessing.md
+      - wiki/Deriving_gradients_using_the_backpropagation_idea.md
+    - Sparse Coding:
+      - wiki/Sparse_Coding.md
+      - wiki/Sparse_Coding__Autoencoder_Interpretation.md
+      - wiki/Exercise_Sparse_Coding.md
+    - ICA Style Models:
+      - wiki/Independent_Component_Analysis.md
+      - wiki/Exercise_Independent_Component_Analysis.md
+
+  - 教程(中文旧版):
+    - wiki/UFLDL教程.md
+    - 稀疏自编码器:
+      - wiki/神经网络.md
+      - wiki/反向传导算法.md
+      - wiki/梯度检验与高级优化.md
+      - wiki/自编码算法与稀疏性.md
+      - wiki/可视化自编码器训练结果.md
+      - wiki/稀疏自编码器符号一览表.md
+    - 矢量化编程实现:
+      - wiki/矢量化编程.md
+      - wiki/逻辑回归的向量化实现样例.md
+      - wiki/神经网络向量化.md
+    - 预处理：主成分分析与白化:
+      - wiki/主成分分析.md
+      - wiki/白化.md
+      - wiki/实现主成分分析和白化.md
+    - Softmax回归:
+      - wiki/Softmax回归.md
+    - 自我学习与无监督特征学习:
+      - wiki/自我学习.md
+    - 建立分类用深度网络:
+      - wiki/从自我学习到深层网络.md
+      - wiki/深度网络概览.md
+      - wiki/栈式自编码算法.md
+      - wiki/微调多层自编码算法.md
+    - 自编码线性解码器:
+      - wiki/线性解码器.md
+    - 处理大型图像:
+      - wiki/卷积特征提取.md
+      - wiki/池化.md
+    - 混杂的:
+      - wiki/MATLAB_Modules.md
+      - wiki/Style_Guide.md
+      - wiki/Useful_Links.md
+    - 混杂的主题:
+        - wiki/数据预处理.md
+        - wiki/用反向传导思想求导.md
+    - 稀疏编码:
+      - wiki/稀疏编码.md
+      - wiki/稀疏编码自编码表达.md  
+    - 独立成分分析样式建模:
+      - wiki/独立成分分析.md
