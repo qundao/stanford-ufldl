@@ -1,0 +1,165 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise:Learning color features with Sparse Autoencoders - Ufldl</title>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+
+</head>
+
+<body class="mediawiki ltr ns-0 ns-subject page-Exercise_Learning_color_features_with_Sparse_Autoencoders skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">Exercise:Learning color features with Sparse Autoencoders</h1>
+	<div id="bodyContent">
+		<h3 id="siteSub">From Ufldl</h3>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+<table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Learning_color_features_with_Sparse_Autoencoders"><span class="tocnumber">1</span> <span class="toctext">Learning color features with Sparse Autoencoders</span></a>
+<ul>
+<li class="toclevel-2 tocsection-2"><a href="#Dependencies"><span class="tocnumber">1.1</span> <span class="toctext">Dependencies</span></a></li>
+<li class="toclevel-2 tocsection-3"><a href="#Learning_from_color_image_patches"><span class="tocnumber">1.2</span> <span class="toctext">Learning from color image patches</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#Step_0:_Initialization"><span class="tocnumber">1.3</span> <span class="toctext">Step 0: Initialization</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#Step_1:_Modify_your_sparse_autoencoder_to_use_a_linear_decoder"><span class="tocnumber">1.4</span> <span class="toctext">Step 1: Modify your sparse autoencoder to use a linear decoder</span></a></li>
+<li class="toclevel-2 tocsection-6"><a href="#Step_2:_Learn_features_on_small_patches"><span class="tocnumber">1.5</span> <span class="toctext">Step 2: Learn features on small patches</span></a></li>
+</ul>
+</li>
+</ul>
+</td></tr></table><script>if (window.showTocToggle) { var tocShowText = "show"; var tocHideText = "hide"; showTocToggle(); } </script>
+<h2> <span class="mw-headline" id="Learning_color_features_with_Sparse_Autoencoders"> Learning color features with Sparse Autoencoders </span></h2>
+<p>In this exercise, you will implement a <a href="/wayback-ufldl/stanford-ufldl/wiki/Linear_Decoders" title="Linear Decoders"> linear decoder</a> (a sparse autoencoder whose output layer uses a linear activation function).  You will then apply it to learn features on color images from the STL-10 dataset. These features will be used in an later <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Convolution_and_Pooling" title="Exercise:Convolution and Pooling"> exercise on convolution and pooling</a> for classifying STL-10 images.
+</p><p>In the file <tt><a href="http://ufldl.stanford.edu/wiki/resources/linear_decoder_exercise.zip" class="external text" rel="nofollow">linear_decoder_exercise.zip</a></tt> we have provided some starter code. You should write your code at the places indicated "YOUR CODE HERE" in the files.
+</p><p>For this exercise, you will need to copy and modify <b><tt>sparseAutoencoderCost.m</tt></b> from the <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Sparse_Autoencoder" title="Exercise:Sparse Autoencoder"> sparse autoencoder exercise</a>.
+</p>
+<h3> <span class="mw-headline" id="Dependencies"> Dependencies </span></h3>
+<p>You will need:
+</p>
+<ul><li> <tt>sparseAutoencoderCost.m</tt> (and related functions) from <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Sparse_Autoencoder" title="Exercise:Sparse Autoencoder">Exercise:Sparse Autoencoder</a>
+</li></ul>
+<p>The following additional file is also required for this exercise:
+</p>
+<ul><li> <a href="http://ufldl.stanford.edu/wiki/resources/stl10_patches_100k.zip" class="external text" rel="nofollow">Sampled 8x8 patches from the STL-10 dataset (stl10_patches_100k.zip)</a>
+</li></ul>
+<p><i>If you have not completed the exercise listed above, we strongly suggest you complete it first.</i>
+</p>
+<h3> <span class="mw-headline" id="Learning_from_color_image_patches"> Learning from color image patches </span></h3>
+<p>In all the exercises so far, you have been working only with grayscale images. In this exercise, you will get to work with RGB color images for the first time. 
+</p><p>Conveniently, the fact that an image has three color channels (RGB), rather than a single gray channel, presents little difficulty for the sparse autoencoder. You can just combine the intensities from all the color channels for the pixels into one long vector, as if you were working with a grayscale image with 3x the number of pixels as the original image. 
+</p>
+<h3> <span class="mw-headline" id="Step_0:_Initialization"> Step 0: Initialization </span></h3>
+<p>In this step, we initialize some parameters used in the exercise (see starter code for details).
+</p>
+<h3> <span class="mw-headline" id="Step_1:_Modify_your_sparse_autoencoder_to_use_a_linear_decoder"> Step 1: Modify your sparse autoencoder to use a linear decoder </span></h3>
+<p>Copy <tt>sparseAutoencoderCost.m</tt> to the directory for this exercise and rename it to <tt>sparseAutoencoderLinearCost.m</tt>. Rename the function <tt>sparseAutoencoderCost</tt> in the file to <tt>sparseAutoencoderLinearCost</tt>, and modify it to use a <a href="/wayback-ufldl/stanford-ufldl/wiki/Linear_Decoders" title="Linear Decoders"> linear decoder</a>. In particular, you should change the cost and gradients returned to reflect the change from a sigmoid to a linear decoder. After making this change, check your gradients to ensure that they are correct.
+</p>
+<h3> <span class="mw-headline" id="Step_2:_Learn_features_on_small_patches"> Step 2: Learn features on small patches </span></h3>
+<p>You will now use your sparse autoencoder to learn features on a set of 100,000 small 8x8 patches sampled from the larger 96x96 STL-10 images (The <a href="http://www.stanford.edu/~acoates//stl10/" class="external text" rel="nofollow">STL-10 dataset</a> comprises 5000 training and 8000 test examples,  with each example being a 96x96 labelled color image belonging to one of ten classes: airplane, bird, car, cat, deer, dog, horse, monkey, ship, truck.) 
+</p><p>The code provided in this step trains your sparse autoencoder for 400 iterations with the default parameters initialized in step 0. This should take around 45 minutes. Your sparse autoencoder should learn features which when visualized, look like edges and "opponent colors," as in the figure below. 
+</p><p><a href="" class="image"><img alt="CNN Features Good.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/1/1b/CNN_Features_Good.png/480px-CNN_Features_Good.png" width="480" height="480"/></a>
+</p><p>If your parameters are improperly tuned (the default parameters should work), or if your implementation of the autoencoder is buggy, you might instead get images that look like one of the following:
+</p>
+<table cellpadding="5px">
+<tr><td><a href="" class="image"><img alt="Cnn Features Bad1.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/6/6a/Cnn_Features_Bad1.png/240px-Cnn_Features_Bad1.png" width="240" height="240"/></a></td><td><a href="" class="image"><img alt="Cnn Features Bad2.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/c/ca/Cnn_Features_Bad2.png/240px-Cnn_Features_Bad2.png" width="240" height="240"/></a></td></tr>
+</table>
+<p>The learned features will be saved to <tt>STL10Features.mat</tt>, which will be used in the later <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Convolution_and_Pooling" title="Exercise:Convolution and Pooling"> exercise on convolution and pooling</a>.
+</p>
+<!-- 
+NewPP limit report
+Preprocessor node count: 23/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<div class="printfooter">
+</div>		<div id="catlinks" class="catlinks catlinks-allhidden"></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Learning_color_features_with_Sparse_Autoencoders" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-talk" class="new"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				 <li id="ca-viewsource"><a href="" title="This page is protected.
+You can view its source [e]" accesskey="e">View source</a></li>
+				 <li id="ca-history"><a href="" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-ufldl_resources">
+		<h5>ufldl resources</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-wiki">
+		<h5>wiki</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
+				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="" id="searchform">
+				<input type="hidden" name="title" value="Special:Search" disabled/>
+				<input id="searchInput" title="Search Ufldl" accesskey="f" type="search" name="search" disabled/>
+				<input type="submit" name="go" class="searchButton" id="searchGoButton" value="Go" title="Go to a page with this exact name if exists" disabled/>&nbsp;
+				<input type="submit" name="fulltext" class="searchButton" id="mw-searchButton" value="Search" title="Search the pages for this text" disabled/>
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="" title="List of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+<li id="t-specialpages"><a href="" title="List of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li id="t-print"><a href="" rel="alternate" title="Printable version of this page [p]" accesskey="p">Printable version</a></li>				<li id="t-permalink"><a href="" title="Permanent link to this revision of the page">Permanent link</a></li>			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 21 June 2011, at 21:00.</li>
+		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+
+<!-- Served in 0.112 secs. -->
+</body>
+</html>

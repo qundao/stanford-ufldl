@@ -1,0 +1,191 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logistic Regression Vectorization Example - Ufldl</title>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+
+</head>
+
+<body class="mediawiki ltr ns-0 ns-subject page-Logistic_Regression_Vectorization_Example skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">Logistic Regression Vectorization Example</h1>
+	<div id="bodyContent">
+		<h3 id="siteSub">From Ufldl</h3>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+<p>Consider training a logistic regression model using batch gradient ascent.
+Suppose our hypothesis is
+</p>
+<dl><dd><img class="tex" alt="\begin{align}
+h_\theta(x) = \frac{1}{1+\exp(-\theta^Tx)},
+\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/b/3/bb3791d463b832a88731b94f1d8e5279.png"/>
+</dd></dl>
+<p>where (following the notational convention from the OpenClassroom videos and from CS229) we let <img class="tex" alt="\textstyle x_0=1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/5/8/c582053ce9cb63d69ae80acb53ded0d3.png"/>, so that <img class="tex" alt="\textstyle x \in \Re^{n+1}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/c/2/ec2c09e7951c093d21db55d95ffaa19e.png"/> 
+and <img class="tex" alt="\textstyle \theta \in \Re^{n+1}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/c/d/8cd47b42536a589ad69927f408921808.png"/>, and <img class="tex" alt="\textstyle \theta_0" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/6/0/f6040edfd55be75383ff6ae2badc24f8.png"/> is our intercept term.  We have a training set
+<img class="tex" alt="\textstyle \{(x^{(1)}, y^{(1)}), \ldots, (x^{(m)}, y^{(m)})\}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/4/4/b449e6d375809abbc4097d2c55e9f8c0.png"/> of <img class="tex" alt="\textstyle m" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/5/e/25e97e8a905fc2cb05d76cd4872a8567.png"/> examples, and the batch gradient
+ascent update rule is <img class="tex" alt="\textstyle \theta := \theta + \alpha \nabla_\theta \ell(\theta)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/5/a/65a9cda07ee61ef59b4167897d4c5634.png"/>, where <img class="tex" alt="\textstyle \ell(\theta)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/1/f/a1fa0c7d5e58ae87f3231b8e381cf433.png"/>
+is the log likelihood and <img class="tex" alt="\textstyle \nabla_\theta \ell(\theta)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/b/5/8b52e48e33138f3366afb938605b7944.png"/> is its derivative.
+</p><p>[Note: Most of the notation below follows that defined in the OpenClassroom videos or in the class 
+CS229: Machine Learning.  For details, see either the <a href="http://openclassroom.stanford.edu/MainFolder/CoursePage.php?course=MachineLearning" class="external text" rel="nofollow">OpenClassroom videos</a> or Lecture Notes #1 of <a href="http://cs229.stanford.edu/" class="external free" rel="nofollow">http://cs229.stanford.edu/</a> .]
+</p><p>We thus need to compute the gradient:
+</p>
+<dl><dd><img class="tex" alt="\begin{align}
+\nabla_\theta \ell(\theta) = \sum_{i=1}^m \left(y^{(i)} - h_\theta(x^{(i)}) \right) x^{(i)}_j.
+\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/9/e/b9e08cd04d5328fec470b92aa27dc8cc.png"/>
+</dd></dl>
+<p>Suppose that the Matlab/Octave variable <tt>x</tt> is a matrix containing the training inputs, so that
+<tt>x(:,i)</tt> is the <img class="tex" alt="\textstyle i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/>-th training example <img class="tex" alt="\textstyle x^{(i)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/b/e/ebe8632b7c91a3dbbf9b590bea887a47.png"/>, and <tt>x(j,i)</tt> is  <img class="tex" alt="\textstyle x^{(i)}_j" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/1/8/318866dbcd6dd86e9d402d0f324fb8bd.png"/>.  
+Further, suppose the Matlab/Octave variable <tt>y</tt> is a <i>row</i> vector of the labels in the
+training set, so that the variable <tt>y(i)</tt> is <img class="tex" alt="\textstyle y^{(i)} \in \{0,1\}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/a/f/9af78a186bc4feb4ae23853de5556095.png"/>.  (Here we differ from the 
+OpenClassroom/CS229 notation. Specifically, in the matrix-valued <tt>x</tt> we stack the training inputs in columns rather than in rows;
+and <tt>y</tt><img class="tex" alt="\in \Re^{1\times m}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/3/2/e32d32b1db225592d968799d331815f4.png"/> is a row vector rather than a column vector.) 
+</p><p>Here's truly horrible, extremely slow, implementation of the gradient computation:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="matlab source-matlab"><pre class="de1"><span class="co1">% Implementation 1</span>
+grad = <span class="kw2">zeros</span><span class="br0">&#40;</span>n+<span class="nu0">1</span>,<span class="nu0">1</span><span class="br0">&#41;</span>;
+<span class="kw1">for</span> <span class="kw2"><span class="re0">i</span></span>=<span class="nu0">1</span>:m,
+  h = sigmoid<span class="br0">&#40;</span>theta'*x<span class="br0">&#40;</span>:,<span class="kw2"><span class="re0">i</span></span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+  temp = y<span class="br0">&#40;</span><span class="kw2"><span class="re0">i</span></span><span class="br0">&#41;</span> - h; 
+  <span class="kw1">for</span> <span class="kw2"><span class="re0">j</span></span>=<span class="nu0">1</span>:n+<span class="nu0">1</span>,
+    grad<span class="br0">&#40;</span><span class="kw2"><span class="re0">j</span></span><span class="br0">&#41;</span> = grad<span class="br0">&#40;</span><span class="kw2"><span class="re0">j</span></span><span class="br0">&#41;</span> + temp * x<span class="br0">&#40;</span><span class="kw2"><span class="re0">j</span></span>,<span class="kw2"><span class="re0">i</span></span><span class="br0">&#41;</span>; 
+  <span class="kw1">end</span>;
+<span class="kw1">end</span>;</pre></div></div>
+<p>The two nested for-loops makes this very slow.  Here's a more typical implementation,
+that partially vectorizes the algorithm and gets better performance: 
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="matlab source-matlab"><pre class="de1"><span class="co1">% Implementation 2 </span>
+grad = <span class="kw2">zeros</span><span class="br0">&#40;</span>n+<span class="nu0">1</span>,<span class="nu0">1</span><span class="br0">&#41;</span>;
+<span class="kw1">for</span> <span class="kw2"><span class="re0">i</span></span>=<span class="nu0">1</span>:m,
+  grad = grad + <span class="br0">&#40;</span>y<span class="br0">&#40;</span><span class="kw2"><span class="re0">i</span></span><span class="br0">&#41;</span> - sigmoid<span class="br0">&#40;</span>theta'*x<span class="br0">&#40;</span>:,<span class="kw2"><span class="re0">i</span></span><span class="br0">&#41;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>* x<span class="br0">&#40;</span>:,<span class="kw2"><span class="re0">i</span></span><span class="br0">&#41;</span>;
+<span class="kw1">end</span>;</pre></div></div>
+<p>However, it turns out to be possible to even further vectorize this.  If we can get rid of the for-loop, we can significantly speed up the implementation.  In particular, suppose <tt>b</tt> is a column vector, and <tt>A</tt> is a matrix.  Consider the following ways of computing <tt>A * b</tt>: 
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="matlab source-matlab"><pre class="de1"><span class="co1">% Slow implementation of matrix-vector multiply</span>
+grad = <span class="kw2">zeros</span><span class="br0">&#40;</span>n+<span class="nu0">1</span>,<span class="nu0">1</span><span class="br0">&#41;</span>;
+<span class="kw1">for</span> <span class="kw2"><span class="re0">i</span></span>=<span class="nu0">1</span>:m,
+  grad = grad + b<span class="br0">&#40;</span><span class="kw2"><span class="re0">i</span></span><span class="br0">&#41;</span> * A<span class="br0">&#40;</span>:,<span class="kw2"><span class="re0">i</span></span><span class="br0">&#41;</span>;  <span class="co1">% more commonly written A(:,i)*b(i)</span>
+<span class="kw1">end</span>;
+&nbsp;
+<span class="co1">% Fast implementation of matrix-vector multiply</span>
+grad = A*b;</pre></div></div>
+<p>We recognize that Implementation 2 of our gradient descent calculation above is using the slow version with a for-loop, with
+<tt>b(i)</tt> playing the role of <tt>(y(i) - sigmoid(theta'*x(:,i)))</tt>, and <tt>A</tt> playing the role of <tt>x</tt>.  We can derive a fast implementation as follows: 
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="matlab source-matlab"><pre class="de1"><span class="co1">% Implementation 3</span>
+grad = x * <span class="br0">&#40;</span>y- sigmoid<span class="br0">&#40;</span>theta'*x<span class="br0">&#41;</span><span class="br0">&#41;</span>';</pre></div></div>
+<p>Here, we assume that the Matlab/Octave <tt>sigmoid(z)</tt> takes as input a vector <tt>z</tt>, applies the sigmoid function component-wise to the input, and returns the result.  The output of <tt>sigmoid(z)</tt> is therefore itself also a vector, of the same dimension as the input <tt>z</tt> 
+</p><p>When the training set is large, this final implementation takes the greatest advantage of Matlab/Octave's highly optimized numerical linear algebra libraries to carry out the matrix-vector operations, and so this is far more efficient than the earlier implementations.  
+</p><p>Coming up with vectorized implementations isn't always easy, and sometimes requires careful thought.  But as you gain familiarity with vectorized operations, you'll find that there are design patterns (i.e., a small number of ways of vectorizing) that apply to many different pieces of code.
+</p><p><br/>
+</p>
+<div style="text-align: center;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
+<p><a href="/wayback-ufldl/stanford-ufldl/wiki/Vectorization" title="Vectorization">Vectorization</a> | <strong class="selflink">Logistic Regression Vectorization Example</strong> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Neural_Network_Vectorization" title="Neural Network Vectorization">Neural Network Vectorization</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Vectorization" title="Exercise:Vectorization">Exercise:Vectorization</a>
+</p>
+</div>
+<p><br/>
+</p>
+<div style="text-align: left;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
+<p>Language&nbsp;: <a href="/wayback-ufldl/stanford-ufldl/wiki/%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E7%9A%84%E5%90%91%E9%87%8F%E5%8C%96%E5%AE%9E%E7%8E%B0%E6%A0%B7%E4%BE%8B" title="逻辑回归的向量化实现样例">中文</a>
+</p>
+</div>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 71/1000000
+Post-expand include size: 457/2097152 bytes
+Template argument size: 42/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<div class="printfooter">
+</div>		<div id="catlinks" class="catlinks catlinks-allhidden"></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/Logistic_Regression_Vectorization_Example" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-talk" class="new"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				 <li id="ca-viewsource"><a href="" title="This page is protected.
+You can view its source [e]" accesskey="e">View source</a></li>
+				 <li id="ca-history"><a href="" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-ufldl_resources">
+		<h5>ufldl resources</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-wiki">
+		<h5>wiki</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
+				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="" id="searchform">
+				<input type="hidden" name="title" value="Special:Search" disabled/>
+				<input id="searchInput" title="Search Ufldl" accesskey="f" type="search" name="search" disabled/>
+				<input type="submit" name="go" class="searchButton" id="searchGoButton" value="Go" title="Go to a page with this exact name if exists" disabled/>&nbsp;
+				<input type="submit" name="fulltext" class="searchButton" id="mw-searchButton" value="Search" title="Search the pages for this text" disabled/>
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="" title="List of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+<li id="t-specialpages"><a href="" title="List of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li id="t-print"><a href="" rel="alternate" title="Printable version of this page [p]" accesskey="p">Printable version</a></li>				<li id="t-permalink"><a href="" title="Permanent link to this revision of the page">Permanent link</a></li>			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 7 April 2013, at 13:09.</li>
+		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+
+<!-- Served in 0.119 secs. -->
+</body>
+</html>

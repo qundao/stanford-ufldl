@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Unsupervised Feature Learning and Deep Learning Tutorial</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/bootstrap_readable.min.css" rel="stylesheet">
+    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/pygments/default.css" rel="stylesheet">
+    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/custom.css" rel="stylesheet">
+    <script type="text/javascript"
+          src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="../../assets/js/html5shiv.js"></script>
+    <script src="../../assets/js/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/wayback-ufldl/stanford-ufldl/tutorial/">UFLDL Tutorial</a>
+        </div>
+        <!---
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+          </ul>
+        </div>
+        !-->
+      </div>
+    </div>
+
+
+    <div class="row-fluid">
+      <div class = "container"> 
+        <div class = "col-xs-9">
+          <h3>Exercise: Convolution and Pooling</h3>
+<hr>
+<!---<p class="meta">28 Aug 2013</p>--->
+
+<div class="post">
+<h3 id="convolution_and_pooling">Convolution and Pooling</h3>
+
+<p>In this exercise you will and test <a href="/wayback-ufldl/stanford-ufldl/tutorial/supervised/FeatureExtractionUsingConvolution">convolution</a> and <a href="/wayback-ufldl/stanford-ufldl/tutorial/supervised/Pooling">pooling</a> functions. We have provided some <a href="https://github.com/amaas/stanford_dl_ex/tree/master/cnn">starter code</a>. You should write your code at the places indicated ”<code>YOUR CODE HERE</code>” in the files. For this exercise, you will need to modify <code>cnnConvolve.m</code> and <code>cnnPool.m</code>.</p>
+
+<h2 id="dependencies">Dependencies</h2>
+
+<p>The following additional files are required for this exercise:</p>
+
+<p><a href="https://github.com/amaas/stanford_dl_ex/tree/master/common">MNIST helper functions</a></p>
+
+<p><a href="https://github.com/amaas/stanford_dl_ex/tree/master/cnn">Starter Code</a></p>
+
+<h3 id="step_1_implement_and_test_convolution">Step 1: Implement and test convolution</h3>
+
+<p>In this step, you will implement the convolution function, and test it on a small part of the data set to ensure that you have implemented it correctly.</p>
+
+<h4 id="step_1a_implement_convolution">Step 1a: Implement convolution</h4>
+
+<p>Implement convolution, as described in ((Feature Extraction Using Convolution)), in the function <code>cnnConvolve</code> in <code>cnnConvolve.m</code>. Implementing convolution is somewhat involved, so we will guide you through the process below.</p>
+
+<p>First, we want to compute <m>\sigma(Wx_{(r,c)} + b)</m> for all valid <m>(r,c)</m> (valid meaning that the entire 8x8 patch is contained within the image; this is as opposed to a full convolution, which allows the patch to extend outside the image, with the area outside the image assumed to be 0), where <m>W</m> and <m>b</m> are the learned weights and biases from the input layer to the hidden layer, and <m>x_{(r,c)}</m> is the 8x8 patch with the upper left corner at <m>(r,c)</m>. To accomplish this, one naive method is to loop over all such patches and compute <m>\sigma(Wx_{(r,c)} + b)</m> for each of them; while this is fine in theory, it can very slow. Hence, we usually use MATLAB’s built in convolution functions, which are well optimized.</p>
+
+<p>Observe that the convolution above can be broken down into the following three small steps. First, compute <m>Wx_{(r,c)}</m> for all <m>(r,c)</m>. Next, add <m>b</m> to all the computed values. Finally, apply the sigmoid function to the resulting values. This doesn’t seem to buy you anything, since the first step still requires a loop. However, you can replace the loop in the first step with one of MATLAB’s optimized convolution functions, <code>conv2</code>, speeding up the process significantly.</p>
+
+<p>However, there are two important points to note in using <code>conv2</code>. First, <code>conv2</code> performs a 2-D convolution, but you have 4 “dimensions” - image number, filter (or feature) number, row of image and column of image - that you want to convolve over. Because of this, you will have to convolve each filter separately for each image, using the row and column of the image as the 2 dimensions you convolve over. This means that you will need two outer loops over the image number <code>imageNum</code> and filter number <code>filterNum</code>. Inside the two nested for-loops, you will perform a <code>conv2</code> 2-D convolution, using the weight matrix for the <code>filterNum</code>-th filter and the image matrix for the <code>imageNum</code>-th image.</p>
+
+<p>Second, because of the mathematical definition of convolution, the filter matrix must be “flipped” before passing it to <code>conv2</code>. The following implementation tip explains the “flipping” of feature matrices when using MATLAB’s convolution functions:</p>
+<div style='border:1px solid black; padding: 5px'>
+
+<b>Implementation tip:</b> Using <code>conv2</code> and <code>convn</code>
+
+Because the mathematical definition of convolution involves "flipping" the matrix to convolve with (reversing its rows and its columns), to use MATLAB's convolution functions, you must first "flip" the weight matrix so that when MATLAB "flips" it according to the mathematical definition the entries will be at the correct place. For example, suppose you wanted to convolve two matrices <code>image</code> (a large image) and <code>W</code> (the feature) using <code>conv2(image, W)</code>, and W is a 3x3 matrix as below:
+
+<m>
+ W = 
+ \begin{pmatrix}
+  1 &amp; 2 &amp; 3 \\
+  4 &amp; 5 &amp; 6 \\
+  7 &amp; 8 &amp; 9  \\
+ \end{pmatrix}
+</m>
+
+If you use <code>conv2(image, W)</code>, MATLAB will first "flip" <code>W</code>, reversing its rows and columns, before convolving <code>W</code> with <code>image</code>, as below:
+
+<m>
+ \begin{pmatrix}
+  1 &amp; 2 &amp; 3 \\
+  4 &amp; 5 &amp; 6 \\
+  7 &amp; 8 &amp; 9  \\
+ \end{pmatrix}
+
+ \xrightarrow{flip}
+
+ \begin{pmatrix}
+  9 &amp; 8 &amp; 7 \\
+  6 &amp; 5 &amp; 4 \\
+  3 &amp; 2 &amp; 1  \\
+ \end{pmatrix}
+</m>
+
+If the original layout of <code>W</code> was correct, after flipping, it would be incorrect. For the layout to be correct after flipping, you will have to flip <code>W</code> before passing it into <code>conv2</code>, so that after MATLAB flips <code>W</code> in <code>conv2</code>, the layout will be correct. For <code>conv2</code>, this means reversing the rows and columns, which can be done by rotating <code>W</code> 90 degrees twice with <code>rot90</code> as shown below:
+
+<div class='highlight'><pre><code class='matlab'> 
+<span class='c'>% Flip W for use in conv2</span>
+<span class='n'>W</span> <span class='p'>=</span> <span class='nb'>rot90</span><span class='p'>(</span><span class='n'>W</span><span class='p'>,</span><span class='mi'>2</span><span class='p'>);</span>
+</code></pre></div>
+
+
+</div>
+<p>Next, to each of the <code>convolvedFeatures</code>, you should then add <m>b</m>, the corresponding bias for the <code>filterNum</code>-th filter.</p>
+
+<h4 id="step_1b_check_your_convolution">Step 1b: Check your convolution</h4>
+
+<p>We have provided some code for you to check that you have done the convolution correctly. The code randomly checks the convolved values for a number of (feature, row, column) tuples by computing the feature activations using randomly generated features and images from the MNIST dataset.</p>
+
+<h3 id="step_2_implement_and_test_pooling">Step 2: Implement and test pooling</h3>
+
+<h4 id="step_2a_implement_pooling">Step 2a: Implement pooling</h4>
+
+<p>Implement pooling in the function <code>cnnPool</code> in <code>cnnPool.m</code>. You should implement mean pooling (i.e., averaging over feature responses) for this part. This can be done efficiently using the <code>conv2</code> function as well. The inputs are the responses of each image with each filter computed in the previous step. Convolve each of these with a matrix of ones followed by a subsampling and averaging. Make sure to use the “valid” border handling convolution.</p>
+
+<h4 id="step_2b_check_your_pooling">Step 2b: Check your pooling</h4>
+
+<p>We have provided some code for you to check that you have done the pooling correctly. The code runs <code>cnnPool</code> against a test matrix to see if it produces the expected result.</p>
+</div>
+
+        </div>
+        <div class = "col-xs-3 sidebar">
+          <div id="sidebar-holder">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Generate sidebar --->
+    <script src='/wayback-ufldl/stanford-ufldl/tutorial/sidebar/sidebar.js'></script>
+    <script>
+      function renderHeading(name) {
+        return '<div class = "panel-heading">' + name + '</div>';
+      };
+      function renderItem(name, link) { 
+        return '<a href="/wayback-ufldl/stanford-ufldl/tutorial/' + link + '" class="list-group-item nav">' + name +
+          '</a>';
+      };
+      renderedHtml = '<div class = "panel panel-default">';
+        for (var i = 0; i < pages.length; i++) {
+          if (pages[i].type == 'Heading') {
+            renderedHtml += renderHeading(pages[i].name);
+          }
+          if (pages[i].type == 'Page') { 
+            renderedHtml += renderItem(pages[i].name, pages[i].link);
+          }
+        };
+        renderedHtml += '</div>';
+      document.getElementById('sidebar-holder').innerHTML = renderedHtml;
+    </script>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="//code.jquery.com/jquery.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="/wayback-ufldl/stanford-ufldl/tutorial/js/bootstrap.min.js"></script>
+    <script>
+      var inputs = document.getElementsByTagName("m");
+      for (var i = 0; i < inputs.length; i++) { 
+        wrap = '$$';
+        if (inputs[i].parentNode.nodeName.toLowerCase() == 'p' || 
+        inputs[i].parentNode.nodeName.toLowerCase() == 'li')  {
+          wrap = '$'
+        }
+        inputs[i].textContent = wrap + inputs[i].textContent + wrap;
+      }
+    </script>
+    <script>
+      MathJax.Hub.Config({
+        tex2jax: {
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+          inlineMath: [ ['$','$'], ["\\(","\\)"] ]
+        }
+      });
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += 'has-jax';
+        }
+      });
+    </script>
+    <script>
+      /*menu handler*/
+      function stripTrailingSlash(str) {
+        if(str.substr(-1) == '/') {
+          return str.substr(0, str.length - 1);
+        }
+        return str;
+      }
+
+      var url = window.location.href;  
+      var activePage = stripTrailingSlash(url);
+
+      $('.nav').each(function(){ 
+        currentPage = stripTrailingSlash(this.href) 
+        if (activePage == currentPage) {
+          $(this).addClass('active'); 
+        } 
+      });
+    </script>
+  </body>
+</html>

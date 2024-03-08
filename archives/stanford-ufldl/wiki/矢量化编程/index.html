@@ -1,0 +1,167 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>矢量化编程 - Ufldl</title>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+
+</head>
+
+<body class="mediawiki ltr ns-0 ns-subject page-矢量化编程 skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">矢量化编程</h1>
+	<div id="bodyContent">
+		<h3 id="siteSub">From Ufldl</h3>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+<p>当使用学习算法时，一段更快的代码通常意味着项目进展更快。例如，如果你的学习算法需要花费20分钟运行完成，这意味着你每个小时能“尝试”3个新主意。但是假如你的程序需要20个小时来运行，这意味着你一天只能“尝试”一个新主意，因为你需要花费这么长时间来等待程序的反馈。对于后者，假如你可以提升代码的效率让其只需要运行10个小时，那么你的效率差不多提升一倍。
+</p><p><br/>
+<b>矢量化编程</b>是提高算法速度的一种有效方法。为了提升特定数值运算操作（如矩阵相乘、矩阵相加、矩阵-向量乘法等）的速度，数值计算和并行计算的研究人员已经努力了几十年。矢量化编程的思想就是尽量使用这些被高度优化的数值运算操作来实现我们的学习算法。
+</p><p><br/>
+例如，假设<img class="tex" alt="x \in \Re^{n+1}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/e/0/9e0394e64efaa9693a2099d90db59b26.png"/> 和<img class="tex" alt="\textstyle \theta \in \Re^{n+1}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/c/d/8cd47b42536a589ad69927f408921808.png"/> 为向量，需要计算<img class="tex" alt="\textstyle z = \theta^Tx" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/6/3/b6353addb58dee1b547c654e31ad73d9.png"/> ，那么可以按以下方式实现（使用Matlab）：
+</p><p><br/>
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="matlab source-matlab"><pre class="de1">z = <span class="nu0">0</span>;
+<span class="kw1">for</span> <span class="kw2"><span class="re0">i</span></span>=<span class="nu0">1</span>:<span class="br0">&#40;</span>n+<span class="nu0">1</span><span class="br0">&#41;</span>,
+  z = z + theta<span class="br0">&#40;</span><span class="kw2"><span class="re0">i</span></span><span class="br0">&#41;</span> * x<span class="br0">&#40;</span><span class="kw2"><span class="re0">i</span></span><span class="br0">&#41;</span>;
+<span class="kw1">end</span>;</pre></div></div>
+<p><br/>
+或者可以更加简单的写为：
+</p><p><br/>
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="matlab source-matlab"><pre class="de1">z = theta' * x;</pre></div></div>
+<p><br/>
+第二段程序代码不仅简单，而且运行速度更快。
+</p><p><br/>
+通常，一个编写Matlab/Octave程序的诀窍是：
+</p><p><br/>
+</p>
+<dl><dd><dl><dd><b>代码中尽可能避免显式的for循环。</b>
+</dd></dl>
+</dd></dl>
+<p><br/>
+上面的第一段代码使用了一个显式的for循环。通过不使用for循环实现相同功能，可以显著提升运行速度。对Matlab/Octave代码进行矢量化的工作很大一部分集中在避免使用for循环上，因为这可以使得Matlab/Octave更多地利用代码中的并行性，同时其解释器的计算开销更小。
+</p><p><br/>
+关于编写代码的策略，开始时你会觉得矢量化代码更难编写、阅读和调试，但你需要在编码和调试的便捷性与运行时间之间做个权衡。因此，刚开始编写程序的时候，你可能会选择不使用太多矢量化技巧来实现你的算法，并验证它是否正确（可能只在一个小问题上验证）。在确定它正确后，你可以每次只矢量化一小段代码，并在这段代码之后暂停，以验证矢量化后的代码计算结果和之前是否相同。最后，你会有望得到一份正确的、经过调试的、矢量化且有效率的代码。
+</p><p><br/>
+一旦对矢量化常见的方法和技巧熟悉后，你将会发现对代码进行矢量化通常并不太费劲。矢量化可以使你的代码运行的更快，而且在某些情况下，还简化了你的代码。
+</p><p><br/>
+</p>
+<h2> <span class="mw-headline" id=".E4.B8.AD.E8.8B.B1.E6.96.87.E5.AF.B9.E7.85.A7">中英文对照</span></h2>
+<p>矢量化		vectorization
+</p><p><br/>
+</p>
+<h2> <span class="mw-headline" id=".E4.B8.AD.E6.96.87.E8.AF.91.E8.80.85">中文译者</span></h2>
+<p>彭君睿（07caleb@gmail.com）， 王文中（wangwenzhong@ymail.com），邓亚峰（dengyafeng@gmail.com）
+</p><p><br/>
+</p>
+<div style="text-align: center;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
+<p><strong class="selflink">矢量化编程</strong> | <a href="/wayback-ufldl/stanford-ufldl/wiki/%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E7%9A%84%E5%90%91%E9%87%8F%E5%8C%96%E5%AE%9E%E7%8E%B0%E6%A0%B7%E4%BE%8B" title="逻辑回归的向量化实现样例">逻辑回归的向量化实现样例</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E5%90%91%E9%87%8F%E5%8C%96" title="神经网络向量化">神经网络向量化</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Vectorization" title="Exercise:Vectorization">Exercise:Vectorization</a>
+</p>
+</div>
+<p><br/>
+</p>
+<div style="text-align: left;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
+<p>Language&nbsp;: <a href="/wayback-ufldl/stanford-ufldl/wiki/Vectorization" title="Vectorization">English</a>
+</p>
+</div>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 62/1000000
+Post-expand include size: 425/2097152 bytes
+Template argument size: 20/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<div class="printfooter">
+</div>		<div id="catlinks" class="catlinks catlinks-allhidden"></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/%E7%9F%A2%E9%87%8F%E5%8C%96%E7%BC%96%E7%A8%8B" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-talk" class="new"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				 <li id="ca-viewsource"><a href="" title="This page is protected.
+You can view its source [e]" accesskey="e">View source</a></li>
+				 <li id="ca-history"><a href="" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-ufldl_resources">
+		<h5>ufldl resources</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-wiki">
+		<h5>wiki</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
+				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="" id="searchform">
+				<input type="hidden" name="title" value="Special:Search" disabled/>
+				<input id="searchInput" title="Search Ufldl" accesskey="f" type="search" name="search" disabled/>
+				<input type="submit" name="go" class="searchButton" id="searchGoButton" value="Go" title="Go to a page with this exact name if exists" disabled/>&nbsp;
+				<input type="submit" name="fulltext" class="searchButton" id="mw-searchButton" value="Search" title="Search the pages for this text" disabled/>
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="" title="List of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+<li id="t-specialpages"><a href="" title="List of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li id="t-print"><a href="" rel="alternate" title="Printable version of this page [p]" accesskey="p">Printable version</a></li>				<li id="t-permalink"><a href="" title="Permanent link to this revision of the page">Permanent link</a></li>			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 8 April 2013, at 04:59.</li>
+		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+
+<!-- Served in 0.144 secs. -->
+</body>
+</html>

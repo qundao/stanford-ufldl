@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Unsupervised Feature Learning and Deep Learning Tutorial</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/bootstrap_readable.min.css" rel="stylesheet">
+    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/pygments/default.css" rel="stylesheet">
+    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/custom.css" rel="stylesheet">
+    <script type="text/javascript"
+          src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="../../assets/js/html5shiv.js"></script>
+    <script src="../../assets/js/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/wayback-ufldl/stanford-ufldl/tutorial/">UFLDL Tutorial</a>
+        </div>
+        <!---
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+          </ul>
+        </div>
+        !-->
+      </div>
+    </div>
+
+
+    <div class="row-fluid">
+      <div class = "container"> 
+        <div class = "col-xs-9">
+          <h3>Exercise: Convolutional Neural Network</h3>
+<hr>
+<!---<p class="meta">28 Aug 2013</p>--->
+
+<div class="post">
+<h3 id="overview">Overview</h3>
+
+<p>In this exercise you will implement a convolutional neural network for digit classification. The architecture of the network will be a convolution and subsampling layer followed by a densely connected output layer which will feed into the softmax regression and cross entropy objective. You will use mean pooling for the subsampling layer. You will use the back-propagation algorithm to calculate the gradient with respect to the parameters of the model. Finally you will train the parameters of the network with stochastic gradient descent and momentum.</p>
+
+<p>We have provided some MATLAB <a href="https://github.com/amaas/stanford_dl_ex/tree/master/cnn">starter code</a>. You should write your code at the places indicated in the files ”<code>YOUR CODE HERE</code>”. You have to complete the following files: <code>cnnCost.m</code>, <code>minFuncSGD.m</code>. The starter code in <code>cnnTrain.m</code> shows how these functions are used.</p>
+
+<h3 id="dependencies">Dependencies</h3>
+
+<p><a href="https://github.com/amaas/stanford_dl_ex/tree/master/cnn">Convolutional Network starter code</a></p>
+
+<p><a href="https://github.com/amaas/stanford_dl_ex/tree/master/common">MNIST helper functions</a></p>
+
+<p>We strongly suggest that you complete the <a href="/wayback-ufldl/stanford-ufldl/tutorial/supervised/ExerciseConvolutionAndPooling">convolution and pooling</a>, <a href="/wayback-ufldl/stanford-ufldl/tutorial/supervised/ExerciseSupervisedNeuralNetwork">multilayer supervised neural network</a> and <a href="/wayback-ufldl/stanford-ufldl/tutorial/supervised/SoftmaxRegression">softmax regression</a> exercises prior to starting this one.</p>
+
+<h3 id="step_0_initialize_parameters_and_load_data">Step 0: Initialize Parameters and Load Data</h3>
+
+<p>In this step we initialize the parameters of the convolutional neural network. You will be using 10 filters of dimension 9x9, and a non-overlapping, contiguous 2x2 pooling region.</p>
+
+<p>We also load the MNIST training data here as well.</p>
+
+<h3 id="step_1_implement_cnn_objective">Step 1: Implement CNN Objective</h3>
+
+<p>Implement the CNN cost and gradient computation in this step. Your network will have two layers. The first layer is a convolutional layer followed by mean pooling and the second layer is a densely connected layer into softmax regression. The cost of the network will be the standard cross entropy between the predicted probability distribution over 10 digit classes for each image and the ground truth distribution.</p>
+
+<h4 id="step_1a_forward_propagation">Step 1a: Forward Propagation</h4>
+
+<p>Convolve every image with every filter, then mean pool the responses. This should be similar to the implementation from the <a href="/wayback-ufldl/stanford-ufldl/tutorial/supervised/ExerciseConvolutionAndPooling">convolution and pooling</a> exercise using MATLAB’s <code>conv2</code> function. You will need to store the activations after the convolution but before the pooling for efficient back propagation later.</p>
+
+<p>Following the convolutional layer, we unroll the subsampled filter responses into a 2D matrix with each column representing an image. Using the <code>activationsPooled</code> matrix, implement a standard softmax layer following the style of the <a href="/wayback-ufldl/stanford-ufldl/tutorial/supervised/SoftmaxRegression">softmax regression</a> exercise.</p>
+
+<h4 id="step_1b_calculate_cost">Step 1b: Calculate Cost</h4>
+
+<p>Generate the ground truth distribution using MATLAB’s <code>sparse</code> function from the <code>labels</code> given for each image. Using the ground truth distribution, calculate the cross entropy cost between that and the predicted distribution.</p>
+
+<p>Note at the end of this section we have also provided code to return early after computing predictions from the probability vectors computed above. This will be useful at test time when we wish make predictions on each image without doing a full back propagation of the network which can be rather costly.</p>
+
+<h4 id="step_1c_back_propagation">Step 1c: Back Propagation</h4>
+
+<p>First compute the error, <m>\delta_d</m>, from the cross entropy cost function w.r.t. the parameters in the densely connected layer. You will then need to propagate this error through the subsampling and convolutional layer. Use MATLAB’s <code>kron</code> function to upsample the error and propagate through the pooling layer.</p>
+<div style='border:1px solid black; padding: 5px'>
+
+<b>Implementation tip:</b> Using <code>kron</code>
+
+You can upsample the error from an incoming layer to propagate through a mean-pooling layer quickly using MATLAB's <code>kron</code> function.  This function takes the Kroneckor Tensor Product of two matrices. For example, suppose the pooling region was 2x2 on a 4x4 image.  This means that the incoming error to the pooling layer will be of dimension 2x2 (assuming non-overlapping and contiguous pooling regions). The error must be upsampled from 2x2 to be 4x4. Since mean pooling is used, each error value contributes equally to the values in the region from which it came in the original 4x4 image.  Let the incoming error to the pooling layer be given by
+
+<div>
+<m>
+ delta = 
+ \begin{pmatrix}
+  1 &amp; 2 \\
+  3 &amp; 4 \\
+ \end{pmatrix}
+</m>
+</div>
+
+If you use <code>kron(delta, ones(2,2))</code>, MATLAB will take the element by element product of each element in <code>ones(2,2)</code> with <code>delta</code>, as below:
+
+<div>
+<m>
+ \begin{pmatrix}
+  1 &amp; 1 &amp; 2 &amp; 2 \\
+  1 &amp; 1 &amp; 2 &amp; 2 \\
+  3 &amp; 3 &amp; 4 &amp; 4 \\
+  3 &amp; 3 &amp; 4 &amp; 4
+ \end{pmatrix}
+
+ \rightarrow
+\text{kron} \left(
+ \begin{pmatrix}
+  1 &amp; 2  \\
+  3 &amp; 4  \\
+ \end{pmatrix}
+,
+ \begin{pmatrix}
+  1 &amp; 1  \\
+  1 &amp; 1  \\
+ \end{pmatrix}
+\right)
+
+</m>
+</div>
+After the error has been upsampled, all that's left to be done to propagate through the pooling layer is to divide by the size of the pooling region.  A basic implementation is shown below,
+
+
+<div class='highlight'><pre><code class='matlab'><span class='c'>% Upsample the incoming error using kron</span>
+<span class='n'>delta_pool</span> <span class='p'>=</span> <span class='p'>(</span><span class='mi'>1</span><span class='o'>/</span><span class='n'>poolDim</span>^<span class='mi'>2</span><span class='p'>)</span> <span class='o'>*</span> <span class='n'>kron</span><span class='p'>(</span><span class='n'>delta</span><span class='p'>,</span><span class='nb'>ones</span><span class='p'>(</span><span class='n'>poolDim</span><span class='p'>));</span>
+</code></pre></div>
+
+
+</div>
+<p>To propagate error through the convolutional layer, you simply need to multiply the incoming error by the derivative of the activation function as in the usual back propagation algorithm. Using these errors to compute the gradient w.r.t to each weight is a bit trickier since we have tied weights and thus many errors contribute to the gradient w.r.t. a single weight. We will discuss this in the next section.</p>
+
+<h4 id="step_1d_gradient_calculation">Step 1d: Gradient Calculation</h4>
+
+<p>Compute the gradient for the densely connected weights and bias, <code>W_d</code> and <code>b_d</code> following the equations presented in <a href="/wayback-ufldl/stanford-ufldl/tutorial/supervised/MultiLayerNeuralNetworks">multilayer neural networks</a>.</p>
+
+<p>In order to compute the gradient with respect to each of the filters for a single training example (i.e. image) in the convolutional layer, you must first convolve the error term for that image-filter pair as computed in the previous step with the original training image. Again, use MATLAB’s <code>conv2</code> function with the ‘valid’ option to handle borders correctly. Make sure to flip the error matrix for that image-filter pair prior to the convolution as discussed in the simple <a href="/wayback-ufldl/stanford-ufldl/tutorial/supervised/ExerciseConvolutionAndPooling">convolution exercise</a>. The final gradient for a given filter is the sum over the convolution of all images with the error for that image-filter pair.</p>
+
+<p>The gradient w.r.t to the bias term for each filter in the convolutional layer is simply the sum of all error terms corresponding to the given filter.</p>
+
+<p>Make sure to scale your gradients by the inverse size of the training set if you included this scale in the cost calculation otherwise your code will not pass the numerical gradient check.</p>
+
+<h3 id="step_2_gradient_check">Step 2: Gradient Check</h3>
+
+<p>Use the <code>computeNumericalGradient</code> function to check the cost and gradient of your convolutional network. We’ve provided a small sample set and toy network to run the numerical gradient check on.</p>
+
+<p>Once your code passes the gradient check you’re ready to move onto training a real network on the full dataset. Make sure to switch the <code>DEBUG</code> boolean to <code>false</code> in order not to run the gradient check again.</p>
+
+<h3 id="step_3_learn_parameters">Step 3: Learn Parameters</h3>
+
+<p>Using a batch method such as L-BFGS to train a convolutional network of this size even on MNIST, a relatively small dataset, can be computationally slow. A single iteration of calculating the cost and gradient for the full training set can take several minutes or more. Thus you will use stochastic gradient descent (SGD) to learn the parameters of the network.</p>
+
+<p>You will use SGD with momentum as described in <a href="/wayback-ufldl/stanford-ufldl/tutorial/supervised/OptimizationStochasticGradientDescent">Stochastic Gradient Descent</a>. Implement the velocity vector and parameter vector update in <code>minFuncSGD.m</code>.</p>
+
+<p>In this implementation of SGD we use a relatively heuristic method of annealing the learning rate for better convergence as learning slows down. We simply halve the learning rate after each epoch. As mentioned in <a href="/wayback-ufldl/stanford-ufldl/tutorial/supervised/OptimizationStochasticGradientDescent">Stochastic Gradient Descent</a>, we also randomly shuffle the data before each epoch, which tends to provide better convergence.</p>
+
+<h3 id="step_4_test">Step 4: Test</h3>
+
+<p>With the convolutional network and SGD optimizer in hand, you are now ready to test the performance of the model. We’ve provided code at the end of <code>cnnTrain.m</code> to test the accuracy of your networks predictions on the MNIST test set.</p>
+
+<p>Run the full function <code>cnnTrain.m</code> which will learn the parameters of you convolutional neural network over 3 epochs of the data. This shouldn’t take more than 20 minutes. After 3 epochs, your networks accuracy on the MNIST test set should be above 96%.</p>
+
+<p>Congratulations, you’ve successfully implemented a Convolutional Neural Network!</p>
+</div>
+
+        </div>
+        <div class = "col-xs-3 sidebar">
+          <div id="sidebar-holder">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Generate sidebar --->
+    <script src='/wayback-ufldl/stanford-ufldl/tutorial/sidebar/sidebar.js'></script>
+    <script>
+      function renderHeading(name) {
+        return '<div class = "panel-heading">' + name + '</div>';
+      };
+      function renderItem(name, link) { 
+        return '<a href="/wayback-ufldl/stanford-ufldl/tutorial/' + link + '" class="list-group-item nav">' + name +
+          '</a>';
+      };
+      renderedHtml = '<div class = "panel panel-default">';
+        for (var i = 0; i < pages.length; i++) {
+          if (pages[i].type == 'Heading') {
+            renderedHtml += renderHeading(pages[i].name);
+          }
+          if (pages[i].type == 'Page') { 
+            renderedHtml += renderItem(pages[i].name, pages[i].link);
+          }
+        };
+        renderedHtml += '</div>';
+      document.getElementById('sidebar-holder').innerHTML = renderedHtml;
+    </script>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="//code.jquery.com/jquery.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="/wayback-ufldl/stanford-ufldl/tutorial/js/bootstrap.min.js"></script>
+    <script>
+      var inputs = document.getElementsByTagName("m");
+      for (var i = 0; i < inputs.length; i++) { 
+        wrap = '$$';
+        if (inputs[i].parentNode.nodeName.toLowerCase() == 'p' || 
+        inputs[i].parentNode.nodeName.toLowerCase() == 'li')  {
+          wrap = '$'
+        }
+        inputs[i].textContent = wrap + inputs[i].textContent + wrap;
+      }
+    </script>
+    <script>
+      MathJax.Hub.Config({
+        tex2jax: {
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+          inlineMath: [ ['$','$'], ["\\(","\\)"] ]
+        }
+      });
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += 'has-jax';
+        }
+      });
+    </script>
+    <script>
+      /*menu handler*/
+      function stripTrailingSlash(str) {
+        if(str.substr(-1) == '/') {
+          return str.substr(0, str.length - 1);
+        }
+        return str;
+      }
+
+      var url = window.location.href;  
+      var activePage = stripTrailingSlash(url);
+
+      $('.nav').each(function(){ 
+        currentPage = stripTrailingSlash(this.href) 
+        if (activePage == currentPage) {
+          $(this).addClass('active'); 
+        } 
+      });
+    </script>
+  </body>
+</html>

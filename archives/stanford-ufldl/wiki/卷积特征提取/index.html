@@ -1,0 +1,190 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>卷积特征提取 - Ufldl</title>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+
+</head>
+
+<body class="mediawiki ltr ns-0 ns-subject page-卷积特征提取 skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">卷积特征提取</h1>
+	<div id="bodyContent">
+		<h3 id="siteSub">From Ufldl</h3>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+<table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#.E6.A6.82.E8.BF.B0"><span class="tocnumber">1</span> <span class="toctext">概述</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#.E5.85.A8.E8.81.94.E9.80.9A.E7.BD.91.E7.BB.9C"><span class="tocnumber">2</span> <span class="toctext">全联通网络</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#.E9.83.A8.E5.88.86.E8.81.94.E9.80.9A.E7.BD.91.E7.BB.9C"><span class="tocnumber">3</span> <span class="toctext">部分联通网络</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#.E5.8D.B7.E7.A7.AF"><span class="tocnumber">4</span> <span class="toctext">卷积</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#.E4.B8.AD.E8.8B.B1.E6.96.87.E5.AF.B9.E7.85.A7"><span class="tocnumber">5</span> <span class="toctext">中英文对照</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#.E4.B8.AD.E6.96.87.E8.AF.91.E8.80.85"><span class="tocnumber">6</span> <span class="toctext">中文译者</span></a></li>
+</ul>
+</td></tr></table><script>if (window.showTocToggle) { var tocShowText = "show"; var tocHideText = "hide"; showTocToggle(); } </script>
+<h2> <span class="mw-headline" id=".E6.A6.82.E8.BF.B0"> 概述 </span></h2>
+<p>前面的练习中，解决了一些有关低分辨率图像的问题，比如：小块图像，手写数字小幅图像等。在这部分中，我们将把已知的方法扩展到实际应用中更加常见的大图像数据集。
+</p><p><br/>
+</p>
+<h2> <span class="mw-headline" id=".E5.85.A8.E8.81.94.E9.80.9A.E7.BD.91.E7.BB.9C"> 全联通网络 </span></h2>
+<p>在稀疏自编码章节中，我们介绍了把输入层和隐含层进行“全连接”的设计。从计算的角度来讲，在其他章节中曾经用过的相对较小的图像（如在稀疏自编码的作业中用到过的 8x8 的小块图像，在MNIST数据集中用到过的28x28 的小块图像），从整幅图像中计算特征是可行的。但是，如果是更大的图像（如 96x96 的图像），要通过这种全联通网络的这种方法来学习整幅图像上的特征，从计算角度而言，将变得非常耗时。你需要设计 10 的 4 次方（=10000）个输入单元，假设你要学习 100 个特征，那么就有 10 的 6 次方个参数需要去学习。与 28x28 的小块图像相比较， 96x96 的图像使用前向输送或者后向传导的计算方式，计算过程也会慢 10 的 2 次方（=100）倍。
+</p><p><br/>
+</p>
+<h2> <span class="mw-headline" id=".E9.83.A8.E5.88.86.E8.81.94.E9.80.9A.E7.BD.91.E7.BB.9C"> 部分联通网络 </span></h2>
+<p>解决这类问题的一种简单方法是对隐含单元和输入单元间的连接加以限制：每个隐含单元仅仅只能连接输入单元的一部分。例如，每个隐含单元仅仅连接输入图像的一小片相邻区域。（对于不同于图像输入的输入形式，也会有一些特别的连接到单隐含层的输入信号“连接区域”选择方式。如音频作为一种信号输入方式，一个隐含单元所需要连接的输入单元的子集，可能仅仅是一段音频输入所对应的某个时间段上的信号。）
+</p><p><br/>
+网络部分连通的思想，也是受启发于生物学里面的视觉系统结构。视觉皮层的神经元就是局部接受信息的（即这些神经元只响应某些特定区域的刺激）。
+</p><p><br/>
+</p>
+<h2> <span class="mw-headline" id=".E5.8D.B7.E7.A7.AF"> 卷积 </span></h2>
+<p>自然图像有其固有特性，也就是说，图像的一部分的统计特性与其他部分是一样的。这也意味着我们在这一部分学习的特征也能用在另一部分上，所以对于这个图像上的所有位置，我们都能使用同样的学习特征。
+</p><p><br/>
+更恰当的解释是，当从一个大尺寸图像中随机选取一小块，比如说 8x8 作为样本，并且从这个小块样本中学习到了一些特征，这时我们可以把从这个 8x8 样本中学习到的特征作为探测器，应用到这个图像的任意地方中去。特别是，我们可以用从 8x8 样本中所学习到的特征跟原本的大尺寸图像作卷积，从而对这个大尺寸图像上的任一位置获得一个不同特征的激活值。
+</p><p><br/>
+下面给出一个具体的例子：假设你已经从一个 96x96 的图像中学习到了它的一个 8x8 的样本所具有的特征，假设这是由有 100 个隐含单元的自编码完成的。为了得到卷积特征，需要对 96x96 的图像的每个 8x8 的小块图像区域都进行卷积运算。也就是说，抽取 8x8 的小块区域，并且从起始坐标开始依次标记为（1，1），（1，2），...，一直到（89，89），然后对抽取的区域逐个运行训练过的稀疏自编码来得到特征的激活值。在这个例子里，显然可以得到 100 个集合，每个集合含有 89x89 个卷积特征。
+</p><p><br/>
+<a href="" class="image"><img alt="Convolution schematic.gif" src="/wayback-ufldl/stanford-ufldl/wiki/images/6/6c/Convolution_schematic.gif" width="526" height="384"/></a>
+</p><p>假设给定了 <img class="tex" alt="r \times c" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/5/b/f5b34ce727a51879b69d50dbb38cec68.png"/> 的大尺寸图像，将其定义为 <span class="texhtml"><i>x</i><sub><i>l</i><i>a</i><i>r</i><i>g</i><i>e</i></sub></span>。首先通过从大尺寸图像中抽取的 <img class="tex" alt="a \times b" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/d/1/2d1dc88200d501549f9d6edae3d6c195.png"/> 的小尺寸图像样本 <span class="texhtml"><i>x</i><sub><i>s</i><i>m</i><i>a</i><i>l</i><i>l</i></sub></span> 训练稀疏自编码，计算 <span class="texhtml"><i>f</i> = &sigma;(<i>W</i><sup>(1)</sup><i>x</i><sub><i>s</i><i>m</i><i>a</i><i>l</i><i>l</i></sub> + <i>b</i><sup>(1)</sup>)</span>（<span class="texhtml">&sigma;</span> 是一个 sigmoid 型函数）得到了 <span class="texhtml"><i>k</i></span> 个特征， 其中 <span class="texhtml"><i>W</i><sup>(1)</sup></span> 和 <span class="texhtml"><i>b</i><sup>(1)</sup></span> 是可视层单元和隐含单元之间的权重和偏差值。对于每一个 <img class="tex" alt="a \times b" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/d/1/2d1dc88200d501549f9d6edae3d6c195.png"/> 大小的小图像 <span class="texhtml"><i>x</i><sub><i>s</i></sub></span>，计算出对应的值 <span class="texhtml"><i>f</i><sub><i>s</i></sub> = &sigma;(<i>W</i><sup>(1)</sup><i>x</i><sub><i>s</i></sub> + <i>b</i><sup>(1)</sup>)</span>，对这些 <span class="texhtml"><i>f</i><sub><i>c</i><i>o</i><i>n</i><i>v</i><i>o</i><i>l</i><i>v</i><i>e</i><i>d</i></sub></span> 值做卷积，就可以得到 <img class="tex" alt="k \times (r - a + 1) \times (c - b + 1)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/5/a/a5ac162e7a320af96172ebc954efc3d3.png"/> 个卷积后的特征的矩阵。
+</p><p><br/>
+在接下来的章节里，我们会更进一步描述如何把这些特征汇总到一起以得到一些更利于分类的特征。
+</p><p><br/>
+</p>
+<h2> <span class="mw-headline" id=".E4.B8.AD.E8.8B.B1.E6.96.87.E5.AF.B9.E7.85.A7">中英文对照</span></h2>
+<dl><dd>全联通网络   Full Connected Networks
+</dd></dl>
+<dl><dd>稀疏编码     Sparse Autoencoder
+</dd></dl>
+<dl><dd>前向输送     Feedforward
+</dd></dl>
+<dl><dd>反向传播     Backpropagation
+</dd></dl>
+<dl><dd>部分联通网络 Locally Connected Networks
+</dd></dl>
+<dl><dd>连接区域     Contiguous Groups
+</dd></dl>
+<dl><dd>视觉皮层     Visual Cortex
+</dd></dl>
+<dl><dd>卷积         Convolution
+</dd></dl>
+<dl><dd>固有特征     Stationary
+</dd></dl>
+<dl><dd>池化         Pool
+</dd></dl>
+<p><br/>
+</p>
+<h2> <span class="mw-headline" id=".E4.B8.AD.E6.96.87.E8.AF.91.E8.80.85">中文译者</span></h2>
+<p>孔德硕 (tobluestone@gmail.com)，郭亮（guoliang2248@gmail.com）， 晓风（xiaofeng.zhb@alibaba-inc.com）
+</p><p><br/>
+</p>
+<div style="text-align: center;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
+<p><strong class="selflink">卷积特征提取</strong> | <a href="/wayback-ufldl/stanford-ufldl/wiki/%E6%B1%A0%E5%8C%96" title="池化">池化</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Convolution_and_Pooling" title="Exercise:Convolution and Pooling">Exercise:Convolution and Pooling</a>
+</p>
+</div>
+<p><br/>
+</p>
+<div style="text-align: left;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
+<p>Language&nbsp;: <a href="/wayback-ufldl/stanford-ufldl/wiki/Feature_extraction_using_convolution" title="Feature extraction using convolution">English</a>
+</p>
+</div>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 158/1000000
+Post-expand include size: 403/2097152 bytes
+Template argument size: 43/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<div class="printfooter">
+</div>		<div id="catlinks" class="catlinks catlinks-allhidden"></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/%E5%8D%B7%E7%A7%AF%E7%89%B9%E5%BE%81%E6%8F%90%E5%8F%96" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-talk" class="new"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				 <li id="ca-viewsource"><a href="" title="This page is protected.
+You can view its source [e]" accesskey="e">View source</a></li>
+				 <li id="ca-history"><a href="" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-ufldl_resources">
+		<h5>ufldl resources</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-wiki">
+		<h5>wiki</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
+				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="" id="searchform">
+				<input type="hidden" name="title" value="Special:Search" disabled/>
+				<input id="searchInput" title="Search Ufldl" accesskey="f" type="search" name="search" disabled/>
+				<input type="submit" name="go" class="searchButton" id="searchGoButton" value="Go" title="Go to a page with this exact name if exists" disabled/>&nbsp;
+				<input type="submit" name="fulltext" class="searchButton" id="mw-searchButton" value="Search" title="Search the pages for this text" disabled/>
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="" title="List of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+<li id="t-specialpages"><a href="" title="List of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li id="t-print"><a href="" rel="alternate" title="Printable version of this page [p]" accesskey="p">Printable version</a></li>				<li id="t-permalink"><a href="" title="Permanent link to this revision of the page">Permanent link</a></li>			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 8 April 2013, at 05:20.</li>
+		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+
+<!-- Served in 0.103 secs. -->
+</body>
+</html>

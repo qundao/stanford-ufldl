@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Unsupervised Feature Learning and Deep Learning Tutorial</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/bootstrap_readable.min.css" rel="stylesheet">
+    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/pygments/default.css" rel="stylesheet">
+    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/custom.css" rel="stylesheet">
+    <script type="text/javascript"
+          src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="../../assets/js/html5shiv.js"></script>
+    <script src="../../assets/js/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/wayback-ufldl/stanford-ufldl/tutorial/">UFLDL Tutorial</a>
+        </div>
+        <!---
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+          </ul>
+        </div>
+        !-->
+      </div>
+    </div>
+
+
+    <div class="row-fluid">
+      <div class = "container"> 
+        <div class = "col-xs-9">
+          <h3>Convolutional Neural Network</h3>
+<hr>
+<!---<p class="meta">28 Aug 2013</p>--->
+
+<div class="post">
+<h3 id="overview">Overview</h3>
+
+<p>A Convolutional Neural Network (CNN) is comprised of one or more convolutional layers (often with a subsampling step) and then followed by one or more fully connected layers as in a standard <a href="/wayback-ufldl/stanford-ufldl/tutorial/supervised/MultiLayerNeuralNetworks">multilayer neural network</a>. The architecture of a CNN is designed to take advantage of the 2D structure of an input image (or other 2D input such as a speech signal). This is achieved with local connections and tied weights followed by some form of pooling which results in translation invariant features. Another benefit of CNNs is that they are easier to train and have many fewer parameters than fully connected networks with the same number of hidden units. In this article we will discuss the architecture of a CNN and the back propagation algorithm to compute the gradient with respect to the parameters of the model in order to use gradient based optimization. See the respective tutorials on <a href="/wayback-ufldl/stanford-ufldl/tutorial/supervised/FeatureExtractionUsingConvolution">convolution</a> and <a href="/wayback-ufldl/stanford-ufldl/tutorial/supervised/Pooling">pooling</a> for more details on those specific operations.</p>
+
+<h3 id="architecture">Architecture</h3>
+
+<p>A CNN consists of a number of convolutional and subsampling layers optionally followed by fully connected layers. The input to a convolutional layer is a <m>m \text{ x } m \text{ x } r</m> image where <m>m</m> is the height and width of the image and <m>r</m> is the number of channels, e.g. an RGB image has <m>r=3</m>. The convolutional layer will have <m>k</m> filters (or kernels) of size <m>n \text{ x } n \text{ x } q</m> where <m>n</m> is smaller than the dimension of the image and <m>q</m> can either be the same as the number of channels <m>r</m> or smaller and may vary for each kernel. The size of the filters gives rise to the locally connected structure which are each convolved with the image to produce <m>k</m> feature maps of size <m>m-n+1</m>. Each map is then subsampled typically with mean or max pooling over <m>p \text{ x } p</m> contiguous regions where p ranges between 2 for small images (e.g. MNIST) and is usually not more than 5 for larger inputs. Either before or after the subsampling layer an additive bias and sigmoidal nonlinearity is applied to each feature map. The figure below illustrates a full layer in a CNN consisting of convolutional and subsampling sublayers. Units of the same color have tied weights.</p>
+<center>
+<img src='/wayback-ufldl/stanford-ufldl/tutorial/images/Cnn_layer.png' />
+</center><center>
+<p style='width:600px'>Fig 1: First layer of a convolutional neural network with pooling. Units of the same color have tied weights and units of different color represent different filter maps.</p>
+</center>
+<p>After the convolutional layers there may be any number of fully connected layers. The densely connected layers are identical to the layers in a standard <a href="/wayback-ufldl/stanford-ufldl/tutorial/supervised/MultiLayerNeuralNetworks">multilayer neural network</a>.</p>
+
+<h3 id="back_propagation">Back Propagation</h3>
+
+<p>Let <m>\delta^{(l+1)}</m> be the error term for the <m>(l+1)</m>-st layer in the network with a cost function <m>J(W,b ; x,y)</m> where <m>(W, b)</m> are the parameters and <m>(x,y)</m> are the training data and label pairs. If the <m>l</m>-th layer is densely connected to the <m>(l+1)</m>-st layer, then the error for the <m>l</m>-th layer is computed as</p>
+<m>
+   \begin{align}
+   \delta^{(l)} = \left((W^{(l)})^T \delta^{(l+1)}\right) \bullet f'(z^{(l)})
+   \end{align}
+</m>
+<p>and the gradients are</p>
+<m>
+\begin{align}
+   \nabla_{W^{(l)}} J(W,b;x,y) &amp;= \delta^{(l+1)} (a^{(l)})^T, \\
+   \nabla_{b^{(l)}} J(W,b;x,y) &amp;= \delta^{(l+1)}.
+\end{align}
+</m>
+<p>If the <m>l</m>-th layer is a convolutional and subsampling layer then the error is propagated through as</p>
+<m>
+   \begin{align}
+   \delta_k^{(l)} = \text{upsample}\left((W_k^{(l)})^T \delta_k^{(l+1)}\right) \bullet f'(z_k^{(l)})
+   \end{align}
+</m>
+<p>Where <m>k</m> indexes the filter number and <m>f'(z_k^{(l)})</m> is the derivative of the activation function. The <code>upsample</code> operation has to propagate the error through the pooling layer by calculating the error w.r.t to each unit incoming to the pooling layer. For example, if we have mean pooling then <code>upsample</code> simply uniformly distributes the error for a single pooling unit among the units which feed into it in the previous layer. In max pooling the unit which was chosen as the max receives all the error since very small changes in input would perturb the result only through that unit.</p>
+
+<p>Finally, to calculate the gradient w.r.t to the filter maps, we rely on the border handling convolution operation again and flip the error matrix <m>\delta_k^{(l)}</m> the same way we flip the filters in the <a href="/wayback-ufldl/stanford-ufldl/tutorial/supervised/FeatureExtractionUsingConvolution">convolutional layer</a>.</p>
+<m>
+   \begin{align}
+     \nabla_{W_k^{(l)}} J(W,b;x,y) &amp;= \sum_{i=1}^m (a_i^{(l)}) \ast \text{rot90}(\delta_k^{(l+1)},2), \\
+     \nabla_{b_k^{(l)}} J(W,b;x,y) &amp;=  \sum_{a,b} (\delta_k^{(l+1)})_{a,b}.
+   \end{align}
+</m>
+<p>Where <m>a^{(l)}</m> is the input to the <m>l</m>-th layer, and <m>a^{(1)}</m> is the input image. The operation <m>(a_i^{(l)}) \ast \delta_k^{(l+1)}</m> is the “valid” convolution between <m>i</m>-th input in the <m>l</m>-th layer and the error w.r.t. the <m>k</m>-th filter.</p>
+</div>
+
+        </div>
+        <div class = "col-xs-3 sidebar">
+          <div id="sidebar-holder">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Generate sidebar --->
+    <script src='/wayback-ufldl/stanford-ufldl/tutorial/sidebar/sidebar.js'></script>
+    <script>
+      function renderHeading(name) {
+        return '<div class = "panel-heading">' + name + '</div>';
+      };
+      function renderItem(name, link) { 
+        return '<a href="/wayback-ufldl/stanford-ufldl/tutorial/' + link + '" class="list-group-item nav">' + name +
+          '</a>';
+      };
+      renderedHtml = '<div class = "panel panel-default">';
+        for (var i = 0; i < pages.length; i++) {
+          if (pages[i].type == 'Heading') {
+            renderedHtml += renderHeading(pages[i].name);
+          }
+          if (pages[i].type == 'Page') { 
+            renderedHtml += renderItem(pages[i].name, pages[i].link);
+          }
+        };
+        renderedHtml += '</div>';
+      document.getElementById('sidebar-holder').innerHTML = renderedHtml;
+    </script>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="//code.jquery.com/jquery.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="/wayback-ufldl/stanford-ufldl/tutorial/js/bootstrap.min.js"></script>
+    <script>
+      var inputs = document.getElementsByTagName("m");
+      for (var i = 0; i < inputs.length; i++) { 
+        wrap = '$$';
+        if (inputs[i].parentNode.nodeName.toLowerCase() == 'p' || 
+        inputs[i].parentNode.nodeName.toLowerCase() == 'li')  {
+          wrap = '$'
+        }
+        inputs[i].textContent = wrap + inputs[i].textContent + wrap;
+      }
+    </script>
+    <script>
+      MathJax.Hub.Config({
+        tex2jax: {
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+          inlineMath: [ ['$','$'], ["\\(","\\)"] ]
+        }
+      });
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += 'has-jax';
+        }
+      });
+    </script>
+    <script>
+      /*menu handler*/
+      function stripTrailingSlash(str) {
+        if(str.substr(-1) == '/') {
+          return str.substr(0, str.length - 1);
+        }
+        return str;
+      }
+
+      var url = window.location.href;  
+      var activePage = stripTrailingSlash(url);
+
+      $('.nav').each(function(){ 
+        currentPage = stripTrailingSlash(this.href) 
+        if (activePage == currentPage) {
+          $(this).addClass('active'); 
+        } 
+      });
+    </script>
+  </body>
+</html>

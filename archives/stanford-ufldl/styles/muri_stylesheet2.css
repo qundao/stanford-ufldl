@@ -1,0 +1,110 @@
+:root {
+    --background-header: #990000;
+    --background-primary: #f8f8ff;
+    --border-header: #e7d19a;
+    --border-text: #201c29;
+    --text-link: #0069c2;
+    --text-primary: #282a35;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background-header: #ff8833;
+        --background-primary: #282a35;
+        --border-header: #423c10;
+        --border-text: #dfe3e7;
+        --text-link: #8cb4ff;
+        --text-primary: #f8f8ff;
+    }
+}
+
+body {
+    font-family: monospace, helvetica, sans-serif;
+    color: var(--text-primary);
+    background-color: var(--background-primary);
+    margin: 0;
+    padding: 10px;
+}
+
+a {
+    color: var(--text-link);
+}
+
+#container {
+    width: 75%;
+    max-width: 800px;
+    min-width: 400px;
+    margin: auto;
+}
+
+#headline {
+    background-color: var(--background-header);
+}
+
+#headpart {
+    padding: 3px 0;
+}
+
+#headline h1,
+#headline h3 {
+    color: var(--background-primary);
+    font-weight: normal;
+    padding-left: 20px;
+    margin: 0;
+}
+
+#headline h1 {
+    border-top: var(--border-header) solid 4px;
+    padding-top: 10px;
+}
+
+#headline h3 {
+    border-bottom: var(--border-header) solid 4px;
+    font-size: small;
+    padding-bottom: 10px;
+}
+
+#headline a {
+    color: var(--background-primary);
+    display: inline;
+    text-decoration: none;
+}
+
+#headline ul {
+    background-color: var(--background-primary);
+    margin: 0;
+    padding: 0;
+}
+
+#headline li {
+    background-color: var(--background-header);
+    border: solid 1px var(--border-text);
+    border-bottom: none;
+    border-top: none;
+    color: var(--background-primary);
+    display: inline;
+    font-size: small;
+    font-weight: bold;
+    list-style-type: none;
+    overflow: hidden;
+    padding: 3px 5px 1px 5px;
+}
+
+#headline li.active,
+#headline li:hover {
+    color: var(--text-primary);
+    background-color: var(--border-header);
+    cursor: pointer;
+}
+
+#headline li.active a {
+    color: var(--text-primary);
+}
+
+#content {
+    border: var(--border-text) 2px solid;
+    padding: 10px;
+    text-align: justify;
+    word-wrap: break-word;
+    word-break: break-word;
+}

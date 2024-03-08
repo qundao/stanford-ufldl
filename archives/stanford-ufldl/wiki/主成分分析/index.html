@@ -1,0 +1,301 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>主成分分析 - Ufldl</title>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+
+</head>
+
+<body class="mediawiki ltr ns-0 ns-subject page-主成分分析 skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">主成分分析</h1>
+	<div id="bodyContent">
+		<h3 id="siteSub">From Ufldl</h3>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+<table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#.E5.BC.95.E8.A8.80"><span class="tocnumber">1</span> <span class="toctext">引言</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#.E5.AE.9E.E4.BE.8B.E5.92.8C.E6.95.B0.E5.AD.A6.E8.83.8C.E6.99.AF"><span class="tocnumber">2</span> <span class="toctext">实例和数学背景</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#.E6.97.8B.E8.BD.AC.E6.95.B0.E6.8D.AE"><span class="tocnumber">3</span> <span class="toctext">旋转数据</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#.E6.95.B0.E6.8D.AE.E9.99.8D.E7.BB.B4"><span class="tocnumber">4</span> <span class="toctext">数据降维</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#.E8.BF.98.E5.8E.9F.E8.BF.91.E4.BC.BC.E6.95.B0.E6.8D.AE"><span class="tocnumber">5</span> <span class="toctext">还原近似数据</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#.E9.80.89.E6.8B.A9.E4.B8.BB.E6.88.90.E5.88.86.E4.B8.AA.E6.95.B0"><span class="tocnumber">6</span> <span class="toctext">选择主成分个数</span></a></li>
+<li class="toclevel-1 tocsection-7"><a href="#.E5.AF.B9.E5.9B.BE.E5.83.8F.E6.95.B0.E6.8D.AE.E5.BA.94.E7.94.A8PCA.E7.AE.97.E6.B3.95"><span class="tocnumber">7</span> <span class="toctext">对图像数据应用PCA算法</span></a></li>
+<li class="toclevel-1 tocsection-8"><a href="#.E5.8F.82.E8.80.83.E6.96.87.E7.8C.AE"><span class="tocnumber">8</span> <span class="toctext">参考文献</span></a></li>
+<li class="toclevel-1 tocsection-9"><a href="#.E4.B8.AD.E8.8B.B1.E6.96.87.E5.AF.B9.E7.85.A7"><span class="tocnumber">9</span> <span class="toctext">中英文对照</span></a></li>
+<li class="toclevel-1 tocsection-10"><a href="#.E4.B8.AD.E6.96.87.E8.AF.91.E8.80.85"><span class="tocnumber">10</span> <span class="toctext">中文译者</span></a></li>
+</ul>
+</td></tr></table><script>if (window.showTocToggle) { var tocShowText = "show"; var tocHideText = "hide"; showTocToggle(); } </script>
+<h2> <span class="mw-headline" id=".E5.BC.95.E8.A8.80"> 引言 </span></h2>
+<p>主成分分析（PCA）是一种能够极大提升无监督特征学习速度的数据降维算法。更重要的是，理解PCA算法，对实现<b>白化</b>算法有很大的帮助，很多算法都先用白化算法作预处理步骤。
+</p><p>假设你使用图像来训练算法，因为图像中相邻的像素高度相关，输入数据是有一定冗余的。具体来说，假如我们正在训练的16x16灰度值图像，记为一个256维向量 <img class="tex" alt="\textstyle x \in \Re^{256}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/e/c/3ec732c534e730334fbe728ae49c8fce.png"/> ，其中特征值 <img class="tex" alt="\textstyle x_j" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/d/f/bdf5b20642553027712d5b5240b31cf3.png"/> 对应每个像素的亮度值。由于相邻像素间的相关性，PCA算法可以将输入向量转换为一个维数低很多的近似向量，而且误差非常小。
+</p><p><br/>
+</p>
+<h2> <span class="mw-headline" id=".E5.AE.9E.E4.BE.8B.E5.92.8C.E6.95.B0.E5.AD.A6.E8.83.8C.E6.99.AF"> 实例和数学背景 </span></h2>
+<p>在我们的实例中，使用的输入数据集表示为 <img class="tex" alt="\textstyle \{x^{(1)}, x^{(2)}, \ldots, x^{(m)}\}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/b/f/bbfa674fd83f37c2c66867d7e0cc264a.png"/> ，维度 <img class="tex" alt="\textstyle n=2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/1/9/b1993eef97e184af6b11db01e694445f.png"/> 即 <img class="tex" alt="\textstyle x^{(i)} \in \Re^2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/b/a/1babb19c8b06f9a7bd624fa60f29d5fb.png"/> 。假设我们想把数据从2维降到1维。（在实际应用中，我们也许需要把数据从256维降到50维；在这里使用低维数据，主要是为了更好地可视化算法的行为）。下图是我们的数据集：
+</p><p><a href="" class="image"><img alt="PCA-rawdata.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/b/ba/PCA-rawdata.png/600px-PCA-rawdata.png" width="600" height="450"/></a>
+</p><p>这些数据已经进行了预处理，使得每个特征 <img class="tex" alt="\textstyle x_1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/a/7/fa7eebd32aa8c9cdae2b2aacbc324331.png"/> 和 <img class="tex" alt="\textstyle x_2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/6/8/76879b7da23d4991dfcb03323403c152.png"/> 具有相同的均值（零）和方差。
+</p><p>为方便展示，根据 <img class="tex" alt="\textstyle x_1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/a/7/fa7eebd32aa8c9cdae2b2aacbc324331.png"/> 值的大小，我们将每个点分别涂上了三种颜色之一，但该颜色并不用于算法而仅用于图解。
+</p><p>PCA算法将寻找一个低维空间来投影我们的数据。从下图中可以看出， <img class="tex" alt="\textstyle u_1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/f/c/3fc01c8dc5d4c8c57cd758ec3a76283f.png"/> 是数据变化的主方向，而 <img class="tex" alt="\textstyle u_2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/d/9/ed99a7fbd444e14555ad4f8eac78b94b.png"/> 是次方向。
+</p><p><a href="" class="image"><img alt="PCA-u1.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/b/b4/PCA-u1.png/600px-PCA-u1.png" width="600" height="450"/></a>
+</p><p>也就是说，数据在 <img class="tex" alt="\textstyle u_1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/f/c/3fc01c8dc5d4c8c57cd758ec3a76283f.png"/> 方向上的变化要比在 <img class="tex" alt="\textstyle u_2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/d/9/ed99a7fbd444e14555ad4f8eac78b94b.png"/> 方向上大。为更形式化地找出方向 <img class="tex" alt="\textstyle u_1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/f/c/3fc01c8dc5d4c8c57cd758ec3a76283f.png"/> 和 <img class="tex" alt="\textstyle u_2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/d/9/ed99a7fbd444e14555ad4f8eac78b94b.png"/> ，我们首先计算出矩阵 <img class="tex" alt="\textstyle \Sigma" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/6/9/669ec82a71dede49eb73e539bc3423b6.png"/> ，如下所示：
+</p>
+<dl><dd><img class="tex" alt="\begin{align}
+\Sigma = \frac{1}{m} \sum_{i=1}^m (x^{(i)})(x^{(i)})^T. 
+\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/a/9/da9b50ec05dbe4ae513e4f52093b8342.png"/>
+</dd></dl>
+<p>假设 <img class="tex" alt="\textstyle x" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/> 的均值为零，那么 <img class="tex" alt="\textstyle \Sigma" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/6/9/669ec82a71dede49eb73e539bc3423b6.png"/> 就是x的协方差矩阵。（符号 <img class="tex" alt="\textstyle \Sigma" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/6/9/669ec82a71dede49eb73e539bc3423b6.png"/> ，读"Sigma"，是协方差矩阵的标准符号。虽然看起来与求和符号 <img class="tex" alt="\sum_{i=1}^n i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/3/b/73b577d2b026ab8f8fb733953266427e.png"/> 比较像，但它们其实是两个不同的概念。）
+</p><p>可以证明，数据变化的主方向 <img class="tex" alt="\textstyle u_1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/f/c/3fc01c8dc5d4c8c57cd758ec3a76283f.png"/> 就是协方差矩阵 <img class="tex" alt="\textstyle \Sigma" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/6/9/669ec82a71dede49eb73e539bc3423b6.png"/> 的主特征向量，而 <img class="tex" alt="\textstyle u_2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/d/9/ed99a7fbd444e14555ad4f8eac78b94b.png"/> 是次特征向量。
+</p><p>注：如果你对如何得到这个结果的具体数学推导过程感兴趣，可以参看CS229（机器学习）PCA部分的课件（链接在本页底部）。但如果仅仅是想跟上本课，可以不必如此。
+</p><p>你可以通过标准的数值线性代数运算软件求得特征向量（见实现说明）.我们先计算出协方差矩阵<img class="tex" alt="\textstyle \Sigma" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/6/9/669ec82a71dede49eb73e539bc3423b6.png"/>的特征向量，按列排放，而组成矩阵<img class="tex" alt="\textstyle U" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/a/5/6a55fb16b0464ccd6652a7f2a583217f.png"/>：
+</p>
+<dl><dd><img class="tex" alt="\begin{align}
+U = 
+\begin{bmatrix} 
+| &amp; | &amp; &amp; |  \\
+u_1 &amp; u_2 &amp; \cdots &amp; u_n  \\
+| &amp; | &amp; &amp; | 
+\end{bmatrix} 		
+\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/9/0/6906da1c5ac5f7f94a3b337447e69360.png"/>
+</dd></dl>
+<p>此处， <img class="tex" alt="\textstyle u_1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/f/c/3fc01c8dc5d4c8c57cd758ec3a76283f.png"/> 是主特征向量（对应最大的特征值）， <img class="tex" alt="\textstyle u_2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/d/9/ed99a7fbd444e14555ad4f8eac78b94b.png"/> 是次特征向量。以此类推，另记 <img class="tex" alt="\textstyle \lambda_1, \lambda_2, \ldots, \lambda_n" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/2/b/d2b02582947d98e3be81be3d1e684f28.png"/> 为相应的特征值。
+</p><p>在本例中，向量 <img class="tex" alt="\textstyle u_1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/f/c/3fc01c8dc5d4c8c57cd758ec3a76283f.png"/> 和 <img class="tex" alt="\textstyle u_2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/d/9/ed99a7fbd444e14555ad4f8eac78b94b.png"/> 构成了一个新基，可以用来表示数据。令 <img class="tex" alt="\textstyle x \in \Re^2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/2/6/b260df225bb49f3ff776b17a50cd20d3.png"/> 为训练样本，那么 <img class="tex" alt="\textstyle u_1^Tx" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/c/0/7c0e7fb10fb6e75bad211b2f2070c24c.png"/> 就是样本点 <img class="tex" alt="\textstyle x" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/> 在维度 <img class="tex" alt="\textstyle u_1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/f/c/3fc01c8dc5d4c8c57cd758ec3a76283f.png"/> 上的投影的长度（幅值）。同样的， <img class="tex" alt="\textstyle u_2^Tx" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/8/9/389b689de5736f95b05c3be9c373b95a.png"/> 是 <img class="tex" alt="\textstyle x" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/> 投影到 <img class="tex" alt="\textstyle u_2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/d/9/ed99a7fbd444e14555ad4f8eac78b94b.png"/> 维度上的幅值。
+</p><p><br/>
+</p>
+<h2> <span class="mw-headline" id=".E6.97.8B.E8.BD.AC.E6.95.B0.E6.8D.AE"> 旋转数据 </span></h2>
+<p>至此，我们可以把 <img class="tex" alt="\textstyle x" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/> 用 <img class="tex" alt="\textstyle (u_1, u_2)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/3/2/0329a7ca7eca352beded9f24406d34fe.png"/> 基表达为：
+</p>
+<dl><dd><img class="tex" alt="\begin{align}
+x_{\rm rot} = U^Tx = \begin{bmatrix} u_1^Tx \\ u_2^Tx \end{bmatrix} 
+\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/a/a/eaa1e40a68e966dd5a3d272dd6d091ed.png"/>
+</dd></dl>
+<p>（下标“rot”来源于单词“rotation”，意指这是原数据经过旋转（也可以说成映射）后得到的结果）
+</p><p>对数据集中的每个样本 <img class="tex" alt="\textstyle i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/> 分别进行旋转： <img class="tex" alt="\textstyle x_{\rm rot}^{(i)} = U^Tx^{(i)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/d/0/cd047246fd68f6d52b2fd068e063c0ef.png"/> for every <img class="tex" alt="\textstyle i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/> ，然后把变换后的数据 <img class="tex" alt="\textstyle x_{\rm rot}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/7/0/170047e804738636731477291969d554.png"/> 显示在坐标图上，可得：
+</p><p><a href="" class="image"><img alt="PCA-rotated.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/1/12/PCA-rotated.png/600px-PCA-rotated.png" width="600" height="450"/></a>
+</p><p>这就是把训练数据集旋转到 <img class="tex" alt="\textstyle u_1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/f/c/3fc01c8dc5d4c8c57cd758ec3a76283f.png"/>，<img class="tex" alt="\textstyle u_2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/d/9/ed99a7fbd444e14555ad4f8eac78b94b.png"/> 基后的结果。一般而言，运算 <img class="tex" alt="\textstyle U^Tx" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/0/a/e0aec5d033ea89dc9bd9c83bc2b4edec.png"/> 表示旋转到基 <img class="tex" alt="\textstyle u_1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/f/c/3fc01c8dc5d4c8c57cd758ec3a76283f.png"/>,<img class="tex" alt="\textstyle u_2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/d/9/ed99a7fbd444e14555ad4f8eac78b94b.png"/>, ...,<img class="tex" alt="\textstyle u_n" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/b/e/0be80bb4e50881840b92fb8331ef2bbd.png"/> 之上的训练数据。矩阵 <img class="tex" alt="\textstyle U" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/a/5/6a55fb16b0464ccd6652a7f2a583217f.png"/> 有正交性，即满足  <img class="tex" alt="\textstyle U^TU = UU^T = I" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/8/2/a825fd85c23ffa9b851fb64c9c816ad6.png"/> ，所以若想将旋转后的向量 <img class="tex" alt="\textstyle x_{\rm rot}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/7/0/170047e804738636731477291969d554.png"/> 还原为原始数据 <img class="tex" alt="\textstyle x" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/> ，将其左乘矩阵<img class="tex" alt="\textstyle U" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/a/5/6a55fb16b0464ccd6652a7f2a583217f.png"/>即可： <img class="tex" alt="\textstyle x=U x_{\rm rot}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/a/a/faada910e82b90d1c221943616cc85ab.png"/> , 验算一下： <img class="tex" alt="\textstyle U x_{\rm rot} =  UU^T x = x" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/5/f/a5fa6224542f5b2871447986260574d2.png"/>.
+</p><p><br/>
+</p>
+<h2> <span class="mw-headline" id=".E6.95.B0.E6.8D.AE.E9.99.8D.E7.BB.B4"> 数据降维 </span></h2>
+<p>数据的主方向就是旋转数据的第一维 <img class="tex" alt="\textstyle x_{{\rm rot},1}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/0/6/0066d1e2efa2f0019a3dfd3469862934.png"/> 。因此，若想把这数据降到一维，可令：
+</p>
+<dl><dd><img class="tex" alt="\begin{align}
+\tilde{x}^{(i)} = x_{{\rm rot},1}^{(i)} = u_1^Tx^{(i)} \in \Re.
+\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/c/f/8cf51b2f3bf8c78ad1b03c27aa68f692.png"/>
+</dd></dl>
+<p>更一般的，假如想把数据 <img class="tex" alt="\textstyle x \in \Re^n" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/e/b/9ebd39996afb169318c1dd5fb1503b17.png"/> 降到 <img class="tex" alt="\textstyle k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> 维表示 
+<img class="tex" alt="\textstyle \tilde{x} \in \Re^k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/1/3/21337248295f42f7fe18d9a9b3da57b1.png"/> （令 <img class="tex" alt="\textstyle k < n" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/7/b/87b6508de7e0487479389cff2b5fa91a.png"/> ）,只需选取 <img class="tex" alt="\textstyle x_{\rm rot}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/7/0/170047e804738636731477291969d554.png"/> 的前 <img class="tex" alt="\textstyle k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> 个成分，分别对应前 <img class="tex" alt="\textstyle k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> 个数据变化的主方向。
+</p><p>PCA的另外一种解释是：<img class="tex" alt="\textstyle x_{\rm rot}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/7/0/170047e804738636731477291969d554.png"/> 是一个 <img class="tex" alt="\textstyle n" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/c/5/0c59de0fa75c1baa1c024aabfa43b2e3.png"/> 维向量，其中前几个成分可能比较大（例如，上例中大部分样本第一个成分 <img class="tex" alt="\textstyle x_{{\rm rot},1}^{(i)} = u_1^Tx^{(i)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/0/e/80ebba0459d97a31a03e9de6b0957c31.png"/> 的取值相对较大），而后面成分可能会比较小（例如，上例中大部分样本的 <img class="tex" alt="\textstyle x_{{\rm rot},2}^{(i)} = u_2^Tx^{(i)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/4/6/8/468a726aaaea7f4aabbeb8a2e1966aae.png"/> 较小）。
+</p><p>PCA算法做的其实就是丢弃 <img class="tex" alt="\textstyle x_{\rm rot}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/7/0/170047e804738636731477291969d554.png"/> 中后面（取值较小）的成分，就是将这些成分的值近似为零。具体的说，设 <img class="tex" alt="\textstyle \tilde{x}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/a/6/1a62e33dcf57261829692126a4dcd02d.png"/> 是 <img class="tex" alt="\textstyle x_{{\rm rot}}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/7/4/774d8fa9b41f58dfc57cebb419e0de60.png"/> 的近似表示，那么将 <img class="tex" alt="\textstyle x_{{\rm rot}}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/7/4/774d8fa9b41f58dfc57cebb419e0de60.png"/> 除了前 <img class="tex" alt="\textstyle k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> 个成分外，其余全赋值为零，就得到：
+</p>
+<dl><dd><img class="tex" alt="\begin{align}
+\tilde{x} = 
+\begin{bmatrix} 
+x_{{\rm rot},1} \\
+\vdots \\ 
+x_{{\rm rot},k} \\
+0 \\ 
+\vdots \\ 
+0 \\ 
+\end{bmatrix}
+\approx 
+\begin{bmatrix} 
+x_{{\rm rot},1} \\
+\vdots \\ 
+x_{{\rm rot},k} \\
+x_{{\rm rot},k+1} \\
+\vdots \\ 
+x_{{\rm rot},n} 
+\end{bmatrix}
+= x_{\rm rot} 
+\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/e/8/5e8f3f68a933310015faa1eb439749f8.png"/>
+</dd></dl>
+<p>在本例中，可得 <img class="tex" alt="\textstyle \tilde{x}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/a/6/1a62e33dcf57261829692126a4dcd02d.png"/> 的点图如下（取 <img class="tex" alt="\textstyle n=2, k=1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/4/b/94b3c8bb8f57addfc319217446a14d56.png"/> ）：
+</p><p><a href="" class="image"><img alt="PCA-xtilde.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/2/27/PCA-xtilde.png/600px-PCA-xtilde.png" width="600" height="450"/></a>
+</p><p>然而，由于上面 <img class="tex" alt="\textstyle \tilde{x}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/a/6/1a62e33dcf57261829692126a4dcd02d.png"/> 的后<img class="tex" alt="\textstyle n-k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/4/2/742be0073915ce28ed208c2d5c83fc56.png"/>项均为零，没必要把这些零项保留下来。所以，我们仅用前 <img class="tex" alt="\textstyle k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> 个（非零）成分来定义 <img class="tex" alt="\textstyle k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> 维向量 <img class="tex" alt="\textstyle \tilde{x}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/a/6/1a62e33dcf57261829692126a4dcd02d.png"/> 。
+</p><p>这也解释了我们为什么会以 <img class="tex" alt="\textstyle u_1, u_2, \ldots, u_n" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/5/2/d52832ed87962d3ece3043ddae3150a7.png"/> 为基来表示数据：要决定保留哪些成分变得很简单，只需取前 <img class="tex" alt="\textstyle k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> 个成分即可。这时也可以说，我们“保留了前 <img class="tex" alt="\textstyle k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> 个PCA（主）成分”。
+</p><p><br/>
+</p>
+<h2> <span class="mw-headline" id=".E8.BF.98.E5.8E.9F.E8.BF.91.E4.BC.BC.E6.95.B0.E6.8D.AE"> 还原近似数据 </span></h2>
+<p>现在，我们得到了原始数据 <img class="tex" alt="\textstyle x \in \Re^n" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/e/b/9ebd39996afb169318c1dd5fb1503b17.png"/> 的低维“压缩”表征量 <img class="tex" alt="\textstyle \tilde{x} \in \Re^k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/1/3/21337248295f42f7fe18d9a9b3da57b1.png"/> ， 反过来，如果给定 <img class="tex" alt="\textstyle \tilde{x}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/a/6/1a62e33dcf57261829692126a4dcd02d.png"/> ，我们应如何还原原始数据 <img class="tex" alt="\textstyle x" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/> 呢？查看<a href="#.E6.97.8B.E8.BD.AC.E6.95.B0.E6.8D.AE">以往章节</a>以往章节可知，要转换回来，只需 <img class="tex" alt="\textstyle x = U x_{\rm rot}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/a/a/faada910e82b90d1c221943616cc85ab.png"/> 即可。进一步，我们把 <img class="tex" alt="\textstyle \tilde{x}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/a/6/1a62e33dcf57261829692126a4dcd02d.png"/> 看作将 <img class="tex" alt="\textstyle x_{\rm rot}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/7/0/170047e804738636731477291969d554.png"/> 的最后 <img class="tex" alt="\textstyle n-k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/4/2/742be0073915ce28ed208c2d5c83fc56.png"/> 个元素被置0所得的近似表示，因此如果给定 <img class="tex" alt="\textstyle \tilde{x} \in \Re^k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/1/3/21337248295f42f7fe18d9a9b3da57b1.png"/> ，可以通过在其末尾添加 <img class="tex" alt="\textstyle n-k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/4/2/742be0073915ce28ed208c2d5c83fc56.png"/> 个0来得到对 <img class="tex" alt="\textstyle x_{\rm rot} \in \Re^n" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/c/5/fc52a57fe97de0666dc2857bde2df153.png"/> 的近似，最后，左乘 <img class="tex" alt="\textstyle U" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/a/5/6a55fb16b0464ccd6652a7f2a583217f.png"/> 便可近似还原出原数据 <img class="tex" alt="\textstyle x" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/> 。具体来说，计算如下：
+</p>
+<dl><dd><img class="tex" alt="\begin{align}
+\hat{x}  = U \begin{bmatrix} \tilde{x}_1 \\ \vdots \\ \tilde{x}_k \\ 0 \\ \vdots \\ 0 \end{bmatrix}  
+= \sum_{i=1}^k u_i \tilde{x}_i.
+\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/a/0/0a07b56293a0b63ef434551e9ccda9ea.png"/>
+</dd></dl>
+<p>上面的等式基于<a href="#.E5.AE.9E.E4.BE.8B.E5.92.8C.E6.95.B0.E5.AD.A6.E8.83.8C.E6.99.AF">先前</a>对 <img class="tex" alt="\textstyle U" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/a/5/6a55fb16b0464ccd6652a7f2a583217f.png"/> 的定义。在实现时，我们实际上并不先给 <img class="tex" alt="\textstyle \tilde{x}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/a/6/1a62e33dcf57261829692126a4dcd02d.png"/> 填0然后再左乘 <img class="tex" alt="\textstyle U" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/a/5/6a55fb16b0464ccd6652a7f2a583217f.png"/> ，因为这意味着大量的乘0运算。我们可用 <img class="tex" alt="\textstyle \tilde{x} \in \Re^k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/1/3/21337248295f42f7fe18d9a9b3da57b1.png"/> 来与 <img class="tex" alt="\textstyle U" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/a/5/6a55fb16b0464ccd6652a7f2a583217f.png"/> 的前 <img class="tex" alt="\textstyle k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> 列相乘，即上式中最右项，来达到同样的目的。将该算法应用于本例中的数据集，可得如下关于重构数据 <img class="tex" alt="\textstyle \hat{x}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/9/0/29035749c12270bcc8de7e36bc459ece.png"/> 的点图：
+</p><p><a href="" class="image"><img alt="PCA-xhat.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/5/52/PCA-xhat.png/600px-PCA-xhat.png" width="600" height="450"/></a>
+</p><p>由图可见，我们得到的是对原始数据集的一维近似重构。
+</p><p>在训练自动编码器或其它无监督特征学习算法时，算法运行时间将依赖于输入数据的维数。若用 <img class="tex" alt="\textstyle \tilde{x} \in \Re^k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/1/3/21337248295f42f7fe18d9a9b3da57b1.png"/> 取代 <img class="tex" alt="\textstyle x" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/> 作为输入数据，那么算法就可使用低维数据进行训练，运行速度将显著加快。对于很多数据集来说，低维表征量 <img class="tex" alt="\textstyle \tilde{x}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/a/6/1a62e33dcf57261829692126a4dcd02d.png"/> 是原数据集的极佳近似，因此在这些场合使用PCA是很合适的，它引入的近似误差的很小，却可显著地提高你算法的运行速度。
+</p><p><br/>
+</p>
+<h2> <span class="mw-headline" id=".E9.80.89.E6.8B.A9.E4.B8.BB.E6.88.90.E5.88.86.E4.B8.AA.E6.95.B0"> 选择主成分个数 </span></h2>
+<p>我们该如何选择 <img class="tex" alt="\textstyle k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> ，即保留多少个PCA主成分？在上面这个简单的二维实验中，保留第一个成分看起来是自然的选择。对于高维数据来说，做这个决定就没那么简单：如果 <img class="tex" alt="\textstyle k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> 过大，数据压缩率不高，在极限情况 <img class="tex" alt="\textstyle k=n" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/3/6/e36b85de9c58866d875f20cbf6fc5f5b.png"/> 时，等于是在使用原始数据（只是旋转投射到了不同的基）；相反地，如果 <img class="tex" alt="\textstyle k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> 过小，那数据的近似误差太太。
+</p><p>决定 <img class="tex" alt="\textstyle k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> 值时，我们通常会考虑不同 <img class="tex" alt="\textstyle k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> 值可保留的方差百分比。具体来说，如果 <img class="tex" alt="\textstyle k=n" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/3/6/e36b85de9c58866d875f20cbf6fc5f5b.png"/> ，那么我们得到的是对数据的完美近似，也就是保留了100%的方差，即原始数据的所有变化都被保留下来；相反，如果 <img class="tex" alt="\textstyle k=0" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/a/2/2a27a4874f5739de5d2947d12ac81d4b.png"/> ，那等于是使用零向量来逼近输入数据，也就是只有0%的方差被保留下来。
+</p><p>一般而言，设 <img class="tex" alt="\textstyle \lambda_1, \lambda_2, \ldots, \lambda_n" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/2/b/d2b02582947d98e3be81be3d1e684f28.png"/> 表示 <img class="tex" alt="\textstyle \Sigma" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/6/9/669ec82a71dede49eb73e539bc3423b6.png"/> 的特征值（按由大到小顺序排列），使得 <img class="tex" alt="\textstyle \lambda_j" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/8/5/c851ef66a35ee95db0b63a592963ca77.png"/> 为对应于特征向量 <img class="tex" alt="\textstyle u_j" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/1/7/d175faaca44b996970abf70b700a94f1.png"/> 的特征值。那么如果我们保留前 <img class="tex" alt="\textstyle k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> 个成分，则保留的方差百分比可计算为：
+</p>
+<dl><dd><img class="tex" alt="\begin{align}
+\frac{\sum_{j=1}^k \lambda_j}{\sum_{j=1}^n \lambda_j}.
+\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/0/b/60ba13aa4527ce9cc11772deaa1d5027.png"/>
+</dd></dl>
+<p>在上面简单的二维实验中，<img class="tex" alt="\textstyle \lambda_1 = 7.29" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/b/f/6bf8708608604abff35895bb0ecf17f3.png"/> ，<img class="tex" alt="\textstyle \lambda_2 = 0.69" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/7/9/5793e844fa46435301414cb62e5d7641.png"/> 。因此，如果保留 <img class="tex" alt="\textstyle k=1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/7/7/97724a53ab7a652f75e945d2188850d9.png"/> 个主成分，等于我们保留了 <img class="tex" alt="\textstyle 7.29/(7.29+0.69) = 0.913" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/5/9/859dd2ebffe06849e75ce9297f25d325.png"/> ，即91.3%的方差。
+</p><p>对保留方差的百分比进行更正式的定义已超出了本教程的范围，但很容易证明，<img class="tex" alt="\textstyle \lambda_j =
+\sum_{i=1}^m x_{{\rm rot},j}^2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/7/e/97ecfffd8596d26deed9542b64cd6712.png"/> 。因此，如果 <img class="tex" alt="\textstyle \lambda_j \approx 0" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/7/1/6716d88c3c1a368824d188c8b9b6b589.png"/> ，则说明 <img class="tex" alt="\textstyle x_{{\rm rot},j}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/8/4/e84f84acac7b07e18a42a8e91b4433bc.png"/> 也就基本上接近于0，所以用0来近似它并不会产生多大损失。这也解释了为什么要保留前面的主成分（对应的 <img class="tex" alt="\textstyle \lambda_j" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/8/5/c851ef66a35ee95db0b63a592963ca77.png"/> 值较大）而不是末尾的那些。 这些前面的主成分 <img class="tex" alt="\textstyle x_{{\rm rot},j}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/8/4/e84f84acac7b07e18a42a8e91b4433bc.png"/> 变化性更大，取值也更大，如果将其设为0势必引入较大的近似误差。
+</p><p>以处理图像数据为例，一个惯常的经验法则是选择 <img class="tex" alt="\textstyle k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> 以保留99%的方差，换句话说，我们选取满足以下条件的最小 <img class="tex" alt="\textstyle k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> 值：
+</p>
+<dl><dd><img class="tex" alt="\begin{align}
+\frac{\sum_{j=1}^k \lambda_j}{\sum_{j=1}^n \lambda_j} \geq 0.99. 
+\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/d/5/7d5f701649af052a671b7d195dccdd8f.png"/>
+</dd></dl>
+<p>对其它应用，如不介意引入稍大的误差，有时也保留90-98%的方差范围。若向他人介绍PCA算法详情，告诉他们你选择的 <img class="tex" alt="\textstyle k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> 保留了95%的方差，比告诉他们你保留了前120个（或任意某个数字）主成分更好理解。
+</p><p><br/>
+</p>
+<h2> <span class="mw-headline" id=".E5.AF.B9.E5.9B.BE.E5.83.8F.E6.95.B0.E6.8D.AE.E5.BA.94.E7.94.A8PCA.E7.AE.97.E6.B3.95"> 对图像数据应用PCA算法 </span></h2>
+<p>为使PCA算法能有效工作，通常我们希望所有的特征 <img class="tex" alt="\textstyle x_1, x_2, \ldots, x_n" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/2/5/f25d5eb460ed8f894d9be2865a286908.png"/> 都有相似的取值范围（并且均值接近于0）。如果你曾在其它应用中使用过PCA算法，你可能知道有必要单独对每个特征做预处理，即通过估算每个特征 <img class="tex" alt="\textstyle x_j" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/d/f/bdf5b20642553027712d5b5240b31cf3.png"/> 的均值和方差，而后将其取值范围规整化为零均值和单位方差。但是，对于大部分图像类型，我们却不需要进行这样的预处理。假定我们将在自然图像上训练算法，此时特征 <img class="tex" alt="\textstyle x_j" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/d/f/bdf5b20642553027712d5b5240b31cf3.png"/> 代表的是像素 <img class="tex" alt="\textstyle j" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/3/5/235c5146ab110558897640c34dad7d97.png"/> 的值。所谓“自然图像”，不严格的说，是指人或动物在他们一生中所见的那种图像。
+</p><p>注：通常我们选取含草木等内容的户外场景图片，然后从中随机截取小图像块（如16x16像素）来训练算法。在实践中我们发现，大多数特征学习算法对训练图片的确切类型并不敏感，所以大多数用普通照相机拍摄的图片，只要不是特别的模糊或带有非常奇怪的人工痕迹，都可以使用。
+</p><p>在自然图像上进行训练时，对每一个像素单独估计均值和方差意义不大，因为（理论上）图像任一部分的统计性质都应该和其它部分相同，图像的这种特性被称作平稳性（stationarity）。
+</p><p>具体而言，为使PCA算法正常工作，我们通常需要满足以下要求：(1)特征的均值大致为0；(2)不同特征的方差值彼此相似。对于自然图片，即使不进行方差归一化操作，条件(2)也自然满足，故而我们不再进行任何方差归一化操作（对音频数据,如声谱,或文本数据,如词袋向量，我们通常也不进行方差归一化）。实际上，PCA算法对输入数据具有缩放不变性，无论输入数据的值被如何放大（或缩小），返回的特征向量都不改变。更正式的说：如果将每个特征向量 <img class="tex" alt="\textstyle x" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/> 都乘以某个正数（即所有特征量被放大或缩小相同的倍数），PCA的输出特征向量都将不会发生变化。
+</p><p>既然我们不做方差归一化，唯一还需进行的规整化操作就是均值规整化，其目的是保证所有特征的均值都在0附近。根据应用，在大多数情况下，我们并不关注所输入图像的整体明亮程度。比如在对象识别任务中，图像的整体明亮程度并不会影响图像中存在的是什么物体。更为正式地说，我们对图像块的平均亮度值不感兴趣，所以可以减去这个值来进行均值规整化。
+</p><p>具体的步骤是，如果 <img class="tex" alt="\textstyle x^{(i)} \in \Re^{n}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/a/5/ca57b44909d158c3fdfaa849465dd4a2.png"/> 代表16x16的图像块的亮度（灰度）值（ <img class="tex" alt="\textstyle n=256" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/c/0/6c07d223cfb098a75db66924dfcb7210.png"/> ），可用如下算法来对每幅图像进行零均值化操作：
+</p><p><img class="tex" alt="\mu^{(i)} := \frac{1}{n} \sum_{j=1}^n x^{(i)}_j" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/1/0/a104802ef43230cf0d364f378abd2c08.png"/>
+</p><p><img class="tex" alt="x^{(i)}_j := x^{(i)}_j - \mu^{(i)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/3/b/63bf04b76d7fffd53d851573573f5f7f.png"/>, for all <img class="tex" alt="\textstyle j" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/3/5/235c5146ab110558897640c34dad7d97.png"/>
+</p><p><br/>
+请注意：1）对每个输入图像块 <img class="tex" alt="\textstyle x^{(i)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/b/e/ebe8632b7c91a3dbbf9b590bea887a47.png"/> 都要单独执行上面两个步骤，2）这里的  <img class="tex" alt="\textstyle \mu^{(i)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/8/6/c862daa56646826c788aeb8ef0a5e4df.png"/> 是指图像块 <img class="tex" alt="\textstyle x^{(i)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/b/e/ebe8632b7c91a3dbbf9b590bea887a47.png"/> 的平均亮度值。尤其需要注意的是，这和为每个像素 <img class="tex" alt="\textstyle x_j" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/d/f/bdf5b20642553027712d5b5240b31cf3.png"/> 单独估算均值是两个完全不同的概念。
+</p><p>如果你处理的图像并非自然图像（比如，手写文字，或者白背景正中摆放单独物体），其他规整化操作就值得考虑了，而哪种做法最合适也取决于具体应用场合。但对自然图像而言，对每幅图像进行上述的零均值规整化，是默认而合理的处理。
+</p><p><br/>
+</p>
+<h2> <span class="mw-headline" id=".E5.8F.82.E8.80.83.E6.96.87.E7.8C.AE"> 参考文献 </span></h2>
+<p><a href="http://cs229.stanford.edu/" class="external free" rel="nofollow">http://cs229.stanford.edu</a>
+</p><p><br/>
+</p>
+<h2> <span class="mw-headline" id=".E4.B8.AD.E8.8B.B1.E6.96.87.E5.AF.B9.E7.85.A7">中英文对照</span></h2>
+<p>Principal Components Analysis 主成份分析
+</p><p>whitening 白化
+</p><p>intensity 亮度
+</p><p>mean 平均值
+</p><p>variance 方差
+</p><p>covariance matrix 协方差矩阵
+</p><p>basis 基
+</p><p>magnitude  幅值
+</p><p>stationarity  平稳性
+</p><p>normalization  归一化
+</p><p>eigenvector  特征向量
+</p><p>eigenvalue  特征值
+</p><p><br/>
+</p>
+<h2> <span class="mw-headline" id=".E4.B8.AD.E6.96.87.E8.AF.91.E8.80.85">中文译者</span></h2>
+<p>郭亮（guoliang2248@gmail.com），张力（emma.lzhang@gmail.com），金峰（jinfengb@gmail.com）, @破破的桥（新浪微博）, 谭晓阳（x.tan@nuaa.edu.cn）
+</p><p><br/>
+</p>
+<div style="text-align: center;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
+<p><strong class="selflink">主成分分析</strong> | <a href="/wayback-ufldl/stanford-ufldl/wiki/%E7%99%BD%E5%8C%96" title="白化">白化</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/%E5%AE%9E%E7%8E%B0%E4%B8%BB%E6%88%90%E5%88%86%E5%88%86%E6%9E%90%E5%92%8C%E7%99%BD%E5%8C%96" title="实现主成分分析和白化">实现主成分分析和白化</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_PCA_in_2D" title="Exercise:PCA in 2D">Exercise:PCA in 2D</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_PCA_and_Whitening" title="Exercise:PCA and Whitening">Exercise:PCA and Whitening</a>
+</p>
+</div>
+<p><br/>
+</p>
+<div style="text-align: left;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
+<p>Language&nbsp;: <a href="/wayback-ufldl/stanford-ufldl/wiki/PCA" title="PCA">English</a>
+</p>
+</div>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 1416/1000000
+Post-expand include size: 423/2097152 bytes
+Template argument size: 10/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<div class="printfooter">
+</div>		<div id="catlinks" class="catlinks catlinks-allhidden"></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/%E4%B8%BB%E6%88%90%E5%88%86%E5%88%86%E6%9E%90" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-talk" class="new"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				 <li id="ca-viewsource"><a href="" title="This page is protected.
+You can view its source [e]" accesskey="e">View source</a></li>
+				 <li id="ca-history"><a href="" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-ufldl_resources">
+		<h5>ufldl resources</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-wiki">
+		<h5>wiki</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
+				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="" id="searchform">
+				<input type="hidden" name="title" value="Special:Search" disabled/>
+				<input id="searchInput" title="Search Ufldl" accesskey="f" type="search" name="search" disabled/>
+				<input type="submit" name="go" class="searchButton" id="searchGoButton" value="Go" title="Go to a page with this exact name if exists" disabled/>&nbsp;
+				<input type="submit" name="fulltext" class="searchButton" id="mw-searchButton" value="Search" title="Search the pages for this text" disabled/>
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="" title="List of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+<li id="t-specialpages"><a href="" title="List of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li id="t-print"><a href="" rel="alternate" title="Printable version of this page [p]" accesskey="p">Printable version</a></li>				<li id="t-permalink"><a href="" title="Permanent link to this revision of the page">Permanent link</a></li>			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 8 April 2013, at 05:04.</li>
+		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+
+<!-- Served in 0.117 secs. -->
+</body>
+</html>

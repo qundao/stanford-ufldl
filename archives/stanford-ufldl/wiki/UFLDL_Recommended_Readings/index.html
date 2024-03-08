@@ -1,0 +1,228 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UFLDL Recommended Readings - Ufldl</title>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+
+</head>
+
+<body class="mediawiki ltr ns-0 ns-subject page-UFLDL_Recommended_Readings skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">UFLDL Recommended Readings</h1>
+	<div id="bodyContent">
+		<h3 id="siteSub">From Ufldl</h3>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+<p>If you're learning about UFLDL (Unsupervised Feature Learning and Deep Learning), here is a list of papers to consider reading.  We're assuming you're already familiar with basic machine learning at the level of [<a href="http://cs229.stanford.edu/" class="external text" rel="nofollow">CS229 (lecture notes available)</a>]. 
+</p><p>The basics: 
+</p>
+<ul><li> [<a href="http://cs294a.stanford.edu/" class="external text" rel="nofollow">CS294A</a>] Neural Networks/Sparse Autoencoder Tutorial. (Most of this is now in the <a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial" title="UFLDL Tutorial">UFLDL Tutorial</a>, but the exercise is still on the CS294A website.) 
+</li><li> <a href="http://www.naturalimagestatistics.net/" class="external autonumber" rel="nofollow">[1]</a> Natural Image Statistics book, Hyvarinen et al.  
+<ul><li> This is long, so just skim or skip the chapters that you already know.  
+</li><li> Important chapters: 5 (PCA and whitening; you'll probably already know the PCA stuff), 6 (sparse coding), 7 (ICA), 10 (ISA), 11 (TICA), 16 (temporal models).  
+</li></ul>
+</li><li> <a href="http://redwood.psych.cornell.edu/papers/olshausen_field_nature_1996.pdf" class="external autonumber" rel="nofollow">[2]</a> Olshausen and Field. Emergence of simple-cell receptive field properties by learning a sparse code for natural images Nature 1996. (Sparse Coding)
+</li><li> <a href="http://www.cs.stanford.edu/~ang/papers/icml07-selftaughtlearning.pdf" class="external autonumber" rel="nofollow">[3]</a>  Rajat Raina, Alexis Battle, Honglak Lee, Benjamin Packer and Andrew Y. Ng. Self-taught learning: Transfer learning from unlabeled data. ICML 2007
+</li></ul>
+<p><br/>
+Autoencoders: 
+</p>
+<ul><li> <a href="http://www.cs.toronto.edu/~hinton/science.pdf" class="external autonumber" rel="nofollow">[4]</a>  Hinton, G. E. and Salakhutdinov, R. R. Reducing the dimensionality of data with neural networks. Science 2006.  
+<ul><li> If you want to play with the code, you can also find it at <a href="http://www.cs.toronto.edu/~hinton/MatlabForSciencePaper.html" class="external autonumber" rel="nofollow">[5]</a>. 
+</li></ul>
+</li><li> <a href="http://books.nips.cc/papers/files/nips19/NIPS2006_0739.pdf" class="external autonumber" rel="nofollow">[6]</a> Bengio, Y., Lamblin, P., Popovici, P., Larochelle, H. Greedy Layer-Wise Training of Deep Networks. NIPS 2006 
+</li><li> <a href="http://www.cs.toronto.edu/~larocheh/publications/icml-2008-denoising-autoencoders.pdf" class="external autonumber" rel="nofollow">[7]</a> Pascal Vincent, Hugo Larochelle, Yoshua Bengio and Pierre-Antoine Manzagol. Extracting and Composing Robust Features with Denoising Autoencoders. ICML 2008.  
+<ul><li> (They have a nice model, but then backwards rationalize it into a probabilistic model.  Ignore the backwards rationalized probabilistic model [Section 4].) 
+</li></ul>
+</li></ul>
+<p><br/>
+Analyzing deep learning/why does deep learning work: 
+</p>
+<ul><li> <a href="http://www.cs.toronto.edu/~larocheh/publications/deep-nets-icml-07.pdf" class="external autonumber" rel="nofollow">[8]</a> H. Larochelle, D. Erhan, A. Courville, J. Bergstra, and Y. Bengio. An Empirical Evaluation of Deep Architectures on Problems with Many Factors of Variation. ICML 2007.
+<ul><li> (Someone read this and let us know if this is worth keeping,. [Most model related material already covered by other papers, it seems not many impactful conclusions can be made from results, but can serve as reading for reinforcement for deep models]) 
+</li></ul>
+</li><li> <a href="http://www.jmlr.org/papers/volume11/erhan10a/erhan10a.pdf" class="external autonumber" rel="nofollow">[9]</a> Dumitru Erhan, Yoshua Bengio, Aaron Courville, Pierre-Antoine Manzagol, Pascal Vincent, and Samy Bengio. Why Does Unsupervised Pre-training Help Deep Learning? JMLR 2010  
+</li><li> <a href="http://cs.stanford.edu/~ang/papers/nips09-MeasuringInvariancesDeepNetworks.pdf" class="external autonumber" rel="nofollow">[10]</a> Ian J. Goodfellow, Quoc V. Le, Andrew M. Saxe, Honglak Lee and Andrew Y. Ng. Measuring invariances in deep networks. NIPS 2009. 
+</li></ul>
+<p><br/>
+RBMs:
+</p>
+<ul><li> <a href="http://deeplearning.net/tutorial/rbm.html" class="external autonumber" rel="nofollow">[11]</a> Tutorial on RBMs. 
+<ul><li> But ignore the Theano code examples.
+</li><li> (Someone tell us if this should be moved later.  Useful for understanding some of DL literature, but not needed for many of the later papers? [Seems ok to leave in, useful introduction if reader had no idea about RBM's, and have to deal with Hinton's 06 Science paper or 3-way RBM's right away])
+</li></ul>
+</li></ul>
+<p><br/>
+Convolution Networks:
+</p>
+<ul><li> <a href="http://deeplearning.net/tutorial/lenet.html" class="external autonumber" rel="nofollow">[12]</a> Tutorial on Convolution Neural Networks.
+<ul><li> But ignore the Theano code examples.
+</li></ul>
+</li></ul>
+<p><br/>
+Applications:
+</p>
+<ul><li> Computer Vision
+<ul><li> <a href="http://www.ifp.illinois.edu/~jyang29/ScSPM.htm" class="external autonumber" rel="nofollow">[13]</a> Jianchao Yang, Kai Yu, Yihong Gong, Thomas Huang. Linear Spatial Pyramid Matching using Sparse Coding for Image Classification, CVPR 2009 
+</li><li> <a href="http://people.csail.mit.edu/torralba/publications/cvpr2008.pdf" class="external autonumber" rel="nofollow">[14]</a> A. Torralba, R. Fergus and Y. Weiss. Small codes and large image databases for recognition.  CVPR 2008.
+</li></ul>
+</li><li> Audio Recognition
+<ul><li> <a href="http://www.cs.stanford.edu/people/ang/papers/nips09-AudioConvolutionalDBN.pdf" class="external autonumber" rel="nofollow">[15]</a> Unsupervised feature learning for audio classification using convolutional deep belief networks, Honglak Lee, Yan Largman, Peter Pham and Andrew Y. Ng. In NIPS 2009.
+</li></ul>
+</li></ul>
+<p><br/>
+Natural Language Processing:
+</p>
+<ul><li> <a href="http://www.iro.umontreal.ca/~lisa/publications2/index.php/attachments/single/57" class="external autonumber" rel="nofollow">[16]</a> Yoshua Bengio, Réjean Ducharme, Pascal Vincent and Christian Jauvin, A Neural Probabilistic Language Model. JMLR 2003.
+</li><li> <a href="http://ronan.collobert.com/pub/matos/2008_nlp_icml.pdf" class="external autonumber" rel="nofollow">[17]</a> R. Collobert and J. Weston. A Unified Architecture for Natural Language Processing: Deep Neural Networks with Multitask Learning. ICML 2008.
+</li><li> <a href="http://www.socher.org/uploads/Main/SocherPenningtonHuangNgManning_EMNLP2011.pdf" class="external autonumber" rel="nofollow">[18]</a> Richard Socher, Jeffrey Pennington, Eric Huang, Andrew Y. Ng, and Christopher D. Manning. Semi-Supervised Recursive Autoencoders for Predicting Sentiment Distributions. EMNLP 2011
+</li><li> <a href="http://www.socher.org/uploads/Main/SocherHuangPenningtonNgManning_NIPS2011.pdf" class="external autonumber" rel="nofollow">[19]</a> Richard Socher, Eric Huang, Jeffrey Pennington, Andrew Y. Ng, and Christopher D. Manning. Dynamic Pooling and Unfolding Recursive Autoencoders for Paraphrase Detection. NIPS 2011
+</li><li> <a href="http://www.cs.toronto.edu/~hinton/absps/threenew.pdf" class="external autonumber" rel="nofollow">[20]</a> Mnih, A. and Hinton, G. E. Three New Graphical Models for Statistical Language Modelling. ICML 2007
+</li></ul>
+<p><br/>
+Advanced stuff:
+</p>
+<ul><li> Slow Feature Analysis:
+<ul><li> <a href="http://itb.biologie.hu-berlin.de/~wiskott/Publications/BerkWisk2005c-SFAComplexCells-JoV.pdf" class="external autonumber" rel="nofollow">[21]</a> Slow feature analysis yields a rich repertoire of complex cell properties. Journal of Vision, 2005.
+</li></ul>
+</li><li> Predictive Sparse Decomposition
+<ul><li> <a href="http://cs.nyu.edu/~koray/publis/koray-psd-08.pdf" class="external autonumber" rel="nofollow">[22]</a> Koray Kavukcuoglu, Marc'Aurelio Ranzato, and Yann LeCun, "Fast Inference in Sparse Coding Algorithms with Applications to Object Recognition", Computational and Biological Learning Lab, Courant Institute, NYU, 2008. 
+</li><li> <a href="http://cs.nyu.edu/~koray/publis/jarrett-iccv-09.pdf" class="external autonumber" rel="nofollow">[23]</a> Kevin Jarrett, Koray Kavukcuoglu, Marc'Aurelio Ranzato, and Yann LeCun, "What is the Best Multi-Stage Architecture for Object Recognition?", In ICCV 2009
+</li></ul>
+</li></ul>
+<p><br/>
+Mean-Covariance models
+</p>
+<ul><li> <a href="http://www.cs.toronto.edu/~ranzato/publications/ranzato_aistats2010.pdf" class="external autonumber" rel="nofollow">[24]</a> M. Ranzato, A. Krizhevsky, G. Hinton. Factored 3-Way Restricted Boltzmann Machines for Modeling Natural Images. In AISTATS 2010.
+</li><li> <a href="http://www.cs.toronto.edu/~ranzato/publications/ranzato_cvpr2010.pdf" class="external autonumber" rel="nofollow">[25]</a> M. Ranzato, G. Hinton, Modeling Pixel Means and Covariances Using Factorized Third-Order Boltzmann Machines. CVPR 2010 
+<ul><li> (someone and tell us if you need to read the 3-way RBM paper before the mcRBM one [I didn't find it necessary, in fact the CVPR paper seemed easier to understand.])
+</li></ul>
+</li><li> <a href="http://www.cs.toronto.edu/~hinton/absps/mcphone.pdf" class="external autonumber" rel="nofollow">[26]</a> Dahl, G., Ranzato, M., Mohamed, A. and Hinton, G. E. Phone Recognition with the Mean-Covariance Restricted Boltzmann Machine. NIPS 2010.
+</li><li> <a href="http://www.nature.com/nature/journal/v457/n7225/pdf/nature07481.pdf" class="external autonumber" rel="nofollow">[27]</a> Y. Karklin and M. S. Lewicki, Emergence of complex cell properties by learning to generalize in natural scenes, Nature, 2008.
+<ul><li> (someone tell us if this should be here.  Interesting algorithm + nice visualizations, though maybe slightly hard to understand. [seems a good reminder there are other existing models]) 
+</li></ul>
+</li></ul>
+<p><br/>
+Overview
+</p>
+<ul><li> <a href="http://www.iro.umontreal.ca/~bengioy/papers/ftml_book.pdf" class="external autonumber" rel="nofollow">[28]</a> Yoshua Bengio. Learning Deep Architectures for AI. FTML 2009. 
+<ul><li> (Broad landscape description of the field, but technical details there are hard to follow so ignore that.  This is also easier to read after you've gone over some of literature of the field.)
+</li></ul>
+</li></ul>
+<p><br/>
+Practical guides:
+</p>
+<ul><li> <a href="http://www.cs.toronto.edu/~hinton/absps/guideTR.pdf" class="external autonumber" rel="nofollow">[29]</a> Geoff Hinton. A practical guide to training restricted Boltzmann machines. UTML TR 2010–003. 
+<ul><li> A practical guide (read if you're trying to implement and RBM; but otherwise skip since this is not really a tutorial). 
+</li></ul>
+</li><li> <a href="http://yann.lecun.com/exdb/publis/pdf/lecun-98b.pdf" class="external autonumber" rel="nofollow">[30]</a> Y. LeCun, L. Bottou, G. Orr and K. Muller. Efficient Backprop. Neural Networks: Tricks of the trade, Springer, 1998
+<ul><li> Read if you're trying to run backprop; but otherwise skip since very low-level engineering/hackery tricks and not that satisfying to read. 
+</li></ul>
+</li></ul>
+<p><br/>
+Also, for other lists of papers:
+</p>
+<ul><li> <a href="http://www.eecs.umich.edu/~honglak/teaching/eecs598/schedule.html" class="external autonumber" rel="nofollow">[31]</a> Honglak Lee's Course
+</li><li> <a href="http://www.cs.toronto.edu/~hinton/deeprefs.html" class="external autonumber" rel="nofollow">[32]</a> from Geoff's tutorial
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 1/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<div class="printfooter">
+</div>		<div id="catlinks" class="catlinks catlinks-allhidden"></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-talk" class="new"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				 <li id="ca-viewsource"><a href="" title="This page is protected.
+You can view its source [e]" accesskey="e">View source</a></li>
+				 <li id="ca-history"><a href="" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-ufldl_resources">
+		<h5>ufldl resources</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-wiki">
+		<h5>wiki</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
+				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="" id="searchform">
+				<input type="hidden" name="title" value="Special:Search" disabled/>
+				<input id="searchInput" title="Search Ufldl" accesskey="f" type="search" name="search" disabled/>
+				<input type="submit" name="go" class="searchButton" id="searchGoButton" value="Go" title="Go to a page with this exact name if exists" disabled/>&nbsp;
+				<input type="submit" name="fulltext" class="searchButton" id="mw-searchButton" value="Search" title="Search the pages for this text" disabled/>
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="" title="List of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+<li id="t-specialpages"><a href="" title="List of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li id="t-print"><a href="" rel="alternate" title="Printable version of this page [p]" accesskey="p">Printable version</a></li>				<li id="t-permalink"><a href="" title="Permanent link to this revision of the page">Permanent link</a></li>			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 18 February 2012, at 07:00.</li>
+		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+
+<!-- Served in 0.148 secs. -->
+</body>
+</html>

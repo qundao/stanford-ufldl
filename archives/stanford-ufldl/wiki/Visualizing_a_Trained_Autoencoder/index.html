@@ -1,0 +1,178 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizing a Trained Autoencoder - Ufldl</title>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+
+</head>
+
+<body class="mediawiki ltr ns-0 ns-subject page-Visualizing_a_Trained_Autoencoder skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">Visualizing a Trained Autoencoder</h1>
+	<div id="bodyContent">
+		<h3 id="siteSub">From Ufldl</h3>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+<p>Having trained a (sparse) autoencoder, we would now like to visualize the function
+learned by the algorithm, to try to understand what it has learned.
+Consider the case of training an autoencoder on <img class="tex" alt="\textstyle 10 \times 10" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/4/a/04aaf6cd0499a40a7c222ffdb85b55bb.png"/> images, so that <img class="tex" alt="\textstyle n = 100" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/4/8/548f3e32e47803886a1aacb25f80e82c.png"/>.
+Each hidden unit <img class="tex" alt="\textstyle i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/> computes a function of the input:
+</p>
+<dl><dd><img class="tex" alt="\begin{align}
+a^{(2)}_i = f\left(\sum_{j=1}^{100} W^{(1)}_{ij} x_j  + b^{(1)}_i \right).
+\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/d/2/1d29407eddf5fc12ca94509c9a9f7979.png"/>
+</dd></dl>
+<p>We will visualize the function computed by hidden unit <img class="tex" alt="\textstyle i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/>---which depends on the
+parameters <img class="tex" alt="\textstyle W^{(1)}_{ij}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/2/d/82d79561e2994ccba3e4fe2cc4d527e5.png"/> (ignoring
+the bias term for now)---using a 2D image.  In particular, we think of
+<img class="tex" alt="\textstyle a^{(2)}_i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/1/4/e14f36d1b33f6ed0dc131a7ddd166004.png"/> as some non-linear feature of the input <img class="tex" alt="\textstyle x" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/>.
+We ask:
+What input image <img class="tex" alt="\textstyle x" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/> would cause
+<img class="tex" alt="\textstyle a^{(2)}_i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/1/4/e14f36d1b33f6ed0dc131a7ddd166004.png"/> to be maximally activated?
+(Less formally, what is the feature that hidden unit <img class="tex" alt="\textstyle i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/> is looking for?)
+For this question to have a non-trivial answer,
+we must impose some constraints on <img class="tex" alt="\textstyle x" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/>.  If we suppose that
+the input is
+norm constrained by <img class="tex" alt="\textstyle ||x||^2 = \sum_{i=1}^{100} x_i^2 \leq 1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/4/7/7/4777ad65a6cc46e9f07e4100cddf4161.png"/>, then one can
+show (try doing this yourself)
+that the input which maximally activates hidden unit <img class="tex" alt="\textstyle i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/> is given
+by setting pixel <img class="tex" alt="\textstyle x_j" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/d/f/bdf5b20642553027712d5b5240b31cf3.png"/> (for all 100 pixels, <img class="tex" alt="\textstyle j=1,\ldots, 100" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/6/6/966104699d82737184a65294fddd8eea.png"/>) to
+</p>
+<dl><dd><img class="tex" alt="\begin{align}
+x_j = \frac{W^{(1)}_{ij}}{\sqrt{\sum_{j=1}^{100} (W^{(1)}_{ij})^2}}.
+\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/4/0/540c1290f18272da2c83610bd1c18380.png"/>
+</dd></dl>
+<p>By displaying the image formed by these pixel intensity values, we can begin
+to understand what feature hidden unit <img class="tex" alt="\textstyle i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/> is looking for.
+</p><p>If we have an autoencoder with 100 hidden units (say), then we our
+visualization will have 100 such images---one per hidden unit.  By examining
+these 100 images, we can try to understand what the ensemble of hidden units is
+learning.
+</p><p>When we do this for a sparse autoencoder (trained with 100 hidden units on
+10x10 pixel inputs<sup>1</sup> we get the following result:
+</p>
+<div class="center"><div class="thumb tnone"><div class="thumbinner" style="width:402px;"><a href="" class="image"><img alt="ExampleSparseAutoencoderWeights.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/3/3e/ExampleSparseAutoencoderWeights.png/400px-ExampleSparseAutoencoderWeights.png" width="400" height="400" class="thumbimage"/></a>  <div class="thumbcaption"><div class="magnify"><a href="" class="internal" title="Enlarge"><img src="/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/magnify-clip.png" width="15" height="11" alt=""/></a></div></div></div></div></div>
+<p>Each square in the figure above shows the (norm bounded) input image <img class="tex" alt="\textstyle x" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/> that
+maximally actives one of 100 hidden units.  We see that the different hidden
+units have learned to detect edges at different positions and orientations in
+the image.
+</p><p>These features are, not surprisingly, useful for such tasks as object
+recognition and other vision tasks.  When applied to other input domains (such
+as audio), this algorithm also learns useful representations/features for those
+domains too.
+</p>
+<hr/>
+<p><sup>1</sup> <i>The learned features were obtained by training on <b>whitened</b> natural images.  Whitening is a preprocessing step which removes redundancy in the input, by causing adjacent pixels to become less correlated.</i>
+</p><p><br/>
+</p>
+<div style="text-align: center;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
+<p><a href="/wayback-ufldl/stanford-ufldl/wiki/Neural_Networks" title="Neural Networks">Neural Networks</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Backpropagation_Algorithm" title="Backpropagation Algorithm">Backpropagation Algorithm</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Gradient_checking_and_advanced_optimization" title="Gradient checking and advanced optimization">Gradient checking and advanced optimization</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Autoencoders_and_Sparsity" title="Autoencoders and Sparsity">Autoencoders and Sparsity</a> | <strong class="selflink">Visualizing a Trained Autoencoder</strong> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Sparse_Autoencoder_Notation_Summary" title="Sparse Autoencoder Notation Summary">Sparse Autoencoder Notation Summary</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Sparse_Autoencoder" title="Exercise:Sparse Autoencoder">Exercise:Sparse Autoencoder</a>
+</p>
+</div>
+<p><br/>
+</p>
+<div style="text-align: left;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
+<p>Language&nbsp;: <a href="/wayback-ufldl/stanford-ufldl/wiki/%E5%8F%AF%E8%A7%86%E5%8C%96%E8%87%AA%E7%BC%96%E7%A0%81%E5%99%A8%E8%AE%AD%E7%BB%83%E7%BB%93%E6%9E%9C" title="可视化自编码器训练结果">中文</a>
+</p>
+</div>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 68/1000000
+Post-expand include size: 574/2097152 bytes
+Template argument size: 39/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<div class="printfooter">
+</div>		<div id="catlinks" class="catlinks catlinks-allhidden"></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/Visualizing_a_Trained_Autoencoder" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-talk" class="new"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				 <li id="ca-viewsource"><a href="" title="This page is protected.
+You can view its source [e]" accesskey="e">View source</a></li>
+				 <li id="ca-history"><a href="" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-ufldl_resources">
+		<h5>ufldl resources</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-wiki">
+		<h5>wiki</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
+				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="" id="searchform">
+				<input type="hidden" name="title" value="Special:Search" disabled/>
+				<input id="searchInput" title="Search Ufldl" accesskey="f" type="search" name="search" disabled/>
+				<input type="submit" name="go" class="searchButton" id="searchGoButton" value="Go" title="Go to a page with this exact name if exists" disabled/>&nbsp;
+				<input type="submit" name="fulltext" class="searchButton" id="mw-searchButton" value="Search" title="Search the pages for this text" disabled/>
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="" title="List of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+<li id="t-specialpages"><a href="" title="List of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li id="t-print"><a href="" rel="alternate" title="Printable version of this page [p]" accesskey="p">Printable version</a></li>				<li id="t-permalink"><a href="" title="Permanent link to this revision of the page">Permanent link</a></li>			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 7 April 2013, at 12:49.</li>
+		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+
+<!-- Served in 0.128 secs. -->
+</body>
+</html>

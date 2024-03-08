@@ -1,0 +1,177 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise:Self-Taught Learning - Ufldl</title>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+
+</head>
+
+<body class="mediawiki ltr ns-0 ns-subject page-Exercise_Self-Taught_Learning skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">Exercise:Self-Taught Learning</h1>
+	<div id="bodyContent">
+		<h3 id="siteSub">From Ufldl</h3>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+<table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Overview"><span class="tocnumber">1</span> <span class="toctext">Overview</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Dependencies"><span class="tocnumber">2</span> <span class="toctext">Dependencies</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Step_1:_Generate_the_input_and_test_data_sets"><span class="tocnumber">3</span> <span class="toctext">Step 1: Generate the input and test data sets</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Step_2:_Train_the_sparse_autoencoder"><span class="tocnumber">4</span> <span class="toctext">Step 2: Train the sparse autoencoder</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#Step_3:_Extracting_features"><span class="tocnumber">5</span> <span class="toctext">Step 3: Extracting features</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#Step_4:_Training_and_testing_the_logistic_regression_model"><span class="tocnumber">6</span> <span class="toctext">Step 4: Training and testing the logistic regression model</span></a></li>
+<li class="toclevel-1 tocsection-7"><a href="#Step_5:_Classifying_on_the_test_set"><span class="tocnumber">7</span> <span class="toctext">Step 5: Classifying on the test set</span></a></li>
+</ul>
+</td></tr></table><script>if (window.showTocToggle) { var tocShowText = "show"; var tocHideText = "hide"; showTocToggle(); } </script>
+<h3> <span class="mw-headline" id="Overview">Overview</span></h3>
+<p>In this exercise, we will use the self-taught learning paradigm with the sparse autoencoder and softmax classifier to build a classifier for handwritten digits.
+</p><p>You will be building upon your code from the earlier exercises. First, you will train your sparse autoencoder on an "unlabeled" training dataset of handwritten digits. This produces feature that are penstroke-like. We then extract these learned features from a labeled dataset of handwritten digits. These features will then be used as inputs to the softmax classifier that you wrote in the previous exercise. 
+</p><p>Concretely, for each example in the the labeled training dataset <img class="tex" alt="\textstyle x_l" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/c/7/7c723db4a829ae13f2f923f5ec79b74a.png"/>, we forward propagate the example to obtain the activation of the hidden units <img class="tex" alt="\textstyle a^{(2)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/0/8/508ab2d078f4ae9119185741659021dd.png"/>.  We now represent this example using <img class="tex" alt="\textstyle a^{(2)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/0/8/508ab2d078f4ae9119185741659021dd.png"/> (the "replacement" representation), and use this to as the new feature representation with which to train the softmax classifier. 
+</p><p>Finally, we also extract the same features from the test data to obtain predictions.
+</p><p>In this exercise, our goal is to distinguish between the digits from 0 to 4.  We will use the digits 5 to 9 as our 
+"unlabeled" dataset which which to learn the features; we will then use a labeled dataset with the digits 0 to 4 with
+which to train the softmax classifier. 
+</p><p>In the starter code, we have provided a file <b><tt>stlExercise.m</tt></b> that will help walk you through the steps in this exercise.
+</p>
+<h3> <span class="mw-headline" id="Dependencies"> Dependencies </span></h3>
+<p>The following additional files are required for this exercise:
+</p>
+<ul><li> <a href="http://yann.lecun.com/exdb/mnist/" class="external text" rel="nofollow">MNIST Dataset</a>
+</li><li> <a href="/wayback-ufldl/stanford-ufldl/wiki/Using_the_MNIST_Dataset" title="Using the MNIST Dataset"> Support functions for loading MNIST in Matlab </a>
+</li><li> <a href="http://ufldl.stanford.edu/wiki/resources/stl_exercise.zip" class="external text" rel="nofollow">Starter Code (stl_exercise.zip)</a>
+</li></ul>
+<p>You will also need your code from the following exercises:
+</p>
+<ul><li> <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Sparse_Autoencoder" title="Exercise:Sparse Autoencoder">Exercise:Sparse Autoencoder</a>
+</li><li> <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Vectorization" title="Exercise:Vectorization">Exercise:Vectorization</a>
+</li><li> <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Softmax_Regression" title="Exercise:Softmax Regression">Exercise:Softmax Regression</a>
+</li></ul>
+<p><i>If you have not completed the exercises listed above, we strongly suggest you complete them first.</i>
+</p>
+<h3> <span class="mw-headline" id="Step_1:_Generate_the_input_and_test_data_sets">Step 1: Generate the input and test data sets</span></h3>
+<p>Download and decompress <tt><a href="http://ufldl.stanford.edu/wiki/resources/stl_exercise.zip" class="external text" rel="nofollow">stl_exercise.zip</a></tt>, which contains starter code for this exercise. Additionally, you will need to download the datasets from the MNIST Handwritten Digit Database for this project.
+</p>
+<h3> <span class="mw-headline" id="Step_2:_Train_the_sparse_autoencoder">Step 2: Train the sparse autoencoder</span></h3>
+<p>Next, use the unlabeled data (the digits from 5 to 9) to train a sparse autoencoder, using the same <tt>sparseAutoencoderCost.m</tt> function as you had written in  the previous exercise.  (From the earlier exercise, you should have a working and vectorized implementation of the sparse autoencoder.) For us, the training step took less than 25 minutes on a fast desktop.  When training is complete, you should get a visualization of pen strokes like the image shown below: 
+</p><p><a href="" class="image"><img alt="SelfTaughtFeatures.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/8/84/SelfTaughtFeatures.png" width="342" height="342"/></a>
+</p><p>Informally, the features learned by the sparse autoencoder should correspond to penstrokes.
+</p>
+<h3> <span class="mw-headline" id="Step_3:_Extracting_features">Step 3: Extracting features</span></h3>
+<p>After the sparse autoencoder is trained, you will use it to extract features from the handwritten digit images. 
+</p><p>Complete <tt>feedForwardAutoencoder.m</tt> to produce a matrix whose columns correspond to activations of the hidden layer for each example, i.e., the vector <span class="texhtml"><i>a</i><sup>(2)</sup></span> corresponding to activation of layer 2.  (Recall that we treat the inputs as layer 1).
+</p><p>After completing this step, calling <tt>feedForwardAutoencoder.m</tt> should convert the raw image data to hidden unit activations <span class="texhtml"><i>a</i><sup>(2)</sup></span>.
+</p>
+<h3> <span class="mw-headline" id="Step_4:_Training_and_testing_the_logistic_regression_model">Step 4: Training and testing the logistic regression model</span></h3>
+<p>Use your code from the softmax exercise (<tt>softmaxTrain.m</tt>) to train a softmax classifier using the training set features (<tt>trainFeatures</tt>) and labels (<tt>trainLabels</tt>).
+</p>
+<h3> <span class="mw-headline" id="Step_5:_Classifying_on_the_test_set">Step 5: Classifying on the test set</span></h3>
+<p>Finally, complete the code to make predictions on the test set (<tt>testFeatures</tt>) and see how your learned features perform! If you've done all the steps correctly, you should get an accuracy of about <b>98%</b> percent. 
+</p><p>As a comparison, when <i>raw pixels</i> are used (instead of the learned features), we obtained a test accuracy of only around 96% (for the same train and test sets).
+</p><p><br/>
+</p>
+<div style="text-align: center;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
+<p><a href="/wayback-ufldl/stanford-ufldl/wiki/Self-Taught_Learning" title="Self-Taught Learning">Self-Taught Learning</a> | <strong class="selflink">Exercise:Self-Taught Learning</strong>
+</p>
+</div>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 74/1000000
+Post-expand include size: 196/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<div class="printfooter">
+</div>		<div id="catlinks" class="catlinks"><div id="mw-normal-catlinks"><a href="" title="Special:Categories">Category</a>: <span dir="ltr"><a href="" class="new" title="Category:Exercises (page does not exist)">Exercises</a></span></div></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Self-Taught_Learning" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-talk" class="new"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				 <li id="ca-viewsource"><a href="" title="This page is protected.
+You can view its source [e]" accesskey="e">View source</a></li>
+				 <li id="ca-history"><a href="" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-ufldl_resources">
+		<h5>ufldl resources</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-wiki">
+		<h5>wiki</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
+				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="" id="searchform">
+				<input type="hidden" name="title" value="Special:Search" disabled/>
+				<input id="searchInput" title="Search Ufldl" accesskey="f" type="search" name="search" disabled/>
+				<input type="submit" name="go" class="searchButton" id="searchGoButton" value="Go" title="Go to a page with this exact name if exists" disabled/>&nbsp;
+				<input type="submit" name="fulltext" class="searchButton" id="mw-searchButton" value="Search" title="Search the pages for this text" disabled/>
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="" title="List of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+<li id="t-specialpages"><a href="" title="List of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li id="t-print"><a href="" rel="alternate" title="Printable version of this page [p]" accesskey="p">Printable version</a></li>				<li id="t-permalink"><a href="" title="Permanent link to this revision of the page">Permanent link</a></li>			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 26 May 2011, at 11:02.</li>
+		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+
+<!-- Served in 0.129 secs. -->
+</body>
+</html>

@@ -1,0 +1,166 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise:Sparse Coding - Ufldl</title>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+
+</head>
+
+<body class="mediawiki ltr ns-0 ns-subject page-Exercise_Sparse_Coding skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">Exercise:Sparse Coding</h1>
+	<div id="bodyContent">
+		<h3 id="siteSub">From Ufldl</h3>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+<table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Sparse_Coding"><span class="tocnumber">1</span> <span class="toctext">Sparse Coding</span></a>
+<ul>
+<li class="toclevel-2 tocsection-2"><a href="#Dependencies"><span class="tocnumber">1.1</span> <span class="toctext">Dependencies</span></a></li>
+<li class="toclevel-2 tocsection-3"><a href="#Step_0:_Initialization"><span class="tocnumber">1.2</span> <span class="toctext">Step 0: Initialization</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#Step_1:_Sample_patches"><span class="tocnumber">1.3</span> <span class="toctext">Step 1: Sample patches</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#Step_2:_Implement_and_check_sparse_coding_cost_functions"><span class="tocnumber">1.4</span> <span class="toctext">Step 2: Implement and check sparse coding cost functions</span></a></li>
+<li class="toclevel-2 tocsection-6"><a href="#Step_3:_Iterative_optimization"><span class="tocnumber">1.5</span> <span class="toctext">Step 3: Iterative optimization</span></a></li>
+</ul>
+</li>
+</ul>
+</td></tr></table><script>if (window.showTocToggle) { var tocShowText = "show"; var tocHideText = "hide"; showTocToggle(); } </script>
+<h2> <span class="mw-headline" id="Sparse_Coding"> Sparse Coding </span></h2>
+<p>In this exercise, you will implement <a href="/wayback-ufldl/stanford-ufldl/wiki/Sparse_Coding__Autoencoder_Interpretation" title="Sparse Coding: Autoencoder Interpretation"> sparse coding</a> and <a href="/wayback-ufldl/stanford-ufldl/wiki/Sparse_Coding__Autoencoder_Interpretation" title="Sparse Coding: Autoencoder Interpretation"> topographic sparse coding</a> on black-and-white natural images. 
+</p><p>In the file <tt><a href="http://ufldl.stanford.edu/wiki/resources/sparse_coding_exercise.zip" class="external text" rel="nofollow">sparse_coding_exercise.zip</a></tt> we have provided some starter code. You should write your code at the places indicated "YOUR CODE HERE" in the files.
+</p><p>For this exercise, you will need to modify <b><tt>sparseCodingWeightCost.m</tt></b>, <b><tt>sparseCodingFeatureCost.m</tt></b> and <b><tt>sparseCodingExercise.m</tt></b>.
+</p>
+<h3> <span class="mw-headline" id="Dependencies"> Dependencies </span></h3>
+<p>You will need:
+</p>
+<ul><li> <tt>computeNumericalGradient.m</tt> from <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Sparse_Autoencoder" title="Exercise:Sparse Autoencoder">Exercise:Sparse Autoencoder</a>
+</li><li> <tt>display_network.m</tt> from <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Sparse_Autoencoder" title="Exercise:Sparse Autoencoder">Exercise:Sparse Autoencoder</a>
+</li></ul>
+<p><i>If you have not completed the exercise listed above, we strongly suggest you complete it first.</i>
+</p>
+<h3> <span class="mw-headline" id="Step_0:_Initialization"> Step 0: Initialization </span></h3>
+<p>In this step, we initialize some parameters used for the exercise.
+</p>
+<h3> <span class="mw-headline" id="Step_1:_Sample_patches"> Step 1: Sample patches </span></h3>
+<p>In this step, we sample some patches from the <tt>IMAGES.mat</tt> dataset comprising 10 black-and-white pre-whitened natural images.
+</p>
+<h3> <span class="mw-headline" id="Step_2:_Implement_and_check_sparse_coding_cost_functions"> Step 2: Implement and check sparse coding cost functions </span></h3>
+<p>In this step, you should implement the two sparse coding cost functions: 
+</p>
+<ol>
+<li><tt>sparseCodingWeightCost</tt> in <tt>sparseCodingWeightCost.m</tt>, which is used for optimizing the weight cost given the features
+<li><tt>sparseCodingFeatureCost</tt> in <tt>sparseCodingFeatureCost.m</tt>, which is used for optimizing the feature cost given the weights
+</ol>
+<p>Each of these functions should compute the appropriate cost and gradient. You may wish to implement the non-topographic version of <tt>sparseCodingFeatureCost</tt> first, ignoring the grouping matrix and assuming that none of the features are grouped. You can then extend this to the topographic version later. Alternatively, you may implement the topographic version directly - using the non-topographic version will then involve setting the grouping matrix to the identity matrix.
+</p><p>Once you have implemented these functions, you should check the gradients numerically. 
+</p><p><b>Implementation tip</b> - gradient checking the feature cost. One particular point to note is that when checking the gradient for the feature cost, <tt>epsilon</tt> should be set to a larger value, for instance <tt>1e-2</tt> (as has been done for you in the checking code provided), to ensure that checking the gradient numerically makes sense. This is necessary because as <tt>epsilon</tt> becomes smaller, the function <tt>sqrt(x + epsilon)</tt> becomes "sharper" and more "pointed", making the numerical gradient computed near 0 less and less accurate. To see this, consider what would happen if the numerical gradient was computed by using a point with x less than 0 and a point with x greater than 0 - the computed numerical slope would be wildly inaccurate.
+</p>
+<h3> <span class="mw-headline" id="Step_3:_Iterative_optimization"> Step 3: Iterative optimization </span></h3>
+<p>In this step, you will iteratively optimize for the weights and features to learn a basis for the data, as described in the section on <a href="/wayback-ufldl/stanford-ufldl/wiki/Sparse_Coding__Autoencoder_Interpretation" title="Sparse Coding: Autoencoder Interpretation"> sparse coding</a>. Mini-batching and initialization of the features <span class="texhtml"><i>s</i></span> has already been done for you. However, you need to still need to fill in the analytic solution to the the optimization problem with respect to the weight matrix, given the feature matrix. 
+</p><p>Once that is done, you should check that your solution is correct using the given checking code, which checks that the gradient at the point determined by your analytic solution is close to 0. Once your solution has been verified, comment out the checking code, and run the iterative optimization code. 200 iterations should take less than 45 minutes to run, and by 100 iterations you should be able to see bases that look like edges, similar to those you learned in <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Sparse_Autoencoder" title="Exercise:Sparse Autoencoder"> the sparse autoencoder exercise</a>. 
+</p><p>For the non-topographic case, these features will not be "ordered", and will look something like the following:
+</p><p><a href="" class="image"><img alt="NormalSparseCodingFeatures.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/5/52/NormalSparseCodingFeatures.png" width="516" height="516"/></a>
+</p><p>For the topographic case, the features will be "ordered topographically", and will look something like the following:
+</p><p><a href="" class="image"><img alt="TopographicSparseCodingFeatures.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/7/73/TopographicSparseCodingFeatures.png" width="528" height="529"/></a>
+</p>
+<!-- 
+NewPP limit report
+Preprocessor node count: 25/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<div class="printfooter">
+</div>		<div id="catlinks" class="catlinks catlinks-allhidden"></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Sparse_Coding" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-talk" class="new"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				 <li id="ca-viewsource"><a href="" title="This page is protected.
+You can view its source [e]" accesskey="e">View source</a></li>
+				 <li id="ca-history"><a href="" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-ufldl_resources">
+		<h5>ufldl resources</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-wiki">
+		<h5>wiki</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
+				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="" id="searchform">
+				<input type="hidden" name="title" value="Special:Search" disabled/>
+				<input id="searchInput" title="Search Ufldl" accesskey="f" type="search" name="search" disabled/>
+				<input type="submit" name="go" class="searchButton" id="searchGoButton" value="Go" title="Go to a page with this exact name if exists" disabled/>&nbsp;
+				<input type="submit" name="fulltext" class="searchButton" id="mw-searchButton" value="Search" title="Search the pages for this text" disabled/>
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="" title="List of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+<li id="t-specialpages"><a href="" title="List of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li id="t-print"><a href="" rel="alternate" title="Printable version of this page [p]" accesskey="p">Printable version</a></li>				<li id="t-permalink"><a href="" title="Permanent link to this revision of the page">Permanent link</a></li>			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 29 May 2011, at 06:59.</li>
+		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+
+<!-- Served in 0.136 secs. -->
+</body>
+</html>

@@ -1,0 +1,170 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fine-tuning Stacked AEs - Ufldl</title>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+
+</head>
+
+<body class="mediawiki ltr ns-0 ns-subject page-Fine-tuning_Stacked_AEs skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">Fine-tuning Stacked AEs</h1>
+	<div id="bodyContent">
+		<h3 id="siteSub">From Ufldl</h3>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+<h3> <span class="mw-headline" id="Introduction"> Introduction </span></h3>
+<p>Fine tuning is a strategy that is commonly found in deep learning. As such, it can also be used to greatly improve the performance of a stacked autoencoder. From a high level perspective, fine tuning treats all layers of a stacked autoencoder as a single model, so that in one iteration, we are improving upon all the weights in the stacked autoencoder.
+</p>
+<h3> <span class="mw-headline" id="General_Strategy"> General Strategy </span></h3>
+<p>Fortunately, we already have all the tools necessary to implement fine tuning for stacked autoencoders! In order to compute the gradients for all the layers of the stacked autoencoder in each iteration, we use the <a href="/wayback-ufldl/stanford-ufldl/wiki/Backpropagation_Algorithm" title="Backpropagation Algorithm">Backpropagation Algorithm</a>, as discussed in the sparse autoencoder section. As the backpropagation algorithm can be extended to apply for an arbitrary number of layers, we can actually use this algorithm on a stacked autoencoder of arbitrary depth.
+</p>
+<h3> <span class="mw-headline" id="Finetuning_with_Backpropagation"> Finetuning with Backpropagation </span></h3>
+<p>For your convenience, the summary of the backpropagation algorithm using element wise notation is below:
+</p>
+<dl><dd> 1. Perform a feedforward pass, computing the activations for layers <img class="tex" alt="\textstyle L_2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/f/7/cf7d186efd913f4fb9ceb939bf5135c4.png"/>, <img class="tex" alt="\textstyle L_3" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/9/b/d9b949d768ca8bab18830d9efc3fa441.png"/>, up to the output layer <img class="tex" alt="\textstyle L_{n_l}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/2/1/221a7296664022427d488fdb9b14b19b.png"/>, using the equations defining the forward propagation steps.
+</dd><dd> 2. For the output layer (layer <img class="tex" alt="\textstyle n_l" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/b/7/5b7a0657fdea25f29866c8e1d6e884ac.png"/>), set 
+<dl><dd><img class="tex" alt="\begin{align}
+\delta^{(n_l)}
+= - (\nabla_{a^{n_l}}J) \bullet f'(z^{(n_l)})
+\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/8/e/98ea32705100335c5feca5dc42cafb24.png"/>
+</dd><dd>(When using softmax regression, the softmax layer has <img class="tex" alt="\nabla J = \theta^T(I-P)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/0/4/30449e6c66c232571ea3bcdc36f9c000.png"/> where <span class="texhtml"><i>I</i></span> is the input labels and <span class="texhtml"><i>P</i></span> is the vector of conditional probabilities.)
+</dd></dl>
+</dd><dd> 3. For <img class="tex" alt="\textstyle l = n_l-1, n_l-2, n_l-3, \ldots, 2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/c/5/dc5396666d7679f1dae597dbc1a8ff5d.png"/> 
+<dl><dd>Set
+<dl><dd><img class="tex" alt="\begin{align}
+                 \delta^{(l)} = \left((W^{(l)})^T \delta^{(l+1)}\right) \bullet f'(z^{(l)})
+                 \end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/d/5/7d5660d4a911ecb84113c436f82b1109.png"/>
+</dd></dl>
+</dd></dl>
+</dd><dd> 4. Compute the desired partial derivatives: 
+<dl><dd><img class="tex" alt="\begin{align}
+\nabla_{W^{(l)}} J(W,b;x,y) &amp;= \delta^{(l+1)} (a^{(l)})^T, \\
+\nabla_{b^{(l)}} J(W,b;x,y) &amp;= \delta^{(l+1)}.
+\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/3/9/5391ac390a4e279ac8a543d4d5498ecc.png"/>
+</dd></dl>
+</dd></dl>
+<dl><dd><img class="tex" alt="\begin{align}
+J(W,b)
+&amp;= \left[ \frac{1}{m} \sum_{i=1}^m J(W,b;x^{(i)},y^{(i)}) \right]
+\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/6/e/06e46d21d188dcbc2b7da7cfc1ff976f.png"/>
+</dd></dl>
+<p><br/>
+</p>
+<div style="background-color: #eeeeee; border-style: dotted; padding: 5px">
+<p>Note: While one could consider the softmax classifier as an additional layer, the derivation above does not. Specifically, we consider the "last layer" of the network to be the features that goes into the softmax classifier. Therefore, the derivatives (in Step 2) are computed using <img class="tex" alt="\delta^{(n_l)} = - (\nabla_{a^{n_l}}J) \bullet f'(z^{(n_l)})" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/c/8/bc839d570597ea15c65074b355339c27.png"/>, where  <img class="tex" alt="\nabla J = \theta^T(I-P)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/0/4/30449e6c66c232571ea3bcdc36f9c000.png"/>.
+</p>
+</div>
+<p><br/>
+</p>
+<div style="text-align: center;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
+<p><a href="/wayback-ufldl/stanford-ufldl/wiki/Self-Taught_Learning_to_Deep_Networks" title="Self-Taught Learning to Deep Networks"> From Self-Taught Learning to Deep Networks</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Deep_Networks__Overview" title="Deep Networks: Overview">Deep Networks: Overview</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Stacked_Autoencoders" title="Stacked Autoencoders">Stacked Autoencoders</a> | <strong class="selflink">Fine-tuning Stacked AEs</strong> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise__Implement_deep_networks_for_digit_classification" title="Exercise: Implement deep networks for digit classification">Exercise: Implement deep networks for digit classification</a>
+</p>
+</div>
+<p><br/>
+</p>
+<div style="text-align: left;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
+<p>Language&nbsp;: <a href="/wayback-ufldl/stanford-ufldl/wiki/%E5%BE%AE%E8%B0%83%E5%A4%9A%E5%B1%82%E8%87%AA%E7%BC%96%E7%A0%81%E7%AE%97%E6%B3%95" title="微调多层自编码算法">中文</a>
+</p>
+</div>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 67/1000000
+Post-expand include size: 1013/2097152 bytes
+Template argument size: 406/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<div class="printfooter">
+</div>		<div id="catlinks" class="catlinks catlinks-allhidden"></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/Fine-tuning_Stacked_AEs" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-talk" class="new"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				 <li id="ca-viewsource"><a href="" title="This page is protected.
+You can view its source [e]" accesskey="e">View source</a></li>
+				 <li id="ca-history"><a href="" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-ufldl_resources">
+		<h5>ufldl resources</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-wiki">
+		<h5>wiki</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
+				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="" id="searchform">
+				<input type="hidden" name="title" value="Special:Search" disabled/>
+				<input id="searchInput" title="Search Ufldl" accesskey="f" type="search" name="search" disabled/>
+				<input type="submit" name="go" class="searchButton" id="searchGoButton" value="Go" title="Go to a page with this exact name if exists" disabled/>&nbsp;
+				<input type="submit" name="fulltext" class="searchButton" id="mw-searchButton" value="Search" title="Search the pages for this text" disabled/>
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="" title="List of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+<li id="t-specialpages"><a href="" title="List of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li id="t-print"><a href="" rel="alternate" title="Printable version of this page [p]" accesskey="p">Printable version</a></li>				<li id="t-permalink"><a href="" title="Permanent link to this revision of the page">Permanent link</a></li>			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 8 April 2013, at 04:04.</li>
+		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+
+<!-- Served in 0.249 secs. -->
+</body>
+</html>

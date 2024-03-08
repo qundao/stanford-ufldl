@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Unsupervised Feature Learning and Deep Learning Tutorial</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/bootstrap_readable.min.css" rel="stylesheet">
+    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/pygments/default.css" rel="stylesheet">
+    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/custom.css" rel="stylesheet">
+    <script type="text/javascript"
+          src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="../../assets/js/html5shiv.js"></script>
+    <script src="../../assets/js/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/wayback-ufldl/stanford-ufldl/tutorial/">UFLDL Tutorial</a>
+        </div>
+        <!---
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+          </ul>
+        </div>
+        !-->
+      </div>
+    </div>
+
+
+    <div class="row-fluid">
+      <div class = "container"> 
+        <div class = "col-xs-9">
+          <h3>RICA</h3>
+<hr>
+<!---<p class="meta">28 Aug 2013</p>--->
+
+<div class="post">
+<h3 id="ica_summary">ICA Summary</h3>
+
+<p>Independent Component Analysis (ICA) allows us to generate sparse representations of whitened data by the following formula:</p>
+<m>
+\begin{array}{rcl}
+     {\rm minimize} &amp; \lVert Wx \rVert_1  \\
+     {\rm s.t.}     &amp; WW^T = I \\
+\end{array} 
+</m>
+<p>where <m>W</m> is our weight matrix and <m>x</m> is our input. In ICA, we minimize the L1 penalty (sparsity) of our hidden representation, <m>Wx</m>, while maintaining an orthonormal constraint for our weight matrix. The orthonormal constraint exists to ensure that our uncorrelated data remains uncorrelated within our feature representation. In other words, an orthonormal transformation of whitened data remains white.</p>
+
+<p>The orthonormal constraint in ICA presents some drawbacks to the algorithm. Namely, difficulties arise when the number of features (rows of <m>W</m> matrix), exceed the dimensionality of input, <m>x</m>. Optimization also becomes more difficult with hard constraints, and thus requires longer training. How could we speed this up? What if the dimensionality of our data is too large to be whitened? Keep in mind, if <m>x \in R^n</m> it requires an <m> n \times n </m> whitening matrix.</p>
+
+<h3 id="rica">RICA</h3>
+
+<p>One algorithm called Reconstruction ICA (RICA), was designed to overcome the drawbacks of ICA by replacing ICA’s orthonormality constraint with a soft reconstruction penalty.</p>
+<m>
+\min_{W} \quad \lambda \left\|Wx\right\|_1  + \frac{1}{2} \left\| W^T Wx - x \right\|_2^2
+</m>
+<p>To help understand the motivation behind this, we see that we can get a perfect reconstruction when the features are not over-complete. To achieve this, we constrain <m>W^TW = I </m>. It is also possible to recover ICA from RICA when features are not over-complete, data is whitened, and <m>\lambda</m> goes to infinity; at this point, perfect reconstruction becomes a hard constraint. Now that we have a reconstructive penalty in our objective and no hard constraints, we are able to scale up to over-complete features. However, will the result still be reasonable when we are using an over-complete basis? To answer this, we move to another common model, the sparse autoencoder.</p>
+
+<p>To better interpret what happens when we move to an over-complete case, let’s revisit sparse autoencoders. The objective is listed below:</p>
+<m>
+\min_{W} \quad \lambda \left\|  \sigma\left(Wx\right) \right\|_1 + \frac{1}{2} \left\| \sigma \left(W^T \sigma\left(Wx \right) \right) - x \right\|_2^2
+</m>
+<p>There are different variations of autoencoders, but for the sake of consistency, this formula uses an L1 sparsity penalty and has a tied reconstruction matrix <m>W</m>. The only difference between this sparse autoencoder and RICA is the sigmoid non-linearity. Now, looking at the reconstructive penalty from the auto-encoder perspective, we can see that the reconstructive penalty acts as a degeneracy control; that is, the reconstructive penalty allows for the sparsest possible representation by ensuring that the filter matrix does not learn copies or redundant features. Thus we can see that RICA in the over-complete case is the same as a sparse autoencoder with an L1 sparsity constraint and without non-linearity. This allows RICA to scale to over-complete basis and be optimized with backprop like sparse auto-encoders. RICA has also been shown to be more robust to non-whitened data, which is again more similar to auto-encoder behavior.</p>
+</div>
+
+        </div>
+        <div class = "col-xs-3 sidebar">
+          <div id="sidebar-holder">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Generate sidebar --->
+    <script src='/wayback-ufldl/stanford-ufldl/tutorial/sidebar/sidebar.js'></script>
+    <script>
+      function renderHeading(name) {
+        return '<div class = "panel-heading">' + name + '</div>';
+      };
+      function renderItem(name, link) { 
+        return '<a href="/wayback-ufldl/stanford-ufldl/tutorial/' + link + '" class="list-group-item nav">' + name +
+          '</a>';
+      };
+      renderedHtml = '<div class = "panel panel-default">';
+        for (var i = 0; i < pages.length; i++) {
+          if (pages[i].type == 'Heading') {
+            renderedHtml += renderHeading(pages[i].name);
+          }
+          if (pages[i].type == 'Page') { 
+            renderedHtml += renderItem(pages[i].name, pages[i].link);
+          }
+        };
+        renderedHtml += '</div>';
+      document.getElementById('sidebar-holder').innerHTML = renderedHtml;
+    </script>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="//code.jquery.com/jquery.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="/wayback-ufldl/stanford-ufldl/tutorial/js/bootstrap.min.js"></script>
+    <script>
+      var inputs = document.getElementsByTagName("m");
+      for (var i = 0; i < inputs.length; i++) { 
+        wrap = '$$';
+        if (inputs[i].parentNode.nodeName.toLowerCase() == 'p' || 
+        inputs[i].parentNode.nodeName.toLowerCase() == 'li')  {
+          wrap = '$'
+        }
+        inputs[i].textContent = wrap + inputs[i].textContent + wrap;
+      }
+    </script>
+    <script>
+      MathJax.Hub.Config({
+        tex2jax: {
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+          inlineMath: [ ['$','$'], ["\\(","\\)"] ]
+        }
+      });
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += 'has-jax';
+        }
+      });
+    </script>
+    <script>
+      /*menu handler*/
+      function stripTrailingSlash(str) {
+        if(str.substr(-1) == '/') {
+          return str.substr(0, str.length - 1);
+        }
+        return str;
+      }
+
+      var url = window.location.href;  
+      var activePage = stripTrailingSlash(url);
+
+      $('.nav').each(function(){ 
+        currentPage = stripTrailingSlash(this.href) 
+        if (activePage == currentPage) {
+          $(this).addClass('active'); 
+        } 
+      });
+    </script>
+  </body>
+</html>

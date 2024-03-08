@@ -1,0 +1,177 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise: Implement deep networks for digit classification - Ufldl</title>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+
+</head>
+
+<body class="mediawiki ltr ns-0 ns-subject page-Exercise_Implement_deep_networks_for_digit_classification skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">Exercise: Implement deep networks for digit classification</h1>
+	<div id="bodyContent">
+		<h3 id="siteSub">From Ufldl</h3>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+<table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Overview"><span class="tocnumber">1</span> <span class="toctext">Overview</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Dependencies"><span class="tocnumber">2</span> <span class="toctext">Dependencies</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Step_0:_Initialize_constants_and_parameters"><span class="tocnumber">3</span> <span class="toctext">Step 0: Initialize constants and parameters</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Step_1:_Train_the_data_on_the_first_stacked_autoencoder"><span class="tocnumber">4</span> <span class="toctext">Step 1: Train the data on the first stacked autoencoder</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#Step_2:_Train_the_data_on_the_second_stacked_autoencoder"><span class="tocnumber">5</span> <span class="toctext">Step 2: Train the data on the second stacked autoencoder</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#Step_3:_Train_the_softmax_classifier_on_the_L2_features"><span class="tocnumber">6</span> <span class="toctext">Step 3: Train the softmax classifier on the L2 features</span></a></li>
+<li class="toclevel-1 tocsection-7"><a href="#Step_4:_Implement_fine-tuning"><span class="tocnumber">7</span> <span class="toctext">Step 4: Implement fine-tuning</span></a></li>
+<li class="toclevel-1 tocsection-8"><a href="#Step_5:_Test_the_model"><span class="tocnumber">8</span> <span class="toctext">Step 5: Test the model</span></a></li>
+</ul>
+</td></tr></table><script>if (window.showTocToggle) { var tocShowText = "show"; var tocHideText = "hide"; showTocToggle(); } </script>
+<h3> <span class="mw-headline" id="Overview">Overview</span></h3>
+<p>In this exercise, you will use a stacked autoencoder for digit classification. This exercise is very similar to the self-taught learning exercise, in which we trained a digit classifier using a autoencoder layer followed by a softmax layer. The only difference in this exercise is that we will be using two autoencoder layers instead of one and further finetune the two layers.
+</p><p>The code you have already implemented will allow you to stack various layers and perform layer-wise training. However, to perform fine-tuning, you will need to implement backpropogation through both layers. We will see that fine-tuning significantly improves the model's performance.
+</p><p>In the file <a href="http://ufldl.stanford.edu/wiki/resources/stackedae_exercise.zip" class="external text" rel="nofollow">stackedae_exercise.zip</a>, we have provided some starter code. You will need to complete the code in  <b><tt>stackedAECost.m</tt></b>, <b><tt>stackedAEPredict.m</tt></b> and <b><tt>stackedAEExercise.m</tt></b>. We have also provided <tt>params2stack.m</tt> and <tt>stack2params.m</tt> which you might find helpful in constructing deep networks.
+</p>
+<h3> <span class="mw-headline" id="Dependencies"> Dependencies </span></h3>
+<p>The following additional files are required for this exercise:
+</p>
+<ul><li> <a href="http://yann.lecun.com/exdb/mnist/" class="external text" rel="nofollow">MNIST Dataset</a>
+</li><li> <a href="/wayback-ufldl/stanford-ufldl/wiki/Using_the_MNIST_Dataset" title="Using the MNIST Dataset"> Support functions for loading MNIST in Matlab </a>
+</li><li> <a href="http://ufldl.stanford.edu/wiki/resources/stackedae_exercise.zip" class="external text" rel="nofollow">Starter Code (stackedae_exercise.zip)</a>
+</li></ul>
+<p>You will also need your code from the following exercises:
+</p>
+<ul><li> <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Sparse_Autoencoder" title="Exercise:Sparse Autoencoder">Exercise:Sparse Autoencoder</a>
+</li><li> <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Vectorization" title="Exercise:Vectorization">Exercise:Vectorization</a>
+</li><li> <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Softmax_Regression" title="Exercise:Softmax Regression">Exercise:Softmax Regression</a>
+</li><li> <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Self-Taught_Learning" title="Exercise:Self-Taught Learning">Exercise:Self-Taught Learning</a>
+</li></ul>
+<p><i>If you have not completed the exercises listed above, we strongly suggest you complete them first.</i>
+</p>
+<h3> <span class="mw-headline" id="Step_0:_Initialize_constants_and_parameters"> Step 0: Initialize constants and parameters </span></h3>
+<p>Open <tt>stackedAEExercise.m</tt>. In this step, we set meta-parameters to the same values that were used in previous exercise, which should produce reasonable results. You may to modify the meta-parameters if you wish.
+</p>
+<h3> <span class="mw-headline" id="Step_1:_Train_the_data_on_the_first_stacked_autoencoder"> Step 1: Train the data on the first stacked autoencoder </span></h3>
+<p>Train the first autoencoder on the training images to obtain its parameters. This step is identical to the corresponding step in the sparse autoencoder and STL assignments, complete this part of the code so as to learn a first layer of features using your <tt>sparseAutoencoderCost.m</tt> and minFunc.
+</p>
+<h3> <span class="mw-headline" id="Step_2:_Train_the_data_on_the_second_stacked_autoencoder"> Step 2: Train the data on the second stacked autoencoder </span></h3>
+<p>We first forward propagate the training set through the first autoencoder (using <tt>feedForwardAutoencoder.m</tt> that you completed in <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Self-Taught_Learning" title="Exercise:Self-Taught Learning">Exercise:Self-Taught_Learning</a>) to obtain hidden unit activations. These activations are then used to train the second sparse autoencoder. Since this is just an adapted application of a standard autoencoder, it should run similarly with the first. Complete this part of the code so as to learn a first layer of features using your <tt>sparseAutoencoderCost.m</tt> and minFunc.
+</p><p>This part of the exercise demonstrates the idea of greedy layerwise training with the <i>same</i> learning algorithm reapplied multiple times.
+</p>
+<h3> <span class="mw-headline" id="Step_3:_Train_the_softmax_classifier_on_the_L2_features"> Step 3: Train the softmax classifier on the L2 features </span></h3>
+<p>Next, continue to forward propagate the L1 features through the second autoencoder (using <tt>feedForwardAutoencoder.m</tt>) to obtain the L2 hidden unit activations. These activations are then used to train the softmax classifier. You can either use <tt>softmaxTrain.m</tt> or directly use <tt>softmaxCost.m</tt> that you completed in <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Softmax_Regression" title="Exercise:Softmax Regression">Exercise:Softmax Regression</a> to complete this part of the assignment.
+</p>
+<h3> <span class="mw-headline" id="Step_4:_Implement_fine-tuning"> Step 4: Implement fine-tuning </span></h3>
+<p>To implement fine tuning, we need to consider all three layers as a single model. Implement <tt>stackedAECost.m</tt> to return the cost and gradient of the model. The cost function should be as defined as the log likelihood and a gradient decay term. The gradient should be computed using <a href="/wayback-ufldl/stanford-ufldl/wiki/Backpropagation_Algorithm" title="Backpropagation Algorithm"> back-propagation as discussed earlier</a>. The predictions should consist of the activations of the output layer of the softmax model.
+</p><p>To help you check that your implementation is correct, you should also check your gradients on a synthetic small dataset. We have implemented <tt>checkStackedAECost.m</tt> to help you check your gradients. If this checks passes, you will have implemented fine-tuning correctly.
+</p><p><b>Note:</b> When adding the weight decay term to the cost, you should regularize only the softmax weights (do not regularize the weights that compute the hidden layer activations).
+</p><p><b>Implementation Tip:</b> It is always a good idea to implement the code modularly and check (the gradient of) each part of the code before writing the more complicated parts.
+</p>
+<h3> <span class="mw-headline" id="Step_5:_Test_the_model"> Step 5: Test the model </span></h3>
+<p>Finally, you will need to classify with this model; complete the code in <tt>stackedAEPredict.m</tt> to classify using the stacked autoencoder with a classification layer.
+</p><p>After completing these steps, running the entire script in stackedAETrain.m will perform layer-wise training of the stacked autoencoder, finetune the model, and measure its performance on the test set. If you've done all the steps correctly, you should get an accuracy of about 87.7% before finetuning and 97.6% after finetuning (for the 10-way classification problem).
+</p><p><br/>
+</p>
+<div style="text-align: center;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
+<p><a href="/wayback-ufldl/stanford-ufldl/wiki/Self-Taught_Learning_to_Deep_Networks" title="Self-Taught Learning to Deep Networks"> From Self-Taught Learning to Deep Networks</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Deep_Networks__Overview" title="Deep Networks: Overview">Deep Networks: Overview</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Stacked_Autoencoders" title="Stacked Autoencoders">Stacked Autoencoders</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Fine-tuning_Stacked_AEs" title="Fine-tuning Stacked AEs">Fine-tuning Stacked AEs</a> | <strong class="selflink">Exercise: Implement deep networks for digit classification</strong>
+</p>
+</div>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 33/1000000
+Post-expand include size: 374/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<div class="printfooter">
+</div>		<div id="catlinks" class="catlinks catlinks-allhidden"></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise__Implement_deep_networks_for_digit_classification" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-talk" class="new"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				 <li id="ca-viewsource"><a href="" title="This page is protected.
+You can view its source [e]" accesskey="e">View source</a></li>
+				 <li id="ca-history"><a href="" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-ufldl_resources">
+		<h5>ufldl resources</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-wiki">
+		<h5>wiki</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
+				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="" id="searchform">
+				<input type="hidden" name="title" value="Special:Search" disabled/>
+				<input id="searchInput" title="Search Ufldl" accesskey="f" type="search" name="search" disabled/>
+				<input type="submit" name="go" class="searchButton" id="searchGoButton" value="Go" title="Go to a page with this exact name if exists" disabled/>&nbsp;
+				<input type="submit" name="fulltext" class="searchButton" id="mw-searchButton" value="Search" title="Search the pages for this text" disabled/>
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="" title="List of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+<li id="t-specialpages"><a href="" title="List of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li id="t-print"><a href="" rel="alternate" title="Printable version of this page [p]" accesskey="p">Printable version</a></li>				<li id="t-permalink"><a href="" title="Permanent link to this revision of the page">Permanent link</a></li>			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 26 May 2011, at 11:04.</li>
+		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+
+<!-- Served in 0.119 secs. -->
+</body>
+</html>

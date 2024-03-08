@@ -1,0 +1,243 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gradient checking and advanced optimization - Ufldl</title>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+
+</head>
+
+<body class="mediawiki ltr ns-0 ns-subject page-Gradient_checking_and_advanced_optimization skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">Gradient checking and advanced optimization</h1>
+	<div id="bodyContent">
+		<h3 id="siteSub">From Ufldl</h3>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+<p>Backpropagation is a notoriously difficult algorithm to debug and get right,
+especially since many subtly buggy implementations of it&mdash;for example, one
+that has an off-by-one error in the indices and that thus only trains some of
+the layers of weights, or an implementation that omits the bias term&mdash;will
+manage to learn something that can look surprisingly reasonable
+(while performing less well than a correct implementation).  Thus, even with a
+buggy implementation, it may not at all be apparent that anything is amiss.
+In this section, we describe a method for numerically checking the derivatives computed
+by your code to make sure that your implementation is correct.  Carrying out the
+derivative checking procedure described here will significantly increase
+your confidence in the correctness of your code.
+</p><p>Suppose we want to minimize <img class="tex" alt="\textstyle J(\theta)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/e/0/ce027336c1cb3c0cd461406c81369ebf.png"/> as a function of <img class="tex" alt="\textstyle \theta" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/9/d/69d920fe8e1da0543eb63d1097f21754.png"/>.
+For this example, suppose <img class="tex" alt="\textstyle J : \Re \mapsto \Re" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/d/a/cda5857b15a23c03abfb2e42eb51b70c.png"/>, so that <img class="tex" alt="\textstyle \theta \in \Re" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/c/7/dc7c1205b7193f92a71d1f4e7cb4e707.png"/>.
+In this 1-dimensional case, one iteration of gradient descent is given by
+</p>
+<dl><dd><img class="tex" alt="\begin{align}
+\theta := \theta - \alpha \frac{d}{d\theta}J(\theta).
+\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/8/c/a8c1af31e58f9f9f2c55c90b33deace1.png"/>
+</dd></dl>
+<p>Suppose also that we have implemented some function <img class="tex" alt="\textstyle g(\theta)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/9/f/e9fed70b38b2cfac3b42d1d21d46e449.png"/> that purportedly
+computes <img class="tex" alt="\textstyle \frac{d}{d\theta}J(\theta)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/9/6/09643c7c4bb96e039caf25737d835201.png"/>, so that we implement gradient descent
+using the update <img class="tex" alt="\textstyle \theta := \theta - \alpha g(\theta)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/0/1/a01cdafbf71127043a4a5d2d097dfd80.png"/>.  How can we check if our implementation of
+<img class="tex" alt="\textstyle g" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/1/7/c172541f77a147fcf545237fefa03643.png"/> is correct?
+</p><p>Recall the mathematical definition of the derivative as
+</p>
+<dl><dd><img class="tex" alt="\begin{align}
+\frac{d}{d\theta}J(\theta) = \lim_{\epsilon \rightarrow 0}
+\frac{J(\theta+ \epsilon) - J(\theta-\epsilon)}{2 \epsilon}.
+\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/2/3/a23bea0ab48ded7b9a979b68f6356613.png"/>
+</dd></dl>
+<p>Thus, at any specific value of <img class="tex" alt="\textstyle \theta" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/9/d/69d920fe8e1da0543eb63d1097f21754.png"/>, we can numerically approximate the derivative
+as follows:
+</p>
+<dl><dd><img class="tex" alt="\begin{align}
+\frac{J(\theta+{\rm EPSILON}) - J(\theta-{\rm EPSILON})}{2 \times {\rm EPSILON}}
+\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/4/8/a/48a000aed96c8595fcca2a45f48343ce.png"/>
+</dd></dl>
+<p>In practice, we set <span class="texhtml">EPSILON</span> to a small constant, say around <img class="tex" alt="\textstyle 10^{-4}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/f/d/cfd7bf1257600c6c7706c5597af1b94d.png"/>.
+(There's a large range of values of <span class="texhtml">EPSILON</span> that should work well, but
+we don't set <span class="texhtml">EPSILON</span> to be "extremely" small, say <img class="tex" alt="\textstyle 10^{-20}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/a/b/fab2be95b827b3db4ea4d2e27a3d5f99.png"/>,
+as that would lead to numerical roundoff errors.)
+</p><p>Thus, given a function <img class="tex" alt="\textstyle g(\theta)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/9/f/e9fed70b38b2cfac3b42d1d21d46e449.png"/> that is supposedly computing
+<img class="tex" alt="\textstyle \frac{d}{d\theta}J(\theta)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/9/6/09643c7c4bb96e039caf25737d835201.png"/>, we can now numerically verify its correctness
+by checking that
+</p>
+<dl><dd><img class="tex" alt="\begin{align}
+g(\theta) \approx
+\frac{J(\theta+{\rm EPSILON}) - J(\theta-{\rm EPSILON})}{2 \times {\rm EPSILON}}.
+\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/6/d/c6d06b4a25dab5ef468c72900872eda0.png"/>
+</dd></dl>
+<p>The degree to which these two values should approximate each other
+will depend on the details of <img class="tex" alt="\textstyle J" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/4/f/4/4f465a48d84668feb1081c49388cf9b4.png"/>.  But assuming <img class="tex" alt="\textstyle {\rm EPSILON} = 10^{-4}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/7/5/875b9648ce24d3e6ed45c5fb1aef3833.png"/>,
+you'll usually find that the left- and right-hand sides of the above will agree
+to at least 4 significant digits (and often many more).
+</p><p>Now, consider the case where <img class="tex" alt="\textstyle \theta \in \Re^n" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/8/e/a8e658b091c361cc9f85ea67d7689332.png"/> is a vector rather than a single real
+number (so that we have <img class="tex" alt="\textstyle n" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/c/5/0c59de0fa75c1baa1c024aabfa43b2e3.png"/> parameters that we want to learn), and <img class="tex" alt="\textstyle J: \Re^n \mapsto \Re" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/9/f/39f1a609f6140108fb4f0ba2626e5d6a.png"/>.  In
+our neural network example we used "<img class="tex" alt="\textstyle J(W,b)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/e/9/8e94ae776ae14b36b3af183726ababb9.png"/>," but one can imagine "unrolling"
+the parameters <img class="tex" alt="\textstyle W,b" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/c/9/7c9aa03f5258ecf79556ba374d7eb2cd.png"/> into a long vector <img class="tex" alt="\textstyle \theta" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/9/d/69d920fe8e1da0543eb63d1097f21754.png"/>.  We now generalize our derivative
+checking procedure to the case where <img class="tex" alt="\textstyle \theta" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/9/d/69d920fe8e1da0543eb63d1097f21754.png"/> may be a vector.
+</p><p><br/>
+</p><p>Suppose we have a function <img class="tex" alt="\textstyle g_i(\theta)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/f/4/3f479459ba2e5ba889a1c2e36995ecc8.png"/> that purportedly computes
+<img class="tex" alt="\textstyle \frac{\partial}{\partial \theta_i} J(\theta)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/e/2/3e2d8c5d93954b93d064c96a93f0a6d8.png"/>; we'd like to check if <img class="tex" alt="\textstyle g_i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/c/9/9c9d4fc87d716b87e446297d0ebb94f8.png"/>
+is outputting correct derivative values.  Let <img class="tex" alt="\textstyle \theta^{(i+)} = \theta +
+{\rm EPSILON} \times \vec{e}_i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/9/b/09b406ad4b7aa1c6933b9f26e957c1fb.png"/>, where
+</p>
+<dl><dd><img class="tex" alt="\begin{align}
+\vec{e}_i = \begin{bmatrix}0 \\ 0 \\ \vdots \\ 1 \\ \vdots \\ 0\end{bmatrix}
+\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/d/7/7d7c568be5dc22311d9c60c7fa11457f.png"/>
+</dd></dl>
+<p>is the <img class="tex" alt="\textstyle i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/>-th basis vector (a
+vector of the same dimension as <img class="tex" alt="\textstyle \theta" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/9/d/69d920fe8e1da0543eb63d1097f21754.png"/>, with a "1" in the <img class="tex" alt="\textstyle i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/>-th position
+and "0"s everywhere else).  So,
+<img class="tex" alt="\textstyle \theta^{(i+)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/e/5/ae5326f17ec53546152dd9f3cd06fe8a.png"/> is the same as <img class="tex" alt="\textstyle \theta" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/9/d/69d920fe8e1da0543eb63d1097f21754.png"/>, except its <img class="tex" alt="\textstyle i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/>-th element has been incremented
+by <span class="texhtml">EPSILON</span>.  Similarly, let <img class="tex" alt="\textstyle \theta^{(i-)} = \theta - {\rm EPSILON} \times \vec{e}_i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/a/0/aa0225fbe0ff42d79a568cfb2b10ecd7.png"/> be the
+corresponding vector with the <img class="tex" alt="\textstyle i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/>-th element decreased by <span class="texhtml">EPSILON</span>.
+We can now numerically verify <img class="tex" alt="\textstyle g_i(\theta)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/f/4/3f479459ba2e5ba889a1c2e36995ecc8.png"/>'s correctness by checking, for each <img class="tex" alt="\textstyle i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/>,
+that:
+</p>
+<dl><dd><img class="tex" alt="\begin{align}
+g_i(\theta) \approx
+\frac{J(\theta^{(i+)}) - J(\theta^{(i-)})}{2 \times {\rm EPSILON}}.
+\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/e/1/1e153c5e6de67d97bfaf25c7fe396495.png"/>
+</dd></dl>
+<p><br/>
+When implementing backpropagation to train a neural network, in a correct implementation
+we will have that
+</p>
+<dl><dd><img class="tex" alt="\begin{align}
+\nabla_{W^{(l)}} J(W,b) &amp;= \left( \frac{1}{m} \Delta W^{(l)} \right) + \lambda W^{(l)} \\
+\nabla_{b^{(l)}} J(W,b) &amp;= \frac{1}{m} \Delta b^{(l)}.
+\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/2/9/1297d5746b1a274d8ab855bb6e638bdb.png"/>
+</dd></dl>
+<p>This result shows that the final block of psuedo-code in <a href="/wayback-ufldl/stanford-ufldl/wiki/Backpropagation_Algorithm" title="Backpropagation Algorithm">Backpropagation Algorithm</a> is indeed
+implementing gradient descent.
+To make sure your implementation of gradient descent is correct, it is
+usually very helpful to use the method described above to
+numerically compute the derivatives of <img class="tex" alt="\textstyle J(W,b)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/e/9/8e94ae776ae14b36b3af183726ababb9.png"/>, and thereby verify that
+your computations of <img class="tex" alt="\textstyle \left(\frac{1}{m}\Delta W^{(l)} \right) + \lambda W" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/1/a/51abfba362dde73804e9d8dd913ceb00.png"/> and <img class="tex" alt="\textstyle \frac{1}{m}\Delta b^{(l)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/8/3/c83a6b2fce9939316356a4aa0c7e773b.png"/> are
+indeed giving the derivatives you want.
+</p><p>Finally, so far our discussion has centered on using gradient descent to minimize <img class="tex" alt="\textstyle J(\theta)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/e/0/ce027336c1cb3c0cd461406c81369ebf.png"/>.  If you have
+implemented a function that computes <img class="tex" alt="\textstyle J(\theta)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/e/0/ce027336c1cb3c0cd461406c81369ebf.png"/> and <img class="tex" alt="\textstyle \nabla_\theta J(\theta)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/a/e/9ae0378bbaa18d11cdfbf3c76a612708.png"/>, it turns out there are more
+sophisticated algorithms than gradient descent for trying to minimize <img class="tex" alt="\textstyle J(\theta)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/e/0/ce027336c1cb3c0cd461406c81369ebf.png"/>.  For example, one can envision
+an algorithm that uses gradient descent, but automatically tunes the learning rate <img class="tex" alt="\textstyle \alpha" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/e/a/7eaa466003e48c1c96824a2edf3de038.png"/> so as to try to
+use a step-size that causes <img class="tex" alt="\textstyle \theta" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/9/d/69d920fe8e1da0543eb63d1097f21754.png"/> to approach a local optimum as quickly as possible.
+There are other algorithms that are even more
+sophisticated than this; for example, there are algorithms that try to find an approximation to the
+Hessian matrix, so that it can take more rapid steps towards a local optimum (similar to Newton's method).  A full discussion of these
+algorithms is beyond the scope of these notes, but one example is
+the <b>L-BFGS</b> algorithm.  (Another example is the <b>conjugate gradient</b> algorithm.)  You will use one of
+these algorithms in the programming exercise.
+The main thing you need to provide to these advanced optimization algorithms is that for any <img class="tex" alt="\textstyle \theta" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/9/d/69d920fe8e1da0543eb63d1097f21754.png"/>, you have to be able
+to compute <img class="tex" alt="\textstyle J(\theta)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/e/0/ce027336c1cb3c0cd461406c81369ebf.png"/> and <img class="tex" alt="\textstyle \nabla_\theta J(\theta)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/a/e/9ae0378bbaa18d11cdfbf3c76a612708.png"/>.  These optimization algorithms will then do their own
+internal tuning of the learning rate/step-size <img class="tex" alt="\textstyle \alpha" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/e/a/7eaa466003e48c1c96824a2edf3de038.png"/> (and compute its own approximation to the Hessian, etc.)
+to automatically search for a value of <img class="tex" alt="\textstyle \theta" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/9/d/69d920fe8e1da0543eb63d1097f21754.png"/> that minimizes <img class="tex" alt="\textstyle J(\theta)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/e/0/ce027336c1cb3c0cd461406c81369ebf.png"/>.  Algorithms
+such as L-BFGS and conjugate gradient can often be much faster than gradient descent.
+</p><p><br/>
+</p>
+<div style="text-align: center;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
+<p><a href="/wayback-ufldl/stanford-ufldl/wiki/Neural_Networks" title="Neural Networks">Neural Networks</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Backpropagation_Algorithm" title="Backpropagation Algorithm">Backpropagation Algorithm</a> | <strong class="selflink">Gradient checking and advanced optimization</strong> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Autoencoders_and_Sparsity" title="Autoencoders and Sparsity">Autoencoders and Sparsity</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Visualizing_a_Trained_Autoencoder" title="Visualizing a Trained Autoencoder">Visualizing a Trained Autoencoder</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Sparse_Autoencoder_Notation_Summary" title="Sparse Autoencoder Notation Summary">Sparse Autoencoder Notation Summary</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Sparse_Autoencoder" title="Exercise:Sparse Autoencoder">Exercise:Sparse Autoencoder</a>
+</p>
+</div>
+<p><br/>
+</p>
+<div style="text-align: left;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
+<p>Language&nbsp;: <a href="/wayback-ufldl/stanford-ufldl/wiki/%E6%A2%AF%E5%BA%A6%E6%A3%80%E9%AA%8C%E4%B8%8E%E9%AB%98%E7%BA%A7%E4%BC%98%E5%8C%96" title="梯度检验与高级优化">中文</a>
+</p>
+</div>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 200/1000000
+Post-expand include size: 568/2097152 bytes
+Template argument size: 33/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<div class="printfooter">
+</div>		<div id="catlinks" class="catlinks catlinks-allhidden"></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/Gradient_checking_and_advanced_optimization" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-talk" class="new"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				 <li id="ca-viewsource"><a href="" title="This page is protected.
+You can view its source [e]" accesskey="e">View source</a></li>
+				 <li id="ca-history"><a href="" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-ufldl_resources">
+		<h5>ufldl resources</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-wiki">
+		<h5>wiki</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
+				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="" id="searchform">
+				<input type="hidden" name="title" value="Special:Search" disabled/>
+				<input id="searchInput" title="Search Ufldl" accesskey="f" type="search" name="search" disabled/>
+				<input type="submit" name="go" class="searchButton" id="searchGoButton" value="Go" title="Go to a page with this exact name if exists" disabled/>&nbsp;
+				<input type="submit" name="fulltext" class="searchButton" id="mw-searchButton" value="Search" title="Search the pages for this text" disabled/>
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="" title="List of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+<li id="t-specialpages"><a href="" title="List of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li id="t-print"><a href="" rel="alternate" title="Printable version of this page [p]" accesskey="p">Printable version</a></li>				<li id="t-permalink"><a href="" title="Permanent link to this revision of the page">Permanent link</a></li>			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 7 April 2013, at 12:40.</li>
+		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+
+<!-- Served in 0.155 secs. -->
+</body>
+</html>

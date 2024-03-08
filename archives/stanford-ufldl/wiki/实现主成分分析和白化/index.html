@@ -1,0 +1,183 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>实现主成分分析和白化 - Ufldl</title>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+
+</head>
+
+<body class="mediawiki ltr ns-0 ns-subject page-实现主成分分析和白化 skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">实现主成分分析和白化</h1>
+	<div id="bodyContent">
+		<h3 id="siteSub">From Ufldl</h3>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+<p>在这一节里，我们将总结PCA, PCA白化和ZCA白化算法，并描述如何使用高效的线性代数库来实现它们。
+</p><p>首先，我们需要确保数据的均值（近似）为零。对于自然图像，我们通过减去每个图像块(patch)的均值（近似地）来达到这一目标。为此，我们计算每个图像块的均值，并从每个图像块中减去它的均值。（译注：参见PCA一章中“对图像数据应用PCA算法”一节）。Matlab实现如下：
+</p>
+<pre>avg = mean(x, 1);    &nbsp;% 分别为每个图像块计算像素强度的均值。 
+x = x - repmat(avg, size(x, 1), 1);
+</pre>
+<p>下面，我们要计算 <img class="tex" alt="\textstyle \Sigma = \frac{1}{m} \sum_{i=1}^m (x^{(i)})(x^{(i)})^T" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/1/2/f12024bb76487f8a050f92a84b09278c.png"/> ，如果你在Matlab中实现（或者在C++, Java等中实现，但可以使用高效的线性代数库），直接求和效率很低。不过，我们可以这样一气呵成。
+</p>
+<pre>sigma = x * x' / size(x, 2);
+</pre>
+<p>（自己推导一下看看）这里，我们假设 <span class="texhtml"><i>x</i></span> 为一数据结构，其中每列表示一个训练样本（所以 <span class="texhtml"><i>x</i></span> 是一个 <img class="tex" alt="\textstyle n" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/c/5/0c59de0fa75c1baa1c024aabfa43b2e3.png"/>×<img class="tex" alt="\textstyle m" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/5/e/25e97e8a905fc2cb05d76cd4872a8567.png"/> 的矩阵）。
+</p><p>接下来，PCA计算 <span class="texhtml">&Sigma;</span> 的特征向量。你可以使用Matlab的 <tt>eig</tt> 函数来计算。但是由于 <span class="texhtml">&Sigma;</span> 是对称半正定的矩阵，用 <tt>svd</tt> 函数在数值计算上更加稳定。
+</p><p>具体来说，如果你使用
+</p>
+<pre>[U,S,V] = svd(sigma);
+</pre>
+<p>那矩阵 <span class="texhtml"><i>U</i></span> 将包含 <span class="texhtml"><i>S</i><i>i</i><i>g</i><i>m</i><i>a</i></span> 的特征向量（一个特征向量一列，从主向量开始排序），矩阵S 对角线上的元素将包含对应的特征值（同样降序排列）。矩阵 <img class="tex" alt="\textstyle V" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/b/6/0b6f6c0f23cf3b29f3652c7315c456aa.png"/> 等于 <img class="tex" alt="\textstyle U" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/a/5/6a55fb16b0464ccd6652a7f2a583217f.png"/> 的转置，可以忽略。
+</p><p>（注意 <tt>svd</tt> 函数实际上计算的是一个矩阵的奇异值和奇异向量，就对称半正定矩阵的特殊情况来说，它们对应于特征值和特征向量，这里我们也只关心这一特例。关于奇异向量和特征向量的详细讨论超出了本文范围。）
+</p><p>最后，我们可以这样计 算<img class="tex" alt="\textstyle x_{\rm rot}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/7/0/170047e804738636731477291969d554.png"/> 和 <img class="tex" alt="\textstyle \tilde{x}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/a/6/1a62e33dcf57261829692126a4dcd02d.png"/> ：
+</p>
+<pre>xRot = U' * x;         &nbsp;% 数据旋转后的结果。 
+xTilde = U(:,1:k)' * x;&nbsp;% 数据降维后的结果，这里k希望保留的特征向量的数目。 
+</pre>
+<p>这以 <img class="tex" alt="\textstyle \tilde{x} \in \Re^k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/1/3/21337248295f42f7fe18d9a9b3da57b1.png"/> 的形式给出了数据的PCA表示。顺便说一下，如果 <span class="texhtml"><i>x</i></span> 是一个包括所有训练数据的 <img class="tex" alt="\textstyle n" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/c/5/0c59de0fa75c1baa1c024aabfa43b2e3.png"/>×<img class="tex" alt="\textstyle m" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/5/e/25e97e8a905fc2cb05d76cd4872a8567.png"/> 矩阵，这也是一种向量化的实现方式，上面的式子可以让你一次对所有的训练样本计算出 <span class="texhtml"><i>x</i><sub>rot</sub></span> 和 <img class="tex" alt="\tilde{x}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/1/8/51883bb93a4ebf4069a08b311c8bed76.png"/> 。得到的 <span class="texhtml"><i>x</i><sub>rot</sub></span> 和 <img class="tex" alt="\tilde{x}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/1/8/51883bb93a4ebf4069a08b311c8bed76.png"/> 中，每列对应一个训练样本。
+</p><p>为计算PCA白化后的数据 <img class="tex" alt="\textstyle x_{\rm PCAwhite}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/9/a/c9a6829ec8736d78ef1fb62a77564b53.png"/> ，可以用
+</p>
+<pre>xPCAwhite = diag(1./sqrt(diag(S) + epsilon)) * U' * x;
+</pre>
+<p>因为 <span class="texhtml"><i>S</i></span> 的对角线包括了特征值 <img class="tex" alt="\textstyle \lambda_i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/3/5/23536ce45f0ee57fffa389163f8437bd.png"/> ，这其实就是同时为所有样本<img class="tex" alt="\textstyle i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/>计算 <img class="tex" alt="\textstyle x_{{\rm PCAwhite},i} = \frac{x_{{\rm rot},i} }{\sqrt{\lambda_i}}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/4/a/0/4a0f44026d3d8598a69070eb52e64698.png"/> 的简洁表达。
+</p><p>最后，你也可以这样计算ZCA白化后的数据<img class="tex" alt="\textstyle x_{\rm ZCAwhite}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/6/6/a668553308d25ae0f796a9f92c807931.png"/>:
+</p>
+<pre>xZCAwhite = U * diag(1./sqrt(diag(S) + epsilon)) * U' * x;
+</pre>
+<p><br/>
+</p><p><br/>
+</p>
+<h2> <span class="mw-headline" id=".E4.B8.AD.E8.8B.B1.E6.96.87.E5.AF.B9.E7.85.A7">中英文对照</span></h2>
+<dl><dd>主成分分析                Principal Components Analysis (PCA)
+</dd><dd>白化                         whitening
+</dd><dd>均值为零                   zero-mean
+</dd><dd>均值                         mean value
+</dd><dd>特征值                      eigenvalue
+</dd><dd>特征向量                   eigenvector
+</dd><dd>对称半正定矩阵          symmetric positive semi-definite matrix
+</dd><dd>数值计算上稳定          numerically reliable
+</dd><dd>降序排列                   sorted in decreasing order
+</dd><dd>奇异值                      singular value
+</dd><dd>奇异向量                   singular vector
+</dd><dd>向量化实现                 vectorized implementation
+</dd><dd>对角线                      diagonal
+</dd></dl>
+<p><br/>
+</p>
+<h2> <span class="mw-headline" id=".E4.B8.AD.E6.96.87.E8.AF.91.E8.80.85">中文译者</span></h2>
+<p>周思远（visualzhou@gmail.com），张力（emma.lzhang@gmail.com），谭晓阳（x.tan@nuaa.edu.cn）
+</p><p><br/>
+</p>
+<div style="text-align: center;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
+<p><a href="/wayback-ufldl/stanford-ufldl/wiki/%E4%B8%BB%E6%88%90%E5%88%86%E5%88%86%E6%9E%90" title="主成分分析">主成分分析</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/%E7%99%BD%E5%8C%96" title="白化">白化</a> | <strong class="selflink">实现主成分分析和白化</strong> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_PCA_in_2D" title="Exercise:PCA in 2D">Exercise:PCA in 2D</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_PCA_and_Whitening" title="Exercise:PCA and Whitening">Exercise:PCA and Whitening</a>
+</p>
+</div>
+<p><br/>
+</p>
+<div style="text-align: left;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
+<p>Language&nbsp;: <a href="/wayback-ufldl/stanford-ufldl/wiki/Implementing_PCA/Whitening" title="Implementing PCA/Whitening">English</a>
+</p>
+</div>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 260/1000000
+Post-expand include size: 446/2097152 bytes
+Template argument size: 33/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<div class="printfooter">
+</div>		<div id="catlinks" class="catlinks catlinks-allhidden"></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/%E5%AE%9E%E7%8E%B0%E4%B8%BB%E6%88%90%E5%88%86%E5%88%86%E6%9E%90%E5%92%8C%E7%99%BD%E5%8C%96" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-talk" class="new"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				 <li id="ca-viewsource"><a href="" title="This page is protected.
+You can view its source [e]" accesskey="e">View source</a></li>
+				 <li id="ca-history"><a href="" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-ufldl_resources">
+		<h5>ufldl resources</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-wiki">
+		<h5>wiki</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
+				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="" id="searchform">
+				<input type="hidden" name="title" value="Special:Search" disabled/>
+				<input id="searchInput" title="Search Ufldl" accesskey="f" type="search" name="search" disabled/>
+				<input type="submit" name="go" class="searchButton" id="searchGoButton" value="Go" title="Go to a page with this exact name if exists" disabled/>&nbsp;
+				<input type="submit" name="fulltext" class="searchButton" id="mw-searchButton" value="Search" title="Search the pages for this text" disabled/>
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="" title="List of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+<li id="t-specialpages"><a href="" title="List of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li id="t-print"><a href="" rel="alternate" title="Printable version of this page [p]" accesskey="p">Printable version</a></li>				<li id="t-permalink"><a href="" title="Permanent link to this revision of the page">Permanent link</a></li>			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 8 April 2013, at 05:38.</li>
+		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+
+<!-- Served in 0.154 secs. -->
+</body>
+</html>

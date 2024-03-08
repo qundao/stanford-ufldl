@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Unsupervised Feature Learning and Deep Learning Tutorial</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/bootstrap_readable.min.css" rel="stylesheet">
+    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/pygments/default.css" rel="stylesheet">
+    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/custom.css" rel="stylesheet">
+    <script type="text/javascript"
+          src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="../../assets/js/html5shiv.js"></script>
+    <script src="../../assets/js/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/wayback-ufldl/stanford-ufldl/tutorial/">UFLDL Tutorial</a>
+        </div>
+        <!---
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+          </ul>
+        </div>
+        !-->
+      </div>
+    </div>
+
+
+    <div class="row-fluid">
+      <div class = "container"> 
+        <div class = "col-xs-9">
+          <h3>Vectorization</h3>
+<hr>
+<!---<p class="meta">28 Aug 2013</p>--->
+
+<div class="post">
+<p>For small jobs like the housing prices data we used for linear regression, your code does not need to be extremely fast. However, if your implementation for Exercise 1A or 1B used a for-loop as suggested, it is probably too slow to work well for large problems that are more interesting. This is because looping over the examples (or any other elements) sequentially in MATLAB is slow. To avoid for-loops, we want to rewrite our code to make use of optimized vector and matrix operations so that MATLAB will execute it quickly. (This is also useful for other languages, including Python and C/C++ — we want to re-use optimized operations when possible.)</p>
+
+<p>Following are some examples for how to vectorize various operations in MATLAB.</p>
+
+<h3 id="example_many_matrixvector_products">Example: Many matrix-vector products</h3>
+
+<p>Frequently we want to compute matrix-vector products for many vectors at once, such as when we compute <m>\theta^\top x^{(i)}</m> for each example in a dataset (where <m>\theta</m> may be a 2D matrix, or a vector itself). We can form a matrix <m>X</m> containing our entire dataset by concatenating the examples <m>x^{(i)}</m> to form the columns of <m>X</m>:</p>
+<m>
+X = \left[\begin{array}{cccc}
+  | &amp; |  &amp;  | &amp; | \\
+  x^{(1)} &amp; x^{(2)} &amp; \cdots &amp; x^{(m)}\\
+    | &amp; |  &amp;  | &amp; |\end{array}\right]
+</m>
+<p>With this notation, we can compute <m>y^{(i)} = W x^{(i)}</m> for all <m>x^{(i)}</m> at once as:</p>
+<m>
+\left[\begin{array}{cccc}
+| &amp; |  &amp;  | &amp; | \\
+y^{(1)} &amp; y^{(2)} &amp; \cdots &amp; y^{(m)}\\
+| &amp; |  &amp;  | &amp; |\end{array}\right] = Y = W X
+</m>
+<p>So, when performing linear regression, we can use <m>\theta^\top X</m> to avoid looping over all of our examples to compute <m>y^{(i)} = \theta^\top X^{(i)}</m>.</p>
+
+<h3 id="example_normalizing_many_vectors">Example: normalizing many vectors</h3>
+
+<p>Suppose we have many vectors <m>x^{(i)}</m> concatenated into a matrix <m>X</m> as above, and we want to compute <m>y^{(i)} = x^{(i)}/||x^{(i)}||_2</m> for all of the <m>x^{(i)}</m>. This may be done using several of MATLAB’s array operations:</p>
+<div class='highlight'><pre><code class='matlab'>  <span class='n'>X_norm</span> <span class='p'>=</span> <span class='nb'>sqrt</span><span class='p'>(</span> <span class='n'>sum</span><span class='p'>(</span><span class='n'>X</span><span class='o'>.^</span><span class='mi'>2</span><span class='p'>,</span><span class='mi'>1</span><span class='p'>)</span> <span class='p'>);</span>
+  <span class='n'>Y</span> <span class='p'>=</span> <span class='nb'>bsxfun</span><span class='p'>(@</span><span class='n'>rdivide</span><span class='p'>,</span> <span class='n'>X</span><span class='p'>,</span> <span class='n'>X_norm</span><span class='p'>);</span>
+</code></pre></div>
+<p>This code squares all of the elements of X, then sums along the first dimension (the rows) of the result, and finally takes the square root of each element. This leaves us with a 1-by-m matrix containing <m>||x^{(i)}||_2</m>. The <code>bsxfun</code> routine can be thought of as expanding or cloning <m>{X\text{norm}}</m> so that it has the same dimension as <m>X</m> before applying an element-wise binary function. In the example above it divides every element <m>X_{ji} = x_j^{(i)}</m> by the corresponding column in <m>X\text{norm}</m>, leaving us with <m>Y_{ji} = X_{ji} / {X\text{norm}}_i = x_j^{(i)}/||x^{(i)}||_2</m> as desired. <code>bsxfun</code> can be used with almost any binary element-wise function (e.g., @plus, @ge, or @eq). See the <code>bsxfun</code> docs!</p>
+
+<h3 id="example_matrix_multiplication_in_gradient_computations">Example: matrix multiplication in gradient computations</h3>
+
+<p>In our linear regression gradient computation, we have a summation of the form:</p>
+<m>
+\frac{\partial J(\theta; X,y)}{\partial \theta_j} = \sum_i x_j^{(i)} (\hat{y}^{(i)} - y^{(i)}). 
+</m>
+<p>Whenever we have a summation over a single index (in this case <m>i</m>) with several other fixed indices (in this case <m>j</m>) we can often rephrase the computation as a matrix multiply since <m>[A B]_{jk} = \sum_i A_{ji} B_{ik}</m>. If <m>y</m> and <m>\hat{y}</m> are column vectors (so <m>y_i \equiv y^{(i)}</m>), then with this template we can rewrite the above summation as:</p>
+<m>
+\frac{\partial J(\theta; X,y)}{\partial \theta_j} = \sum_i X_{ji} (\hat{y}_i - y_i) = [X (\hat{y} - y)]_j.
+</m>
+<p>Thus, to perform the entire computation for every <m>j</m> we can just compute <m>X (\hat{y} - y)</m>. In MATLAB:</p>
+<div class='highlight'><pre><code class='matlab'><span class='c'>% X(j,i) = j&#39;th coordinate of i&#39;th example.</span>
+<span class='c'>% y(i) = i&#39;th value to be predicted;  y is a column vector.</span>
+<span class='c'>% theta = vector of parameters</span>
+
+<span class='n'>y_hat</span> <span class='p'>=</span> <span class='n'>theta</span><span class='o'>&#39;*</span><span class='n'>X</span><span class='p'>;</span> <span class='c'>% so y_hat(i) = theta&#39; * X(:,i).  Note that y_hat is a *row-vector*.</span>
+<span class='n'>g</span> <span class='p'>=</span> <span class='n'>X</span><span class='o'>*</span><span class='p'>(</span><span class='n'>y_hat</span><span class='o'>&#39;</span> <span class='o'>-</span> <span class='n'>y</span><span class='p'>);</span>
+</code></pre></div>
+<h3 id="exercise_1a_and_1b_redux">Exercise 1A and 1B Redux</h3>
+
+<p>Go back to your Exercise 1A and 1B code. In the <code>ex1a_linreg.m</code> file and <code>ex1b_logreg.m</code> file you will find commented-out code that calls <code>minFunc</code> using <code>linear_regression_vec.m</code> and <code>logistic_regression_vec.m</code> (respectively) instead of <code>linear_regression.m</code> and <code>logistic_regression.m</code>. For this exercise, fill in the <code>linear_regression_vec.m</code> and <code>logistic_regression_vec.m</code> files with a vectorized implementation of your previous solutions. Uncomment the calling code in <code>ex1a_linreg.m</code> and <code>ex1b_logreg.m</code> and compare the running times of each implementation. Verify that you get similar results to your original solutions!</p>
+</div>
+
+        </div>
+        <div class = "col-xs-3 sidebar">
+          <div id="sidebar-holder">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Generate sidebar --->
+    <script src='/wayback-ufldl/stanford-ufldl/tutorial/sidebar/sidebar.js'></script>
+    <script>
+      function renderHeading(name) {
+        return '<div class = "panel-heading">' + name + '</div>';
+      };
+      function renderItem(name, link) { 
+        return '<a href="/wayback-ufldl/stanford-ufldl/tutorial/' + link + '" class="list-group-item nav">' + name +
+          '</a>';
+      };
+      renderedHtml = '<div class = "panel panel-default">';
+        for (var i = 0; i < pages.length; i++) {
+          if (pages[i].type == 'Heading') {
+            renderedHtml += renderHeading(pages[i].name);
+          }
+          if (pages[i].type == 'Page') { 
+            renderedHtml += renderItem(pages[i].name, pages[i].link);
+          }
+        };
+        renderedHtml += '</div>';
+      document.getElementById('sidebar-holder').innerHTML = renderedHtml;
+    </script>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="//code.jquery.com/jquery.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="/wayback-ufldl/stanford-ufldl/tutorial/js/bootstrap.min.js"></script>
+    <script>
+      var inputs = document.getElementsByTagName("m");
+      for (var i = 0; i < inputs.length; i++) { 
+        wrap = '$$';
+        if (inputs[i].parentNode.nodeName.toLowerCase() == 'p' || 
+        inputs[i].parentNode.nodeName.toLowerCase() == 'li')  {
+          wrap = '$'
+        }
+        inputs[i].textContent = wrap + inputs[i].textContent + wrap;
+      }
+    </script>
+    <script>
+      MathJax.Hub.Config({
+        tex2jax: {
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+          inlineMath: [ ['$','$'], ["\\(","\\)"] ]
+        }
+      });
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += 'has-jax';
+        }
+      });
+    </script>
+    <script>
+      /*menu handler*/
+      function stripTrailingSlash(str) {
+        if(str.substr(-1) == '/') {
+          return str.substr(0, str.length - 1);
+        }
+        return str;
+      }
+
+      var url = window.location.href;  
+      var activePage = stripTrailingSlash(url);
+
+      $('.nav').each(function(){ 
+        currentPage = stripTrailingSlash(this.href) 
+        if (activePage == currentPage) {
+          $(this).addClass('active'); 
+        } 
+      });
+    </script>
+  </body>
+</html>

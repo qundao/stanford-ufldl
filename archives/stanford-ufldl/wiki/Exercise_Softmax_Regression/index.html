@@ -1,0 +1,251 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise:Softmax Regression - Ufldl</title>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+
+</head>
+
+<body class="mediawiki ltr ns-0 ns-subject page-Exercise_Softmax_Regression skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">Exercise:Softmax Regression</h1>
+	<div id="bodyContent">
+		<h3 id="siteSub">From Ufldl</h3>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+<table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Softmax_regression"><span class="tocnumber">1</span> <span class="toctext">Softmax regression</span></a>
+<ul>
+<li class="toclevel-2 tocsection-2"><a href="#Dependencies"><span class="tocnumber">1.1</span> <span class="toctext">Dependencies</span></a></li>
+<li class="toclevel-2 tocsection-3"><a href="#Step_0:_Initialize_constants_and_parameters"><span class="tocnumber">1.2</span> <span class="toctext">Step 0: Initialize constants and parameters</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#Step_1:_Load_data"><span class="tocnumber">1.3</span> <span class="toctext">Step 1: Load data</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#Step_2:_Implement_softmaxCost"><span class="tocnumber">1.4</span> <span class="toctext">Step 2: Implement softmaxCost</span></a></li>
+<li class="toclevel-2 tocsection-6"><a href="#Step_3:_Gradient_checking"><span class="tocnumber">1.5</span> <span class="toctext">Step 3: Gradient checking</span></a></li>
+<li class="toclevel-2 tocsection-7"><a href="#Step_4:_Learning_parameters"><span class="tocnumber">1.6</span> <span class="toctext">Step 4: Learning parameters</span></a></li>
+<li class="toclevel-2 tocsection-8"><a href="#Step_5:_Testing"><span class="tocnumber">1.7</span> <span class="toctext">Step 5: Testing</span></a></li>
+</ul>
+</li>
+</ul>
+</td></tr></table><script>if (window.showTocToggle) { var tocShowText = "show"; var tocHideText = "hide"; showTocToggle(); } </script>
+<h2> <span class="mw-headline" id="Softmax_regression"> Softmax regression </span></h2>
+<p>In this problem set, you will use <a href="/wayback-ufldl/stanford-ufldl/wiki/Softmax_regression" title="Softmax regression" class="mw-redirect">softmax regression</a> to classify MNIST images. The goal of this exercise is to build a softmax classifier that you will be able to reuse in the future exercises and also on other classification problems that you might encounter.
+</p><p>In the file <tt><a href="http://ufldl.stanford.edu/wiki/resources/softmax_exercise.zip" class="external text" rel="nofollow">softmax_exercise.zip</a></tt>, we have provided some starter code. You should write your code in the places indicated by "YOUR CODE HERE" in the files. 
+</p><p>In the starter code, you will need to modify <b><tt>softmaxCost.m</tt></b> and <b><tt>softmaxPredict.m</tt></b> for this exercise.
+</p><p>We have also provided <b><tt>softmaxExercise.m</tt></b> that will help walk you through the steps in this exercise.
+</p>
+<h3> <span class="mw-headline" id="Dependencies"> Dependencies </span></h3>
+<p>The following additional files are required for this exercise:
+</p>
+<ul><li> <a href="http://yann.lecun.com/exdb/mnist/" class="external text" rel="nofollow">MNIST Dataset</a>
+</li><li> <a href="/wayback-ufldl/stanford-ufldl/wiki/Using_the_MNIST_Dataset" title="Using the MNIST Dataset"> Support functions for loading MNIST in Matlab </a>
+</li><li> <a href="http://ufldl.stanford.edu/wiki/resources/softmax_exercise.zip" class="external text" rel="nofollow">Starter Code (softmax_exercise.zip)</a>
+</li></ul>
+<p>You will also need:
+</p>
+<ul><li> <tt>computeNumericalGradient.m</tt> from <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Sparse_Autoencoder" title="Exercise:Sparse Autoencoder">Exercise:Sparse Autoencoder</a>
+</li></ul>
+<p><i>If you have not completed the exercises listed above, we strongly suggest you complete them first.</i>
+</p>
+<h3> <span class="mw-headline" id="Step_0:_Initialize_constants_and_parameters"> Step 0: Initialize constants and parameters </span></h3>
+<p>We've provided the code for this step in <tt>softmaxExercise.m</tt>.
+</p><p>Two constants, <tt>inputSize</tt> and <tt>numClasses</tt>, corresponding to the size of each input vector and the number of class labels have been defined in the starter code. This will allow you to reuse your code on a different data set in a later exercise. We also initialize <tt>lambda</tt>, the weight decay parameter here.
+</p>
+<h3> <span class="mw-headline" id="Step_1:_Load_data"> Step 1: Load data </span></h3>
+<p>The starter code loads the MNIST images and labels into <tt>inputData</tt> and <tt>labels</tt> respectively. The images are pre-processed to scale the pixel values to the range <span class="texhtml">[0,1]</span>, and the label 0 is remapped to 10 for convenience of implementation, so that the labels take values in <img class="tex" alt="\{1, 2, \ldots, 10\}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/f/6/df62c5f1b4771ec762746498aebfbbc4.png"/>. You will not need to change any code in this step for this exercise, but note that your code should be general enough to operate on data of arbitrary size belonging to any number of classes.
+</p>
+<h3> <span class="mw-headline" id="Step_2:_Implement_softmaxCost"> Step 2: Implement softmaxCost </span></h3>
+<p>In <tt>softmaxCost.m</tt>, implement code to compute the softmax cost function <span class="texhtml"><i>J</i>(&theta;)</span>.  Remember to include the weight decay term in the cost as well.  Your code should also compute the appropriate gradients, as well as the predictions for the input data (which will be used in the cross-validation step later). 
+</p><p>It is important to vectorize your code so that it runs quickly. We also provide several implementation tips below:
+</p>
+<div style="background-color: #eeeeee; border-style: dotted; padding: 5px">
+<p>Note: In the provided starter code, <tt>theta</tt> is a matrix where each the <i>j<sup>th</sup> row</i> is <img class="tex" alt="\theta_j^T" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/a/6/3a69fcea49a54be3a24c05d9b390bef3.png"/> 
+</p>
+</div>
+<p><b>Implementation Tip</b>: Computing the ground truth matrix - In your code, you may need to compute the ground truth matrix <tt>M</tt>, such that <tt>M(r, c)</tt> is 1 if <span class="texhtml"><i>y</i><sup>(<i>c</i>)</sup> = <i>r</i></span> and 0 otherwise. This can be done quickly, without a loop, using the MATLAB functions <tt>sparse</tt> and <tt>full</tt>. Specifically, the command <tt>M = sparse(r, c, v)</tt> creates a sparse matrix such that <tt>M(r(i), c(i)) = v(i)</tt> for all i. That is, the vectors <tt>r</tt> and <tt>c</tt> give the position of the elements whose values we wish to set, and <tt>v</tt> the corresponding values of the elements. Running <tt>full</tt> on a sparse matrix gives a "full" representation of the matrix for use (meaning that Matlab will no longer try to represent it as a sparse matrix in memory).  The code for using <tt>sparse</tt> and <tt>full</tt> to compute the ground truth matrix has already been included in softmaxCost.m.
+</p><p><br/>
+<b>Implementation Tip:</b> Preventing overflows - in softmax regression, you will have to compute the hypothesis
+</p><p><img class="tex" alt="
+\begin{align} 
+h(x^{(i)}) = 
+\frac{1}{ \sum_{j=1}^{k}{e^{ \theta_j^T x^{(i)} }} }
+\begin{bmatrix} 
+e^{ \theta_1^T x^{(i)} } \\
+e^{ \theta_2^T x^{(i)} } \\
+\vdots \\
+e^{ \theta_k^T x^{(i)} } \\
+\end{bmatrix}
+\end{align}
+" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/c/0/ac01dec43af1013d8b4f8228bc10ce42.png"/>
+</p><p>When the products <img class="tex" alt="\theta_i^T x^{(i)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/f/a/8fa58c01c8d1e015abb05bce959caf68.png"/> are large, the exponential function <img class="tex" alt="e^{\theta_i^T x^{(i)}}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/a/6/0a6dbd52be0fc0061dcbadc685bc6789.png"/> will become very large and possibly overflow. When this happens, you will not be able to compute your hypothesis. However, there is an easy solution - observe that we can multiply the top and bottom of the hypothesis by some constant without changing the output: 
+</p><p><img class="tex" alt="
+\begin{align} 
+h(x^{(i)}) &amp;=
+ 
+\frac{1}{ \sum_{j=1}^{k}{e^{ \theta_j^T x^{(i)} }} }
+\begin{bmatrix} 
+e^{ \theta_1^T x^{(i)} } \\
+e^{ \theta_2^T x^{(i)} } \\
+\vdots \\
+e^{ \theta_k^T x^{(i)} } \\
+\end{bmatrix} \\
+
+&amp;=
+
+\frac{ e^{-\alpha} }{ e^{-\alpha} \sum_{j=1}^{k}{e^{ \theta_j^T x^{(i)} }} }
+\begin{bmatrix} 
+e^{ \theta_1^T x^{(i)} } \\
+e^{ \theta_2^T x^{(i)} } \\
+\vdots \\
+e^{ \theta_k^T x^{(i)} } \\
+\end{bmatrix} \\
+
+&amp;=
+
+\frac{ 1 }{ \sum_{j=1}^{k}{e^{ \theta_j^T x^{(i)} - \alpha }} }
+\begin{bmatrix} 
+e^{ \theta_1^T x^{(i)} - \alpha } \\
+e^{ \theta_2^T x^{(i)} - \alpha } \\
+\vdots \\
+e^{ \theta_k^T x^{(i)} - \alpha } \\
+\end{bmatrix} \\
+
+
+\end{align}
+
+" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/8/c/58c78b3b8fe301539fca1ac6babd173c.png"/>
+</p><p>Hence, to prevent overflow, simply subtract some large constant value from each of the <img class="tex" alt="\theta_j^T x^{(i)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/c/a/eca3e97955d73337ead1285dfe3814c7.png"/> terms before computing the exponential. In practice, for each example, you can use the maximum of the <img class="tex" alt="\theta_j^T x^{(i)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/c/a/eca3e97955d73337ead1285dfe3814c7.png"/> terms as the constant. Assuming you have a matrix <tt>M</tt> containing these terms such that <tt>M(r, c)</tt> is <img class="tex" alt="\theta_r^T x^{(c)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/8/b/c8be3a5b745c63281d5a73f995d3817e.png"/>, then you can use the following code to accomplish this:
+</p>
+<pre>% M is the matrix as described in the text
+M = bsxfun(@minus, M, max(M, [], 1));
+</pre>
+<p><tt>max(M)</tt> yields a row vector with each element giving the maximum value in that column. <tt>bsxfun</tt> (short for binary singleton expansion function) applies minus along each row of <tt>M</tt>, hence subtracting the maximum of each column from every element in the column. 
+</p><p><b>Implementation Tip: </b> Computing the predictions - you may also find <tt>bsxfun</tt> useful in computing your predictions - if you have a matrix <tt>M</tt> containing the <img class="tex" alt="e^{\theta_j^T x^{(i)}}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/b/0/1b07c2ca7638dc91396a95d6e7e691ac.png"/> terms, such that <tt>M(r, c)</tt> contains the <img class="tex" alt="e^{\theta_r^T x^{(c)}}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/a/e/bae49b7331dcd6c73651b4c9eb97db6a.png"/> term, you can use the following code to compute the hypothesis (by dividing all elements in each column by their column sum):
+</p>
+<pre>% M is the matrix as described in the text
+M = bsxfun(@rdivide, M, sum(M))
+</pre>
+<p>The operation of <tt>bsxfun</tt> in this case is analogous to the earlier example.
+</p>
+<h3> <span class="mw-headline" id="Step_3:_Gradient_checking"> Step 3: Gradient checking </span></h3>
+<p>Once you have written the softmax cost function, you should check your gradients numerically. In general, whenever implementing any learning algorithm, you should always check your gradients numerically before proceeding to train the model. The norm of the difference between the numerical gradient and your analytical gradient should be small, on the order of <span class="texhtml">10<sup> &minus; 9</sup></span>. 
+</p><p><b>Implementation Tip:</b> Faster gradient checking - when debugging, you can speed up gradient checking by reducing the number of parameters your model uses. In this case, we have included code for reducing the size of the input data, using the first 8 pixels of the images instead of the full 28x28 images. This code can be used by setting the variable <tt>DEBUG</tt> to true, as described in step 1 of the code.
+</p>
+<h3> <span class="mw-headline" id="Step_4:_Learning_parameters"> Step 4: Learning parameters </span></h3>
+<p>Now that you've verified that your gradients are correct, you can train your softmax model using the function <tt>softmaxTrain</tt> in <tt>softmaxTrain.m</tt>. <tt>softmaxTrain</tt> which uses the L-BFGS algorithm, in the function <tt>minFunc</tt>. Training the model on the entire MNIST training set of 60000 28x28 images should be rather quick, and take less than 5 minutes for 100 iterations.
+</p><p>Factoring <tt>softmaxTrain</tt> out as a function means that you will be able to easily reuse it to train softmax models on other data sets in the future by invoking the function with different parameters.
+</p><p>Use the following parameter when training your softmax classifier:
+</p>
+<pre>lambda = 1e-4
+</pre>
+<h3> <span class="mw-headline" id="Step_5:_Testing"> Step 5: Testing </span></h3>
+<p>Now that you've trained your model, you will test it against the MNIST test set, comprising 10000 28x28 images. However, to do so, you will first need to complete the function <tt>softmaxPredict</tt> in <tt>softmaxPredict.m</tt>, a function which generates predictions for input data under a trained softmax model. 
+</p><p>Once that is done, you will be able to compute the accuracy (the proportion of correctly classified images) of your model using the code provided. Our implementation achieved an accuracy of <b>92.6%</b>. If your model's accuracy is significantly less (less than 91%), check your code, ensure that you are using the trained weights, and that you are training your model on the full 60000 training images. Conversely, if your accuracy is too high (99-100%), ensure that you have not accidentally trained your model on the test set as well.
+</p><p><br/>
+</p>
+<hr/>
+<div style="text-align: center;font-size:small; background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
+<p><a href="/wayback-ufldl/stanford-ufldl/wiki/Softmax_Regression" title="Softmax Regression">Softmax Regression</a> | <strong class="selflink">Exercise:Softmax Regression</strong>
+</p>
+</div>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 173/1000000
+Post-expand include size: 430/2097152 bytes
+Template argument size: 148/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<div class="printfooter">
+</div>		<div id="catlinks" class="catlinks"><div id="mw-normal-catlinks"><a href="" title="Special:Categories">Category</a>: <span dir="ltr"><a href="" class="new" title="Category:Exercises (page does not exist)">Exercises</a></span></div></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Softmax_Regression" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-talk" class="new"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				 <li id="ca-viewsource"><a href="" title="This page is protected.
+You can view its source [e]" accesskey="e">View source</a></li>
+				 <li id="ca-history"><a href="" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-ufldl_resources">
+		<h5>ufldl resources</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-wiki">
+		<h5>wiki</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
+				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="" id="searchform">
+				<input type="hidden" name="title" value="Special:Search" disabled/>
+				<input id="searchInput" title="Search Ufldl" accesskey="f" type="search" name="search" disabled/>
+				<input type="submit" name="go" class="searchButton" id="searchGoButton" value="Go" title="Go to a page with this exact name if exists" disabled/>&nbsp;
+				<input type="submit" name="fulltext" class="searchButton" id="mw-searchButton" value="Search" title="Search the pages for this text" disabled/>
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="" title="List of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+<li id="t-specialpages"><a href="" title="List of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li id="t-print"><a href="" rel="alternate" title="Printable version of this page [p]" accesskey="p">Printable version</a></li>				<li id="t-permalink"><a href="" title="Permanent link to this revision of the page">Permanent link</a></li>			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 26 May 2011, at 11:02.</li>
+		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+
+<!-- Served in 0.128 secs. -->
+</body>
+</html>

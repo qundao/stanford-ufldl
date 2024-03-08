@@ -1,0 +1,255 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sparse Coding: Autoencoder Interpretation - Ufldl</title>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+
+</head>
+
+<body class="mediawiki ltr ns-0 ns-subject page-Sparse_Coding_Autoencoder_Interpretation skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">Sparse Coding: Autoencoder Interpretation</h1>
+	<div id="bodyContent">
+		<h3 id="siteSub">From Ufldl</h3>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+<table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Sparse_coding"><span class="tocnumber">1</span> <span class="toctext">Sparse coding</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Topographic_sparse_coding"><span class="tocnumber">2</span> <span class="toctext">Topographic sparse coding</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Sparse_coding_in_practice"><span class="tocnumber">3</span> <span class="toctext">Sparse coding in practice</span></a>
+<ul>
+<li class="toclevel-2 tocsection-4"><a href="#Batching_examples_into_mini-batches"><span class="tocnumber">3.1</span> <span class="toctext">Batching examples into mini-batches</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#Good_initialization_of_s"><span class="tocnumber">3.2</span> <span class="toctext">Good initialization of s</span></a></li>
+<li class="toclevel-2 tocsection-6"><a href="#The_practical_algorithm"><span class="tocnumber">3.3</span> <span class="toctext">The practical algorithm</span></a></li>
+</ul>
+</li>
+</ul>
+</td></tr></table><script>if (window.showTocToggle) { var tocShowText = "show"; var tocHideText = "hide"; showTocToggle(); } </script>
+<h2> <span class="mw-headline" id="Sparse_coding"> Sparse coding </span></h2>
+<p>In the sparse autoencoder, we tried to learn a set of weights <span class="texhtml"><i>W</i></span> (and associated biases <span class="texhtml"><i>b</i></span>) that would give us sparse features <span class="texhtml">&sigma;(<i>W</i><i>x</i> + <i>b</i>)</span> useful in reconstructing the input <span class="texhtml"><i>x</i></span>. 
+</p><p><a href="" class="image"><img alt="STL SparseAE.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/f/ff/STL_SparseAE.png/240px-STL_SparseAE.png" width="240" height="328"/></a>
+</p><p>Sparse coding can be seen as a modification of the sparse autoencoder method in which we try to learn the set of features for some data "directly". Together with an associated basis  for transforming the learned features from the feature space to the data space, we can then reconstruct the data from the learned features.
+</p><p>Formally, in sparse coding, we have some data <span class="texhtml"><i>x</i></span> we would like to learn features on. In particular, we would like to learn <span class="texhtml"><i>s</i></span>, a set of sparse features useful for representing the data, and <span class="texhtml"><i>A</i></span>, a basis for transforming the features from the feature space to the data space. Our objective function is hence:
+</p>
+<dl><dd><img class="tex" alt="
+J(A, s) = \lVert As - x \rVert_2^2 + \lambda \lVert s \rVert_1
+" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/0/7/2072898a1e2ee735eb51f8b527f21e2e.png"/>
+</dd></dl>
+<p>(If you are unfamiliar with the notation, <img class="tex" alt="\lVert x \rVert_k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/5/1/05140fa4a71b91000681ae96011488e9.png"/> refers to the L<span class="texhtml"><i>k</i></span> norm of the <span class="texhtml"><i>x</i></span> which is equal to <img class="tex" alt="\left( \sum{ \left| x_i^k \right| } \right) ^{\frac{1}{k}}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/7/6/67605df92ae8c43173bbb80f7a93cb83.png"/>. The L2 norm is the familiar Euclidean norm, while the L1 norm is the sum of absolute values of the elements of the vector)
+</p><p>The first term is the error in reconstructing the data from the features using the basis, and the second term is a sparsity penalty term to encourage the learned features to be sparse. 
+</p><p>However, the objective function as it stands is not properly constrained - it is possible to reduce the sparsity cost (the second term) by scaling <span class="texhtml"><i>A</i></span> by some constant and scaling <span class="texhtml"><i>s</i></span> by the inverse of the same constant, without changing the error. Hence, we include the additional constraint that that for every column <span class="texhtml"><i>A</i><sub><i>j</i></sub></span> of <span class="texhtml"><i>A</i></span>, 
+<img class="tex" alt="A_j^TA_j \le 1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/e/0/ee05eff183594aed415392b8104bfb1d.png"/>. Our problem is thus:
+</p>
+<dl><dd><img class="tex" alt="
+\begin{array}{rcl}
+     {\rm minimize} &amp; \lVert As - x \rVert_2^2 + \lambda \lVert s \rVert_1 \\
+     {\rm s.t.}     &amp;    A_j^TA_j \le 1 \; \forall j \\
+\end{array} 
+" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/2/f/a2f57c5746669d09790f9d862352c89b.png"/>
+</dd></dl>
+<p>Unfortunately, the objective function is non-convex, and hence impossible to optimize well using gradient-based methods. However, given <span class="texhtml"><i>A</i></span>, the problem of finding <span class="texhtml"><i>s</i></span> that minimizes <span class="texhtml"><i>J</i>(<i>A</i>,<i>s</i>)</span> is convex. Similarly, given <span class="texhtml"><i>s</i></span>, the problem of finding <span class="texhtml"><i>A</i></span> that minimizes <span class="texhtml"><i>J</i>(<i>A</i>,<i>s</i>)</span> is also convex. This suggests that we might try alternately optimizing for <span class="texhtml"><i>A</i></span> for a fixed <span class="texhtml"><i>s</i></span>, and then optimizing for <span class="texhtml"><i>s</i></span> given a fixed <span class="texhtml"><i>A</i></span>. It turns out that this works quite well in practice.
+</p><p>However, the form of our problem presents another difficulty - the constraint that <img class="tex" alt="A_j^TA_j \le 1 \; \forall j" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/4/c/1/4c19ae5304ebe923a3053ea8efbc7622.png"/> cannot be enforced using simple gradient-based methods. Hence, in practice, this constraint is weakened to a "weight decay" term designed to keep the entries of <span class="texhtml"><i>A</i></span> small. This gives us a new objective function:
+</p>
+<dl><dd><img class="tex" alt="
+J(A, s) = \lVert As - x \rVert_2^2 + \lambda \lVert s \rVert_1 + \gamma \lVert A \rVert_2^2
+" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/d/6/1d6a2cef1550cd6830cc45e56d120dd5.png"/>
+</dd></dl>
+<p>(note that the third term, <img class="tex" alt="\lVert A \rVert_2^2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/0/5/e05f2e1c0e4f84b54964b13b6d1aafe1.png"/> is simply the sum of squares of the entries of A, or <img class="tex" alt="\sum_r{\sum_c{A_{rc}^2}}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/b/e/2be909f8e140d9bae7a5b5f2be0ed26c.png"/>)
+</p><p>This objective function presents one last problem - the L1 norm is not differentiable at 0, and hence poses a problem for gradient-based methods. While the problem can be solved using other non-gradient descent-based methods, we will "smooth out" the L1 norm using an approximation which will allow us to use gradient descent. To "smooth out" the L1 norm, we use <img class="tex" alt="\sqrt{x^2 + \epsilon}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/d/7/dd7d0966210455f769c5ed37c206c606.png"/> in place of <img class="tex" alt="\left| x \right|" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/a/3/6a37fe2d78bd89637e639ae2f90c1a1b.png"/>, where <span class="texhtml">&epsilon;</span> is a "smoothing parameter" which can also be interpreted as a sort of "sparsity parameter" (to see this, observe that when <span class="texhtml">&epsilon;</span> is large compared to <span class="texhtml"><i>x</i></span>, the <span class="texhtml"><i>x</i> + &epsilon;</span> is dominated by <span class="texhtml">&epsilon;</span>, and taking the square root yields approximately <img class="tex" alt="\sqrt{\epsilon}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/b/6/ab6e222a1176d32e0a9ead3c70c69b02.png"/>). This "smoothing" will come in handy later when considering topographic sparse coding below. 
+</p><p>Our final objective function is hence:
+</p>
+<dl><dd><img class="tex" alt="
+J(A, s) = \lVert As - x \rVert_2^2 + \lambda \sqrt{s^2 + \epsilon} + \gamma \lVert A \rVert_2^2
+" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/5/a/f5a161dfa55cbc70b160e1e224134949.png"/>
+</dd></dl>
+<p>(where <img class="tex" alt="\sqrt{s^2 + \epsilon}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/2/3/72354bd3dca1a2904b08730bc124fd8a.png"/> is shorthand for <img class="tex" alt="\sum_k{\sqrt{s_k^2 + \epsilon}}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/7/f/57fb2d3245ec566af9ec7c9de4b4f172.png"/>)
+</p><p>This objective function can then be optimized iteratively, using the following procedure:
+</p>
+<ol>
+<li>Initialize <span class="texhtml"><i>A</i></span> randomly
+<li>Repeat until convergence
+  <ol>
+    <li>Find the <span class="texhtml"><i>s</i></span> that minimizes <span class="texhtml"><i>J</i>(<i>A</i>,<i>s</i>)</span> for the <span class="texhtml"><i>A</i></span> found in the previous step
+    <li>Solve for the <span class="texhtml"><i>A</i></span> that minimizes <span class="texhtml"><i>J</i>(<i>A</i>,<i>s</i>)</span> for the <span class="texhtml"><i>s</i></span> found in the previous step 
+  </ol>
+</ol>
+<p>Observe that with our modified objective function, the objective function <span class="texhtml"><i>J</i>(<i>A</i>,<i>s</i>)</span> given <span class="texhtml"><i>s</i></span>, that is <img class="tex" alt="J(A; s) = \lVert As - x \rVert_2^2 + \gamma \lVert A \rVert_2^2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/7/a/57a5b22ceffa2fbfcc2ca86bdc9372bd.png"/> (the L1 term in <span class="texhtml"><i>s</i></span> can be omitted since it is not a function of <span class="texhtml"><i>A</i></span>) is simply a quadratic term in <span class="texhtml"><i>A</i></span>, and hence has an easily derivable analytic solution in <span class="texhtml"><i>A</i></span>. A quick way to derive this solution would be to use matrix calculus - some pages about matrix calculus can be found in the <a href="/wayback-ufldl/stanford-ufldl/wiki/Useful_Links" title="Useful Links"> useful links</a> section. Unfortunately, the objective function given <span class="texhtml"><i>A</i></span> does not have a similarly nice analytic solution, so that minimization step will have to be carried out using gradient descent or similar optimization methods.
+</p><p>In theory, optimizing for this objective function using the iterative method as above should (eventually) yield features (the basis vectors of <span class="texhtml"><i>A</i></span>) similar to those learned using the sparse autoencoder. However, in practice, there are quite a few tricks required for better convergence of the algorithm, and these tricks are described in greater detail in the later section on <a href="/wayback-ufldl/stanford-ufldl/wiki/Sparse_Coding__Autoencoder_Interpretation#Sparse_coding_in_practice" title="Sparse Coding: Autoencoder Interpretation"> sparse coding in practice</a>. Deriving the gradients for the objective function may be slightly tricky as well, and using matrix calculus or <a href="/wayback-ufldl/stanford-ufldl/wiki/Deriving_gradients_using_the_backpropagation_idea" title="Deriving gradients using the backpropagation idea"> using the backpropagation intuition</a> can be helpful.
+</p>
+<h2> <span class="mw-headline" id="Topographic_sparse_coding"> Topographic sparse coding </span></h2>
+<p>With sparse coding, we can learn a set of features useful for representing the data. However, drawing inspiration from the brain, we would like to learn a set of features that are "orderly" in some manner. For instance, consider visual features. As suggested earlier, the V1 cortex of the brain contains neurons which detect edges at particular orientations. However, these neurons are also organized into hypercolumns in which adjacent neurons detect edges at similar orientations. One neuron could detect a horizontal edge, its neighbors edges oriented slightly off the horizontal, and moving further along the hypercolumn, the neurons detect edges oriented further off the horizontal. 
+</p><p>Inspired by this example, we would like to learn features which are similarly "topographically ordered". What does this imply for our learned features? Intuitively, if "adjacent" features are "similar", we would expect that if one feature is activated, its neighbors will also be activated to a lesser extent. 
+</p><p>Concretely, suppose we (arbitrarily) organized our features into a square matrix. We would then like adjacent features in the matrix to be similar. The way this is accomplished is to group these adjacent features together in the smoothed L1 penalty, so that instead of say <img class="tex" alt="\sqrt{s_{1,1}^2 + \epsilon}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/3/9/3391a34bac754562a6e2d881627d324e.png"/>, we use say <img class="tex" alt="\sqrt{s_{1,1}^2 + s_{1,2}^2 + s_{1,3}^2 + s_{2,1}^2 + s_{2,2}^2 + s_{3,2}^2 + s_{3,1}^2 + s_{3,2}^2 + s_{3,3}^2 + \epsilon}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/d/9/0d9a543116996f237dcab61e5c78cbee.png"/> instead, if we group in 3x3 regions. The grouping is usually overlapping, so that the 3x3 region starting at the 1st row and 1st column is one group, the 3x3 region starting at the 1st row and 2nd column is another group, and so on. Further, the grouping is also usually done wrapping around, as if the matrix were a torus, so that every feature is counted an equal number of times.
+</p><p>Hence, in place of the smoothed L1 penalty, we use the sum of smoothed L1 penalties over all the groups, so our new objective function is:
+</p>
+<dl><dd><img class="tex" alt="
+J(A, s) = \lVert As - x \rVert_2^2 + \lambda \sum_{\text{all groups } g}{\sqrt{ \left( \sum_{\text{all } s \in g}{s^2} \right) + \epsilon} } + \gamma \lVert A \rVert_2^2
+" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/5/b/25b426de9a1b46c94839f5f9dd4801a3.png"/>
+</dd></dl>
+<p>In practice, the "grouping" can be accomplished using a "grouping matrix" <span class="texhtml"><i>V</i></span>, such that the <span class="texhtml"><i>r</i></span>th row of <span class="texhtml"><i>V</i></span> indicates which features are grouped in the <span class="texhtml"><i>r</i></span>th group, so <span class="texhtml"><i>V</i><sub><i>r</i>,<i>c</i></sub> = 1</span> if group <span class="texhtml"><i>r</i></span> contains feature <span class="texhtml"><i>c</i></span>. Thinking of the grouping as being achieved by a grouping matrix makes the computation of the gradients more intuitive. Using this grouping matrix, the objective function can be rewritten as:
+</p>
+<dl><dd><img class="tex" alt="
+J(A, s) = \lVert As - x \rVert_2^2 + \lambda \sum{ \sqrt{Vss^T + \epsilon} } + \gamma \lVert A \rVert_2^2
+" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/2/3/c23bf21d67df11fdbd7cc4ae9dc41c64.png"/>
+</dd></dl>
+<p>(where <img class="tex" alt="\sum{ \sqrt{Vss^T + \epsilon} }" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/c/d/ccd5a0f991db6bdba852b147ee42d91b.png"/> is <span class="texhtml">
+</p>
+<table>
+		<tr style="text-align: center;"><td><span style="font-size: x-large; font-family: serif;">&sum;</span></td><td><span style="font-size: x-large; font-family: serif;">&sum;</span></td><td><i>D</i><sub><i>r</i>,<i>c</i></sub></td></tr>
+		<tr style="text-align: center; vertical-align: top;"><td><i>r</i></td><td><i>c</i></td><td></td></tr>
+</table>
+<p></span> if we let <img class="tex" alt="D = \sqrt{Vss^T + \epsilon}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/8/4/9845dba65c5e5ff49ea4c134dc2c1bf0.png"/>)
+</p><p>This objective function can be optimized using the iterated method described in the earlier section. Topographic sparse coding will learn features similar to those learned by sparse coding, except that the features will now be "ordered" in some way.
+</p>
+<h2> <span class="mw-headline" id="Sparse_coding_in_practice"> Sparse coding in practice </span></h2>
+<p>As suggested in the earlier sections, while the theory behind sparse coding is quite simple, writing a good implementation that actually works and converges reasonably quickly to good optima requires a bit of finesse.
+</p><p>Recall the simple iterative algorithm proposed earlier:
+</p>
+<ol>
+<li>Initialize <span class="texhtml"><i>A</i></span> randomly
+<li>Repeat until convergence
+  <ol>
+    <li>Find the <span class="texhtml"><i>s</i></span> that minimizes <span class="texhtml"><i>J</i>(<i>A</i>,<i>s</i>)</span> for the <span class="texhtml"><i>A</i></span> found in the previous step
+    <li>Solve for the <span class="texhtml"><i>A</i></span> that minimizes <span class="texhtml"><i>J</i>(<i>A</i>,<i>s</i>)</span> for the <span class="texhtml"><i>s</i></span> found in the previous step 
+  </ol>
+</ol>
+<p>It turns out that running this algorithm out of the box will not produce very good results, if any results are produced at all. There are two main tricks to achieve faster and better convergence: 
+</p>
+<ol>
+<li>Batching examples into "mini-batches"
+<li>Good initialization of <span class="texhtml"><i>s</i></span>
+</ol>
+<h3> <span class="mw-headline" id="Batching_examples_into_mini-batches"> Batching examples into mini-batches </span></h3>
+<p>If you try running the simple iterative algorithm on a large dataset of say 10 000 patches at one go, you will find that each iteration takes a long time, and the algorithm may hence take a long time to converge. To increase the rate of convergence, you can instead run the algorithm on mini-batches instead. To do this, instead of running the algorithm on all 10 000 patches, in each iteration, select a mini-batch - a (different) random subset of say 2000 patches from the 10 000 patches - and run the algorithm on that mini-batch for the iteration instead. This accomplishes two things - firstly, it speeds up each iteration, since now each iteration is operating on 2000 rather than 10 000 patches; secondly, and more importantly, it increases the rate of convergence <a href="" class="new" title="(TODO (page does not exist)">(TODO</a>: explain why).
+</p>
+<h3> <span class="mw-headline" id="Good_initialization_of_s"> Good initialization of <span class="texhtml"><i>s</i></span> </span></h3>
+<p>Another important trick in obtaining faster and better convergence is good initialization of the feature matrix <span class="texhtml"><i>s</i></span> before using gradient descent (or other methods) to optimize for the objective function for <span class="texhtml"><i>s</i></span> given <span class="texhtml"><i>A</i></span>. In practice, initializing <span class="texhtml"><i>s</i></span> randomly at each iteration can result in poor convergence unless a good optima is found for <span class="texhtml"><i>s</i></span> before moving on to optimize for <span class="texhtml"><i>A</i></span>. A better way to initialize <span class="texhtml"><i>s</i></span> is the following:
+</p>
+<ol>
+<li>Set <img class="tex" alt="s \leftarrow W^Tx" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/0/b/f0b36b91f5e791ff8a59c1216da9af2d.png"/> (where <span class="texhtml"><i>x</i></span> is the matrix of patches in the mini-batch)
+<li>For each feature in <span class="texhtml"><i>s</i></span> (i.e. each column of <span class="texhtml"><i>s</i></span>), divide the feature by the norm of the corresponding basis vector in <span class="texhtml"><i>A</i></span>. That is, if <span class="texhtml"><i>s</i><sub><i>r</i>,<i>c</i></sub></span> is the <span class="texhtml"><i>r</i></span>th feature for the <span class="texhtml"><i>c</i></span>th example, and <span class="texhtml"><i>A</i><sub><i>c</i></sub></span> is the <span class="texhtml"><i>c</i></span>th basis vector in <span class="texhtml"><i>A</i></span>, then set <img class="tex" alt="s_{r, c} \leftarrow \frac{ s_{r, c} } { \lVert A_c \rVert }." src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/0/7/20773e6ff4a4a9d48b6c3769e7b50780.png"/>
+</ol>
+<p>Very roughly and informally speaking, this initialization helps because the first step is an attempt to find a good <span class="texhtml"><i>s</i></span> such that <img class="tex" alt="Ws \approx x" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/4/0/84002fcaba86b0ad04772d33a6aa556d.png"/>, and the second step "normalizes" <span class="texhtml"><i>s</i></span> in an attempt to keep the sparsity penalty small. It turns out that initializing <span class="texhtml"><i>s</i></span> using only one but not both steps results in poor performance in practice. (<a href="" class="new" title="TODO (page does not exist)">TODO</a>: a better explanation for why this initialization helps?)
+</p>
+<h3> <span class="mw-headline" id="The_practical_algorithm"> The practical algorithm </span></h3>
+<p>With the above two tricks, the algorithm for sparse coding then becomes:
+</p>
+<ol>
+<li>Initialize <span class="texhtml"><i>A</i></span> randomly
+<li>Repeat until convergence
+  <ol>
+    <li>Select a random mini-batch of 2000 patches
+    <li>Initialize <span class="texhtml"><i>s</i></span> as described above
+    <li>Find the <span class="texhtml"><i>s</i></span> that minimizes <span class="texhtml"><i>J</i>(<i>A</i>,<i>s</i>)</span> for the <span class="texhtml"><i>A</i></span> found in the previous step
+    <li>Solve for the <span class="texhtml"><i>A</i></span> that minimizes <span class="texhtml"><i>J</i>(<i>A</i>,<i>s</i>)</span> for the <span class="texhtml"><i>s</i></span> found in the previous step 
+  </ol>
+</ol>
+<p>With this method, you should be able to reach a good local optima relatively quickly.
+</p><p><br/>
+</p>
+<div style="text-align: left;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
+<p>Language&nbsp;: <a href="/wayback-ufldl/stanford-ufldl/wiki/%E7%A8%80%E7%96%8F%E7%BC%96%E7%A0%81%E8%87%AA%E7%BC%96%E7%A0%81%E8%A1%A8%E8%BE%BE" title="稀疏编码自编码表达">中文</a>
+</p>
+</div>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 1005/1000000
+Post-expand include size: 183/2097152 bytes
+Template argument size: 33/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<div class="printfooter">
+</div>		<div id="catlinks" class="catlinks catlinks-allhidden"></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/Sparse_Coding__Autoencoder_Interpretation" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-talk" class="new"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				 <li id="ca-viewsource"><a href="" title="This page is protected.
+You can view its source [e]" accesskey="e">View source</a></li>
+				 <li id="ca-history"><a href="" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-ufldl_resources">
+		<h5>ufldl resources</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-wiki">
+		<h5>wiki</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
+				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="" id="searchform">
+				<input type="hidden" name="title" value="Special:Search" disabled/>
+				<input id="searchInput" title="Search Ufldl" accesskey="f" type="search" name="search" disabled/>
+				<input type="submit" name="go" class="searchButton" id="searchGoButton" value="Go" title="Go to a page with this exact name if exists" disabled/>&nbsp;
+				<input type="submit" name="fulltext" class="searchButton" id="mw-searchButton" value="Search" title="Search the pages for this text" disabled/>
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="" title="List of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+<li id="t-specialpages"><a href="" title="List of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li id="t-print"><a href="" rel="alternate" title="Printable version of this page [p]" accesskey="p">Printable version</a></li>				<li id="t-permalink"><a href="" title="Permanent link to this revision of the page">Permanent link</a></li>			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 19 April 2013, at 02:49.</li>
+		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+
+<!-- Served in 0.125 secs. -->
+</body>
+</html>

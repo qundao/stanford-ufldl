@@ -1,0 +1,197 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>逻辑回归的向量化实现样例 - Ufldl</title>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+
+</head>
+
+<body class="mediawiki ltr ns-0 ns-subject page-逻辑回归的向量化实现样例 skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">逻辑回归的向量化实现样例</h1>
+	<div id="bodyContent">
+		<h3 id="siteSub">From Ufldl</h3>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+<p>我们想用批量梯度上升法对logistic回归分析模型进行训练，其模型如下：
+</p>
+<dl><dd><img class="tex" alt="\begin{align}
+h_\theta(x) = \frac{1}{1+\exp(-\theta^Tx)},
+\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/b/3/bb3791d463b832a88731b94f1d8e5279.png"/>
+</dd></dl>
+<p>让我们遵从公开课程视频与CS229教学讲义的符号规范，设 <img class="tex" alt="\textstyle x_0=1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/5/8/c582053ce9cb63d69ae80acb53ded0d3.png"/>，于是<img class="tex" alt="x\in R^{n+1}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/f/2/bf2c73c6b739b3d62483e52634bd2a8b.png"/> ，<img class="tex" alt="\theta \in R^{n+1}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/3/c/83c293db5c0cfcc398279baca87493df.png"/>， <img class="tex" alt="\textstyle \theta_0" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/6/0/f6040edfd55be75383ff6ae2badc24f8.png"/> 为截距。假设我们有m个训练样本{(<img class="tex" alt="x^\left( 1\right) " src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/7/e/e7e1bfe48fb40e78fa6be0cd674e3df8.png"/>,<img class="tex" alt="y^\left( 1\right)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/e/5/fe5beb5b76ed733b55c75fdef784536f.png"/> ) ,...,(<img class="tex" alt="x^\left( m\right)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/b/c/ebc2c1f0ca45c96b3e87d98a0bbaf7b7.png"/> ,<img class="tex" alt="y^\left( m\right)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/c/8/5c820a43ca3004091488ff8107326d44.png"/> )}，而批量梯度上升法的更新法则是：<img class="tex" alt="\theta :=\theta +\alpha \nabla _{\theta }l\left( \theta \right) " src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/4/f/f4f712eceff5b3bd35e720e47a1a1c02.png"/> ,这里的 <img class="tex" alt="l\left( \theta \right) " src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/6/a/76acab35c779aeb7faeadd247a867692.png"/> 是对数似然函数，<img class="tex" alt="\nabla _{\theta }l\left( \theta \right) " src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/5/7/65786047c1e0285090fc8c9c3dd8d811.png"/> 是其导函数。
+</p><p>[注：下文的符号规范与&lt;公开课程视频&gt;或&lt;教学讲义CS229：机器学习&gt;中的相同，详细内容可以参见公开课程视频或教学讲义#1 <a href="http://cs229.stanford.edu/" class="external free" rel="nofollow">http://cs229.stanford.edu/</a>]
+</p><p>于是，我们需要如下计算梯度：
+</p>
+<dl><dd><img class="tex" alt="\begin{align}
+\nabla_\theta \ell(\theta) = \sum_{i=1}^m \left(y^{(i)} - h_\theta(x^{(i)}) \right) x^{(i)}_j.
+\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/9/e/b9e08cd04d5328fec470b92aa27dc8cc.png"/>
+</dd></dl>
+<p>我们用Matlab/Octave风格变量x表示输入数据构成的样本矩阵，x(:,i)代表第 i个训练样本<img class="tex" alt="x^{\left( i\right) }" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/4/9/249d10c9a0997db9a20708c30053718a.png"/>，x(j,i)就代表<img class="tex" alt="x_{j}^{\left( i\right) }" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/7/c/37c5da947d7e80c378320e2e4b3288ef.png"/>（译者注：第i个训练样本向量的第j个元素）。同样，用Matlab/Octave风格变量y表示由训练样本集合的全体类别标号所构成的行向量，则该向量的第i个元素y(i)就代表上式中的<img class="tex" alt="y^{\left(i\right) }\in \left\{ 0,1\right\} " src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/4/2/d42386eacdba63741133efdd4f2be534.png"/>。（注意这里跟公开课程视频及CS229的符号规范不同，矩阵x按列而不是按行存放输入训练样本，同样，<img class="tex" alt="y\in R^{1\times m}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/d/7/fd71bbedd9dce77c00a3f632c7cd701a.png"/>是行向量而不是列向量。）
+</p><p><br/>
+以下是梯度运算代码的一种实现，非常恐怖，速度极慢：
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="matlab source-matlab"><pre class="de1"><span class="co1">% 代码1</span>
+grad = <span class="kw2">zeros</span><span class="br0">&#40;</span>n+<span class="nu0">1</span>,<span class="nu0">1</span><span class="br0">&#41;</span>;
+<span class="kw1">for</span> <span class="kw2"><span class="re0">i</span></span>=<span class="nu0">1</span>:m,
+  h = sigmoid<span class="br0">&#40;</span>theta'*x<span class="br0">&#40;</span>:,<span class="kw2"><span class="re0">i</span></span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+  temp = y<span class="br0">&#40;</span><span class="kw2"><span class="re0">i</span></span><span class="br0">&#41;</span> - h; 
+  <span class="kw1">for</span> <span class="kw2"><span class="re0">j</span></span>=<span class="nu0">1</span>:n+<span class="nu0">1</span>,
+    grad<span class="br0">&#40;</span><span class="kw2"><span class="re0">j</span></span><span class="br0">&#41;</span> = grad<span class="br0">&#40;</span><span class="kw2"><span class="re0">j</span></span><span class="br0">&#41;</span> + temp * x<span class="br0">&#40;</span><span class="kw2"><span class="re0">j</span></span>,<span class="kw2"><span class="re0">i</span></span><span class="br0">&#41;</span>; 
+  <span class="kw1">end</span>;
+<span class="kw1">end</span>;</pre></div></div>
+<p><br/>
+嵌套的for循环语句使这段代码的运行非常缓慢。以下是更典型的实现方式，它对算法进行部分向量化，带来更优的执行效率：
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="matlab source-matlab"><pre class="de1"><span class="co1">% 代码2</span>
+grad = <span class="kw2">zeros</span><span class="br0">&#40;</span>n+<span class="nu0">1</span>,<span class="nu0">1</span><span class="br0">&#41;</span>;
+<span class="kw1">for</span> <span class="kw2"><span class="re0">i</span></span>=<span class="nu0">1</span>:m,
+  grad = grad + <span class="br0">&#40;</span>y<span class="br0">&#40;</span><span class="kw2"><span class="re0">i</span></span><span class="br0">&#41;</span> - sigmoid<span class="br0">&#40;</span>theta'*x<span class="br0">&#40;</span>:,<span class="kw2"><span class="re0">i</span></span><span class="br0">&#41;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>* x<span class="br0">&#40;</span>:,<span class="kw2"><span class="re0">i</span></span><span class="br0">&#41;</span>;
+<span class="kw1">end</span>;</pre></div></div>
+<p><br/>
+但是，或许可以向量化得更彻底些。如果去除for循环，我们就可以显著地改善代码执行效率。特别的，假定b是一个列向量，A是一个矩阵，我们用以下两种方式来计算A*b：
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="matlab source-matlab"><pre class="de1"><span class="co1">% 矩阵-向量乘法运算的低效代码</span>
+grad = <span class="kw2">zeros</span><span class="br0">&#40;</span>n+<span class="nu0">1</span>,<span class="nu0">1</span><span class="br0">&#41;</span>;
+<span class="kw1">for</span> <span class="kw2"><span class="re0">i</span></span>=<span class="nu0">1</span>:m,
+  grad = grad + b<span class="br0">&#40;</span><span class="kw2"><span class="re0">i</span></span><span class="br0">&#41;</span> * A<span class="br0">&#40;</span>:,<span class="kw2"><span class="re0">i</span></span><span class="br0">&#41;</span>;  <span class="co1">% 通常写法为A(:,i)*b(i)</span>
+<span class="kw1">end</span>;
+&nbsp;
+<span class="co1">% 矩阵-向量乘法运算的高效代码</span>
+grad = A*b;</pre></div></div>
+<p><br/>
+我们看到，代码2是用了低效的for循环语句执行梯度上升（译者注：原文是下降）运算，将b(i)看成(y(i) - sigmoid(theta'*x(:,i)))，A看成x，我们就可以使用以下高效率的代码：
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="matlab source-matlab"><pre class="de1"><span class="co1">% 代码3</span>
+grad = x * <span class="br0">&#40;</span>y- sigmoid<span class="br0">&#40;</span>theta'*x<span class="br0">&#41;</span><span class="br0">&#41;</span>;</pre></div></div>
+<p><br/>
+这里我们假定Matlab/Octave的sigmoid(z)函数接受一个向量形式的输入z，依次对输入向量的每个元素施行sigmoid函数，最后返回运算结果，因此sigmoid(z)的输出结果是一个与z有相同维度的向量。
+</p><p>当训练数据集很大时，最终的实现（译者注：代码3）充分发挥了Matlab/Octave高度优化的数值线性代数库的优势来进行矩阵-向量操作，因此，比起之前代码要高效得多。
+</p><p>想采用向量化实现并非易事，通常需要周密的思考。但当你熟练掌握向量化操作后，你会发现，这里面有固定的设计模式（对应少量的向量化技巧），可以灵活运用到很多不同的代码片段中。
+</p><p><br/>
+</p>
+<h2> <span class="mw-headline" id=".E4.B8.AD.E8.8B.B1.E6.96.87.E5.AF.B9.E7.85.A7">中英文对照</span></h2>
+<dl><dd>逻辑回归 Logistic Regression
+</dd><dd>批量梯度上升法 batch gradient ascent
+</dd><dd>截距 intercept term
+</dd><dd>对数似然函数 the log likelihood
+</dd><dd>导函数 derivative
+</dd><dd>梯度 gradient
+</dd></dl>
+<p><br/>
+</p>
+<h2> <span class="mw-headline" id=".E4.B8.AD.E6.96.87.E8.AF.91.E8.80.85">中文译者</span></h2>
+<p>林锋（xlfg@yeah.net），谭晓阳（x.tan@nuaa.edu.cn），邓亚峰（dengyafeng@gmail.com）
+</p><p><br/>
+</p>
+<div style="text-align: center;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
+<p><a href="/wayback-ufldl/stanford-ufldl/wiki/%E7%9F%A2%E9%87%8F%E5%8C%96%E7%BC%96%E7%A8%8B" title="矢量化编程">矢量化编程</a> | <strong class="selflink">逻辑回归的向量化实现样例</strong> | <a href="/wayback-ufldl/stanford-ufldl/wiki/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E5%90%91%E9%87%8F%E5%8C%96" title="神经网络向量化">神经网络向量化</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Vectorization" title="Exercise:Vectorization">Exercise:Vectorization</a>
+</p>
+</div>
+<p><br/>
+</p>
+<div style="text-align: left;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
+<p>Language&nbsp;: <a href="/wayback-ufldl/stanford-ufldl/wiki/Logistic_Regression_Vectorization_Example" title="Logistic Regression Vectorization Example">English</a>
+</p>
+</div>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 206/1000000
+Post-expand include size: 453/2097152 bytes
+Template argument size: 48/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<div class="printfooter">
+</div>		<div id="catlinks" class="catlinks catlinks-allhidden"></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E7%9A%84%E5%90%91%E9%87%8F%E5%8C%96%E5%AE%9E%E7%8E%B0%E6%A0%B7%E4%BE%8B" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-talk" class="new"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				 <li id="ca-viewsource"><a href="" title="This page is protected.
+You can view its source [e]" accesskey="e">View source</a></li>
+				 <li id="ca-history"><a href="" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-ufldl_resources">
+		<h5>ufldl resources</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-wiki">
+		<h5>wiki</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
+				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="" id="searchform">
+				<input type="hidden" name="title" value="Special:Search" disabled/>
+				<input id="searchInput" title="Search Ufldl" accesskey="f" type="search" name="search" disabled/>
+				<input type="submit" name="go" class="searchButton" id="searchGoButton" value="Go" title="Go to a page with this exact name if exists" disabled/>&nbsp;
+				<input type="submit" name="fulltext" class="searchButton" id="mw-searchButton" value="Search" title="Search the pages for this text" disabled/>
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="" title="List of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+<li id="t-specialpages"><a href="" title="List of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li id="t-print"><a href="" rel="alternate" title="Printable version of this page [p]" accesskey="p">Printable version</a></li>				<li id="t-permalink"><a href="" title="Permanent link to this revision of the page">Permanent link</a></li>			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 8 April 2013, at 08:31.</li>
+		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+
+<!-- Served in 0.122 secs. -->
+</body>
+</html>

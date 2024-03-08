@@ -1,0 +1,257 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Self-Taught Learning - Ufldl</title>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+
+</head>
+
+<body class="mediawiki ltr ns-0 ns-subject page-Self-Taught_Learning skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">Self-Taught Learning</h1>
+	<div id="bodyContent">
+		<h3 id="siteSub">From Ufldl</h3>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+<table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Overview"><span class="tocnumber">1</span> <span class="toctext">Overview</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Learning_features"><span class="tocnumber">2</span> <span class="toctext">Learning features</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#On_pre-processing_the_data"><span class="tocnumber">3</span> <span class="toctext">On pre-processing the data</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#On_the_terminology_of_unsupervised_feature_learning"><span class="tocnumber">4</span> <span class="toctext">On the terminology of unsupervised feature learning</span></a></li>
+</ul>
+</td></tr></table><script>if (window.showTocToggle) { var tocShowText = "show"; var tocHideText = "hide"; showTocToggle(); } </script>
+<h2> <span class="mw-headline" id="Overview"> Overview </span></h2>
+<p>Assuming that we have a sufficiently powerful learning algorithm, one of the most reliable 
+ways to get better performance is to give the algorithm more data.  This has led to the 
+that aphorism that in
+machine learning, "sometimes it's not who has the best algorithm that wins; it's 
+who has the most data." 
+</p><p>One can always try to get more labeled data, but this can be expensive.  In
+particular, researchers have already gone to extraordinary lengths to use tools
+such as AMT (Amazon Mechanical Turk) to get large training sets.  While having
+large numbers of people hand-label lots of data is probably a step forward
+compared to having large numbers of researchers hand-engineer features, it
+would be nice to do better.  In particular, the promise of <b>self-taught learning</b>
+and <b>unsupervised feature learning</b> is that if we can get our algorithms to learn
+from <i>unlabeled</i> data, then we can easily obtain and learn from massive
+amounts of it.  Even though a single unlabeled example is less informative than
+a single labeled example, if we can get tons of the former---for example, by downloading
+random unlabeled images/audio clips/text documents off the
+internet---and if our algorithms can exploit this unlabeled data effectively,
+then we might be able to achieve better performance than the massive
+hand-engineering and massive hand-labeling approaches.
+</p><p>In Self-taught learning and Unsupervised feature learning, we will give our
+algorithms a large amount of unlabeled data with which to learn a good feature
+representation of the input.  If we are trying to solve a specific
+classification task, then we take this learned feature representation and
+whatever (perhaps small amount of) labeled data we have for that classification task, and apply
+supervised learning on that labeled data to solve the classification task.
+</p><p>These ideas probably have the most powerful effects in problems where we have a lot of
+unlabeled data, and a smaller amount of labeled data.  However,
+they typically give good results even if we have only
+labeled data (in which case we usually perform the feature learning step using
+the labeled data, but ignoring the labels).
+</p>
+<h2> <span class="mw-headline" id="Learning_features"> Learning features </span></h2>
+<p>We have already seen how an autoencoder can be used to learn features from
+unlabeled data.  Concretely, suppose we have an unlabeled
+training set <img class="tex" alt="\textstyle \{ x_u^{(1)}, x_u^{(2)}, \ldots, x_u^{(m_u)}\}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/a/3/3a330b29fcaa7c4fd1df8fcd4d19df92.png"/> 
+with <img class="tex" alt="\textstyle m_u" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/c/7/7c7c3de05576d2f93d3522a032e2e9c4.png"/> unlabeled examples.  (The subscript "u" stands for
+"unlabeled.")  We can then train a sparse autoencoder on this data 
+(perhaps with appropriate whitening or other pre-processing):
+</p><p><a href="" class="image"><img alt="STL SparseAE.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/f/ff/STL_SparseAE.png/350px-STL_SparseAE.png" width="350" height="479"/></a>
+</p><p>Having trained the parameters <img class="tex" alt="\textstyle W^{(1)}, b^{(1)}, W^{(2)}, b^{(2)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/e/f/1efd10775b8d8b8dc59b9590661f3a2f.png"/> of this model,
+given any new input <img class="tex" alt="\textstyle x" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/>, we can now compute the corresponding vector of
+activations <img class="tex" alt="\textstyle a" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/4/6/c469e9ab9efb42a55f860d809731dc77.png"/> of the hidden units.  As we saw previously, this often gives a
+better representation of the input than the original raw input <img class="tex" alt="\textstyle x" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/>.  We can also
+visualize the algorithm for computing the features/activations <img class="tex" alt="\textstyle a" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/4/6/c469e9ab9efb42a55f860d809731dc77.png"/> as the following
+neural network:
+</p><p><a href="" class="image"><img alt="STL SparseAE Features.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/7/73/STL_SparseAE_Features.png/300px-STL_SparseAE_Features.png" width="300" height="497"/></a>
+</p><p>This is just the sparse autoencoder that we previously had, with with the final
+layer removed. 
+</p><p>Now, suppose we have a labeled training set <img class="tex" alt="\textstyle \{ (x_l^{(1)}, y^{(1)}),
+(x_l^{(2)}, y^{(2)}), \ldots (x_l^{(m_l)}, y^{(m_l)}) \}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/3/c/23cfc7b001a6a6b7a8df45a39d7ce812.png"/> of <img class="tex" alt="\textstyle m_l" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/c/2/6c270d29d4e7e24f2c756df33d564646.png"/> examples. 
+(The subscript "l" stands for "labeled.")  
+We can now find a better representation for the inputs.  In particular, rather
+than representing the first training example as <img class="tex" alt="\textstyle x_l^{(1)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/b/2/cb267edf5cbce3c54f09c7b975173d17.png"/>, we can feed
+<img class="tex" alt="\textstyle x_l^{(1)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/b/2/cb267edf5cbce3c54f09c7b975173d17.png"/> as the input to our autoencoder, and obtain the corresponding
+vector of activations <img class="tex" alt="\textstyle a_l^{(1)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/6/c/76c427b1075092b5b1f52f7681b6da30.png"/>.  To represent this example, we can either
+just <b>replace</b> the original feature vector with <img class="tex" alt="\textstyle a_l^{(1)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/6/c/76c427b1075092b5b1f52f7681b6da30.png"/>.
+Alternatively, we can <b>concatenate</b> the two feature vectors together,
+getting a representation <img class="tex" alt="\textstyle (x_l^{(1)}, a_l^{(1)})" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/2/5/62504902238e3007d8271a8def501a09.png"/>. 
+</p><p>Thus, our training set now becomes 
+<img class="tex" alt="\textstyle \{ (a_l^{(1)}, y^{(1)}), (a_l^{(2)}, y^{(2)}), \ldots (a_l^{(m_l)}, y^{(m_l)})
+\}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/d/2/0d2ccc3cd881f5dbb524aa3ed19e99be.png"/> (if we use the replacement representation, and use <img class="tex" alt="\textstyle a_l^{(i)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/c/b/bcb25bbe4cfb3179e029b7f85ed81399.png"/> to represent the 
+<img class="tex" alt="\textstyle i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/>-th training example), or <img class="tex" alt="\textstyle \{
+((x_l^{(1)}, a_l^{(1)}), y^{(1)}), ((x_l^{(2)}, a_l^{(1)}), y^{(2)}), \ldots, 
+((x_l^{(m_l)}, a_l^{(1)}), y^{(m_l)}) \}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/c/2/8c2f57fc671d4d7369a27db0b13eec14.png"/> (if we use the concatenated
+representation).  In practice, the concatenated representation often works
+better; but for memory or computation representations, we will sometimes use
+the replacement representation as well. 
+</p><p>Finally, we can train a supervised learning algorithm such as an SVM, logistic
+regression, etc. to obtain a function that makes predictions on the <img class="tex" alt="\textstyle y" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/8/1/c81e76c28ed991b22b8c1bb8fa392701.png"/> values. 
+Given a test example <img class="tex" alt="\textstyle x_{\rm test}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/f/7/df77f6f969ea9a1e99da9c100fe95a08.png"/>, we would then follow the same procedure:
+For feed it to the autoencoder to get <img class="tex" alt="\textstyle a_{\rm test}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/f/a/dfa2797c22eb5c9e484c59f051d7ae68.png"/>.  Then, feed 
+either <img class="tex" alt="\textstyle a_{\rm test}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/f/a/dfa2797c22eb5c9e484c59f051d7ae68.png"/> or <img class="tex" alt="\textstyle (x_{\rm test}, a_{\rm test})" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/9/b/99b977ec4f2de28e15d9fa90fd60227f.png"/> to the trained classifier to get a prediction.
+</p>
+<h2> <span class="mw-headline" id="On_pre-processing_the_data"> On pre-processing the data </span></h2>
+<p>During the feature learning stage where we were learning from the unlabeled training set 
+<img class="tex" alt="\textstyle \{ x_u^{(1)}, x_u^{(2)}, \ldots, x_u^{(m_u)}\}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/a/3/3a330b29fcaa7c4fd1df8fcd4d19df92.png"/>, we may have computed
+various pre-processing parameters.  For example, one may have computed
+a mean value of the data and subtracted off this mean to perform mean normalization,
+or used PCA to compute a matrix <img class="tex" alt="\textstyle U" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/a/5/6a55fb16b0464ccd6652a7f2a583217f.png"/> to represent the data as <img class="tex" alt="\textstyle U^Tx" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/0/a/e0aec5d033ea89dc9bd9c83bc2b4edec.png"/> (or used 
+PCA 
+whitening or ZCA whitening).  If this is the case, then it is important to
+save away these preprocessing parameters, and to use the <i>same</i> parameters
+during the labeled training phase and the test phase, so as to make sure
+we are always transforming the data the same way to feed into the autoencoder. 
+In particular, if we have computed a matrix <img class="tex" alt="\textstyle U" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/a/5/6a55fb16b0464ccd6652a7f2a583217f.png"/> using the unlabeled data and PCA,
+we should keep the <i>same</i> matrix <img class="tex" alt="\textstyle U" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/a/5/6a55fb16b0464ccd6652a7f2a583217f.png"/> and use it to preprocess the
+labeled examples and the test data.  We should <b>not</b> re-estimate a
+different <img class="tex" alt="\textstyle U" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/a/5/6a55fb16b0464ccd6652a7f2a583217f.png"/> matrix (or data mean for mean normalization, etc.) using the
+labeled training set, since that might result in a dramatically different
+pre-processing transformation, which would make the input distribution to
+the autoencoder very different from what it was actually trained on.
+</p>
+<h2> <span class="mw-headline" id="On_the_terminology_of_unsupervised_feature_learning"> On the terminology of unsupervised feature learning </span></h2>
+<p>There are two common unsupervised feature learning settings, depending on what type of 
+unlabeled data you have.  The more general and powerful setting is the <b>self-taught learning</b>
+setting, which does not assume that your unlabeled data <span class="texhtml"><i>x</i><sub><i>u</i></sub></span> has to
+be drawn from the same distribution as your labeled data <span class="texhtml"><i>x</i><sub><i>l</i></sub></span>.  The 
+more restrictive setting where the unlabeled data comes from exactly the same 
+distribution as the labeled data is sometimes called the <b>semi-supervised learning</b> 
+setting.  This distinctions is best explained with an example, which we now give. 
+</p><p>Suppose your goal is a computer vision task where you'd like
+to distinguish between images of cars and images of motorcycles; so, each labeled
+example in your training set is either an image of a car or an image of a motorcycle.  
+Where can we get lots of unlabeled data?  The easiest way would be to obtain some
+random collection of images, perhaps downloaded off the internet.  We could then 
+train the autoencoder on this large collection of images, and obtain useful features
+from them.  Because here the unlabeled data is drawn from a different distribution
+than the labeled data (i.e., perhaps some of our unlabeled images may contain
+cars/motorcycles, but not every image downloaded is either a car or a motorcycle), we
+call this self-taught learning. 
+</p><p>In contrast, if we happen to have lots of unlabeled images lying around
+that are all images of <i>either</i> a car or a motorcycle, but where the data
+is just missing its label (so you don't know which ones are cars, and which
+ones are motorcycles), then we could use this form of unlabeled data to
+learn the features.  This setting---where each unlabeled example is drawn from the same
+distribution as your labeled examples---is sometimes called the semi-supervised 
+setting.  In practice, we often do not have this sort of unlabeled data (where would you
+get a database of images where every image is either a car or a motorcycle, but
+just missing its label?), and so in the context of learning features from unlabeled
+data, the self-taught learning setting is more broadly applicable.
+</p><p><br/>
+</p>
+<div style="text-align: center;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
+<p><strong class="selflink">Self-Taught Learning</strong> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Self-Taught_Learning" title="Exercise:Self-Taught Learning">Exercise:Self-Taught Learning</a>
+</p>
+</div>
+<p><br/>
+</p>
+<div style="text-align: left;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
+<p>Language&nbsp;: <a href="/wayback-ufldl/stanford-ufldl/wiki/%E8%87%AA%E6%88%91%E5%AD%A6%E4%B9%A0" title="自我学习">中文</a>
+</p>
+</div>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 291/1000000
+Post-expand include size: 364/2097152 bytes
+Template argument size: 18/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<div class="printfooter">
+</div>		<div id="catlinks" class="catlinks catlinks-allhidden"></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/Self-Taught_Learning" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-talk" class="new"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				 <li id="ca-viewsource"><a href="" title="This page is protected.
+You can view its source [e]" accesskey="e">View source</a></li>
+				 <li id="ca-history"><a href="" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-ufldl_resources">
+		<h5>ufldl resources</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-wiki">
+		<h5>wiki</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
+				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="" id="searchform">
+				<input type="hidden" name="title" value="Special:Search" disabled/>
+				<input id="searchInput" title="Search Ufldl" accesskey="f" type="search" name="search" disabled/>
+				<input type="submit" name="go" class="searchButton" id="searchGoButton" value="Go" title="Go to a page with this exact name if exists" disabled/>&nbsp;
+				<input type="submit" name="fulltext" class="searchButton" id="mw-searchButton" value="Search" title="Search the pages for this text" disabled/>
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="" title="List of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+<li id="t-specialpages"><a href="" title="List of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li id="t-print"><a href="" rel="alternate" title="Printable version of this page [p]" accesskey="p">Printable version</a></li>				<li id="t-permalink"><a href="" title="Permanent link to this revision of the page">Permanent link</a></li>			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 7 April 2013, at 13:26.</li>
+		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+
+<!-- Served in 0.131 secs. -->
+</body>
+</html>

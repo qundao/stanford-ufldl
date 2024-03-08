@@ -1,0 +1,222 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sparse Coding - Ufldl</title>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+
+</head>
+
+<body class="mediawiki ltr ns-0 ns-subject page-Sparse_Coding skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">Sparse Coding</h1>
+	<div id="bodyContent">
+		<h3 id="siteSub">From Ufldl</h3>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+<h2> <span class="mw-headline" id="Sparse_Coding"> Sparse Coding </span></h2>
+<p>Sparse coding is a class of unsupervised methods for learning sets of over-complete bases to represent data efficiently. The aim of sparse coding is to find a set of basis vectors <img class="tex" alt="\mathbf{\phi}_i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/6/f/96f401a31a42b4a238dbe0c5be68a746.png"/> such that we can represent an input vector <img class="tex" alt="\mathbf{x}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/c/6/3c66d9170d4c3fb75456e1a9fc6ead37.png"/> as a linear combination of these basis vectors:
+</p>
+<dl><dd><img class="tex" alt="\begin{align}
+\mathbf{x} = \sum_{i=1}^k a_i \mathbf{\phi}_{i} 
+\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/5/7/95773d0fedcb4bc39aff6546ccd5af25.png"/>
+</dd></dl>
+<p>While techniques such as Principal Component Analysis (PCA) allow us to learn a complete set of basis vectors efficiently, we wish to learn an <b>over-complete</b> set of basis vectors to represent input vectors <img class="tex" alt="\mathbf{x}\in\mathbb{R}^n" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/0/c/a0c529368bdcd396825fbe6bbbfb9fa8.png"/> (i.e. such that <span class="texhtml"><i>k</i> &gt; <i>n</i></span>). The advantage of having an over-complete basis is that our basis vectors are better able to capture structures and patterns inherent in the input data. However, with an over-complete basis, the coefficients <span class="texhtml"><i>a</i><sub><i>i</i></sub></span> are no longer uniquely determined by the input vector <img class="tex" alt="\mathbf{x}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/c/6/3c66d9170d4c3fb75456e1a9fc6ead37.png"/>. Therefore, in sparse coding, we introduce the additional criterion of <b>sparsity</b> to resolve the degeneracy introduced by over-completeness. 
+</p><p>Here, we define sparsity as having few non-zero components or having few components not close to zero. The requirement that our coefficients <span class="texhtml"><i>a</i><sub><i>i</i></sub></span> be sparse means that given a input vector, we would like as few of our coefficients to be far from zero as possible. The choice of sparsity as a desired characteristic of our representation of the input data can be motivated by the observation that most sensory data such as natural images may be described as the superposition of a small number of atomic elements such as surfaces or edges. Other justifications such as comparisons to the properties of the primary visual cortex have also been advanced. 
+</p><p>We define the sparse coding cost function on a set of <span class="texhtml"><i>m</i></span> input vectors as
+</p>
+<dl><dd><img class="tex" alt="\begin{align}
+\text{minimize}_{a^{(j)}_i,\mathbf{\phi}_{i}} \sum_{j=1}^{m} \left|\left| \mathbf{x}^{(j)} - \sum_{i=1}^k a^{(j)}_i \mathbf{\phi}_{i}\right|\right|^{2} + \lambda \sum_{i=1}^{k}S(a^{(j)}_i)
+\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/1/1/f110901ddedcba59e339de5f16c547da.png"/>
+</dd></dl>
+<p>where <span class="texhtml"><i>S</i>(.)</span> is a sparsity cost function which penalizes <span class="texhtml"><i>a</i><sub><i>i</i></sub></span> for being far from zero. We can interpret the first term of the sparse coding objective as a reconstruction term which tries to force the algorithm to provide a good representation of <img class="tex" alt="\mathbf{x}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/c/6/3c66d9170d4c3fb75456e1a9fc6ead37.png"/> and the second term as a sparsity penalty which forces our representation of <img class="tex" alt="\mathbf{x}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/c/6/3c66d9170d4c3fb75456e1a9fc6ead37.png"/> to be sparse. The constant <span class="texhtml">&lambda;</span> is a scaling constant to determine the relative importance of these two contributions. 
+</p><p>Although the most direct measure of sparsity is the "<span class="texhtml"><i>L</i><sub>0</sub></span>" norm (<img class="tex" alt="S(a_i) = \mathbf{1}(|a_i|>0)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/2/0/9201129fb038db6903ec61196798181d.png"/>), it is non-differentiable and difficult to optimize in general. In practice, common choices for the sparsity cost <span class="texhtml"><i>S</i>(.)</span> are the <span class="texhtml"><i>L</i><sub>1</sub></span> penalty <img class="tex" alt="S(a_i)=\left|a_i\right|_1 " src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/8/8/a884849a26a901395faa9eede9b00e81.png"/> and the log penalty <img class="tex" alt="S(a_i)=\log(1+a_i^2)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/8/f/c8f980972ea11e452e9d5031c44f95f6.png"/>.
+</p><p>In addition, it is also possible to make the sparsity penalty arbitrarily small by scaling down <span class="texhtml"><i>a</i><sub><i>i</i></sub></span> and scaling <img class="tex" alt="\mathbf{\phi}_i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/6/f/96f401a31a42b4a238dbe0c5be68a746.png"/> up by some large constant. To prevent this from happening, we will constrain <img class="tex" alt="\left|\left|\mathbf{\phi}\right|\right|^2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/6/2/162a65a67f9ad82157da95a835185ede.png"/> to be less than some constant <span class="texhtml"><i>C</i></span>. The full sparse coding cost function including our constraint on <img class="tex" alt="\mathbf{\phi}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/a/9/aa970cc66d8a8408dd1811b678a367b0.png"/> is
+</p>
+<dl><dd><img class="tex" alt="\begin{array}{rc}
+\text{minimize}_{a^{(j)}_i,\mathbf{\phi}_{i}} &amp; \sum_{j=1}^{m} \left|\left| \mathbf{x}^{(j)} - \sum_{i=1}^k a^{(j)}_i \mathbf{\phi}_{i}\right|\right|^{2} + \lambda \sum_{i=1}^{k}S(a^{(j)}_i) 
+\\
+\text{subject to}  &amp;  \left|\left|\mathbf{\phi}_i\right|\right|^2 \leq C, \forall i = 1,...,k 
+\\
+\end{array}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/9/3/a93c6a5d7e7a22c66e82490be078b2af.png"/>
+</dd></dl>
+<h2> <span class="mw-headline" id="Probabilistic_Interpretation_.5BBased_on_Olshausen_and_Field_1996.5D"> Probabilistic Interpretation [Based on Olshausen and Field 1996] </span></h2>
+<p>So far, we have considered sparse coding in the context of finding a sparse, over-complete set of basis vectors to span our input space. Alternatively, we may also approach sparse coding from a probabilistic perspective as a generative model. 
+</p><p>Consider the problem of modelling natural images as the linear superposition of <span class="texhtml"><i>k</i></span> independent source features <img class="tex" alt="\mathbf{\phi}_i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/6/f/96f401a31a42b4a238dbe0c5be68a746.png"/> with some additive noise <span class="texhtml">&nu;</span>:
+</p>
+<dl><dd><img class="tex" alt="\begin{align}
+\mathbf{x} = \sum_{i=1}^k a_i \mathbf{\phi}_{i} + \nu(\mathbf{x})
+\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/4/d/a/4daf9370c4f4e65a8fb7ae213c59b996.png"/>
+</dd></dl>
+<p>Our goal is to find a set of basis feature vectors <img class="tex" alt="\mathbf{\phi}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/a/9/aa970cc66d8a8408dd1811b678a367b0.png"/> such that the distribution of images <img class="tex" alt="P(\mathbf{x}\mid\mathbf{\phi})" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/1/9/8198a76b9b1b28d7a299ad59b4aca55b.png"/> is as close as possible to the empirical distribution of our input data <img class="tex" alt="P^*(\mathbf{x})" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/f/c/afc77091b0831f8c4733ab0708062d63.png"/>. One method of doing so is to minimize the KL divergence between <img class="tex" alt="P^*(\mathbf{x})" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/f/c/afc77091b0831f8c4733ab0708062d63.png"/> and <img class="tex" alt="P(\mathbf{x}\mid\mathbf{\phi})" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/1/9/8198a76b9b1b28d7a299ad59b4aca55b.png"/> where the KL divergence is defined as:
+</p>
+<dl><dd><img class="tex" alt="\begin{align}
+D(P^*(\mathbf{x})||P(\mathbf{x}\mid\mathbf{\phi})) = \int P^*(\mathbf{x}) \log \left(\frac{P^*(\mathbf{x})}{P(\mathbf{x}\mid\mathbf{\phi})}\right)d\mathbf{x}
+\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/b/3/7b39a1c36dc8d6463e4997495334c0f8.png"/> 
+</dd></dl>
+<p>Since the empirical distribution <img class="tex" alt="P^*(\mathbf{x})" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/f/c/afc77091b0831f8c4733ab0708062d63.png"/> is constant across our choice of <img class="tex" alt="\mathbf{\phi}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/a/9/aa970cc66d8a8408dd1811b678a367b0.png"/>, this is equivalent to maximizing the log-likelihood of <img class="tex" alt="P(\mathbf{x}\mid\mathbf{\phi})" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/1/9/8198a76b9b1b28d7a299ad59b4aca55b.png"/>.
+</p><p>Assuming <span class="texhtml">&nu;</span> is Gaussian white noise with variance <span class="texhtml">&sigma;<sup>2</sup></span>, we have that 
+</p>
+<dl><dd><img class="tex" alt="\begin{align}
+P(\mathbf{x} \mid \mathbf{a}, \mathbf{\phi}) = \frac{1}{Z} \exp\left(- \frac{(\mathbf{x}-\sum^{k}_{i=1} a_i \mathbf{\phi}_{i})^2}{2\sigma^2}\right)
+\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/d/6/9d634e2a1b3457f439d442bf61f7381b.png"/>
+</dd></dl>
+<p>In order to determine the distribution <img class="tex" alt="P(\mathbf{x}\mid\mathbf{\phi})" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/1/9/8198a76b9b1b28d7a299ad59b4aca55b.png"/>, we also need to specify the prior distribution <img class="tex" alt="P(\mathbf{a})" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/4/9/b/49b4b770c52ed209b950c2fd00216bbf.png"/>. Assuming the independence of our source features, we can factorize our prior probability as 
+</p>
+<dl><dd><img class="tex" alt="\begin{align}
+P(\mathbf{a}) = \prod_{i=1}^{k} P(a_i)
+\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/8/9/d89ec802e2b5461efa8d0d2d84f9e829.png"/>
+</dd></dl>
+<p>At this point, we would like to incorporate our sparsity assumption -- the assumption that any single image is likely to be the product of relatively few source features. Therefore, we would like the probability distribution of <span class="texhtml"><i>a</i><sub><i>i</i></sub></span> to be peaked at zero and have high kurtosis. A convenient parameterization of the prior distribution is 
+</p>
+<dl><dd><img class="tex" alt="\begin{align}
+P(a_i) = \frac{1}{Z}\exp(-\beta S(a_i))
+\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/5/0/850c6b42874fde83fef6001ba388d0b4.png"/>
+</dd></dl>
+<p>Where <span class="texhtml"><i>S</i>(<i>a</i><sub><i>i</i></sub>)</span> is a function determining the shape of the prior distribution.
+</p><p>Having defined <img class="tex" alt="P(\mathbf{x} \mid \mathbf{a}, \mathbf{\phi})" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/0/2/d02802b0ba8bfd44edb2be30ee7607e5.png"/> and <img class="tex" alt=" P(\mathbf{a})" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/4/9/b/49b4b770c52ed209b950c2fd00216bbf.png"/>, we can write the probability of the data <img class="tex" alt="\mathbf{x}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/c/6/3c66d9170d4c3fb75456e1a9fc6ead37.png"/> under the model defined by <img class="tex" alt="\mathbf{\phi}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/a/9/aa970cc66d8a8408dd1811b678a367b0.png"/> as 
+</p>
+<dl><dd><img class="tex" alt="\begin{align}
+P(\mathbf{x} \mid \mathbf{\phi}) = \int P(\mathbf{x} \mid \mathbf{a}, \mathbf{\phi}) P(\mathbf{a}) d\mathbf{a}
+\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/b/7/6b7b96f043bd1d85571edc7ac556921e.png"/>
+</dd></dl>
+<p>and our problem reduces to finding
+</p>
+<dl><dd><img class="tex" alt="\begin{align}
+\mathbf{\phi}^*=\text{argmax}_{\mathbf{\phi}} < \log(P(\mathbf{x} \mid \mathbf{\phi})) >
+\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/6/1/b61b290904ced2463333bdca70ba9a95.png"/>
+</dd></dl>
+<p>Where <span class="texhtml"> &lt; . &gt; </span> denotes expectation over our input data. 
+</p><p>Unfortunately, the integral over <img class="tex" alt="\mathbf{a}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/c/4/3c47f830945ee6b24984ab0ba188e10e.png"/> to obtain <img class="tex" alt="P(\mathbf{x} \mid \mathbf{\phi})" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/1/9/8198a76b9b1b28d7a299ad59b4aca55b.png"/> is generally intractable. We note though that if the distribution of <img class="tex" alt="P(\mathbf{x} \mid \mathbf{\phi})" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/1/9/8198a76b9b1b28d7a299ad59b4aca55b.png"/> is sufficiently peaked (w.r.t. <img class="tex" alt="\mathbf{a}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/c/4/3c47f830945ee6b24984ab0ba188e10e.png"/>), we can approximate its integral with the maximum value of  <img class="tex" alt="P(\mathbf{x} \mid \mathbf{\phi})" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/1/9/8198a76b9b1b28d7a299ad59b4aca55b.png"/> and obtain a approximate solution 
+</p>
+<dl><dd><img class="tex" alt="\begin{align}
+\mathbf{\phi}^{*'}=\text{argmax}_{\mathbf{\phi}} < \max_{\mathbf{a}} \log(P(\mathbf{x} \mid \mathbf{\phi})) >
+\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/7/8/97822a58455d3c2c6d965597d0248d7d.png"/>
+</dd></dl>
+<p>As before, we may increase the estimated probability by scaling down <span class="texhtml"><i>a</i><sub><i>i</i></sub></span> and scaling up <img class="tex" alt="\mathbf{\phi}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/a/9/aa970cc66d8a8408dd1811b678a367b0.png"/> (since <span class="texhtml"><i>P</i>(<i>a</i><sub><i>i</i></sub>)</span> peaks about zero) , we therefore impose a norm constraint on our features <img class="tex" alt="\mathbf{\phi}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/a/9/aa970cc66d8a8408dd1811b678a367b0.png"/> to prevent this.
+</p><p>Finally, we can recover our original cost function by defining the energy function of this linear generative model
+</p>
+<dl><dd><img class="tex" alt="\begin{array}{rl}
+E\left( \mathbf{x} , \mathbf{a} \mid \mathbf{\phi} \right) &amp; := -\log \left( P(\mathbf{x}\mid \mathbf{\phi},\mathbf{a}\right)P(\mathbf{a})) \\
+ &amp;= \sum_{j=1}^{m} \left|\left| \mathbf{x}^{(j)} - \sum_{i=1}^k a^{(j)}_i \mathbf{\phi}_{i}\right|\right|^{2} + \lambda \sum_{i=1}^{k}S(a^{(j)}_i) 
+\end{array}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/3/4/e34c091d504207038943443866f62ccc.png"/>
+</dd></dl>
+<p>where <span class="texhtml">&lambda; = 2&sigma;<sup>2</sup>&beta;</span> and irrelevant constants have been hidden. Since maximizing the log-likelihood is equivalent to minimizing the energy function, we recover the original optimization problem:
+</p>
+<dl><dd><img class="tex" alt="\begin{align}
+\mathbf{\phi}^{*},\mathbf{a}^{*}=\text{argmin}_{\mathbf{\phi},\mathbf{a}} \sum_{j=1}^{m} \left|\left| \mathbf{x}^{(j)} - \sum_{i=1}^k a^{(j)}_i \mathbf{\phi}_{i}\right|\right|^{2} + \lambda \sum_{i=1}^{k}S(a^{(j)}_i) 
+\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/c/1/bc124bd99a15b3035f82301dacf1993b.png"/>
+</dd></dl>
+<p>Using a probabilistic approach, it can also be seen that the choices of the <span class="texhtml"><i>L</i><sub>1</sub></span> penalty <img class="tex" alt="\left|a_i\right|_1 " src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/b/e/5beadeaa907c702956af765ff4080510.png"/> and the log penalty <img class="tex" alt="\log(1+a_i^2)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/4/d/e4dd083f18a7b80eef831fcd53f6ce56.png"/> for <span class="texhtml"><i>S</i>(.)</span> correspond to the use of the Laplacian <img class="tex" alt="P(a_i) \propto \exp\left(-\beta|a_i|\right)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/4/8/a/48a0ca02892923a1a279d84faa1f75c1.png"/> and the Cauchy prior <img class="tex" alt="P(a_i) \propto \frac{\beta}{1+a_i^2}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/8/b/a8b02506e9e2267b363efcb139af11ad.png"/> respectively.
+</p>
+<h2> <span class="mw-headline" id="Learning"> Learning </span></h2>
+<p>Learning a set of basis vectors <img class="tex" alt="\mathbf{\phi}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/a/9/aa970cc66d8a8408dd1811b678a367b0.png"/> using sparse coding consists of performing two separate optimizations, the first being an optimization over coefficients <span class="texhtml"><i>a</i><sub><i>i</i></sub></span> for each training example <img class="tex" alt="\mathbf{x}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/c/6/3c66d9170d4c3fb75456e1a9fc6ead37.png"/> and the second an optimization over basis vectors <img class="tex" alt="\mathbf{\phi}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/a/9/aa970cc66d8a8408dd1811b678a367b0.png"/> across many training examples at once.
+</p><p>Assuming an <span class="texhtml"><i>L</i><sub>1</sub></span> sparsity penalty, learning <img class="tex" alt="a^{(j)}_i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/a/5/aa52f3c4e4bbcf7defbe2a8b936bc78e.png"/> reduces to solving a <span class="texhtml"><i>L</i><sub>1</sub></span> regularized least squares problem which is convex in <img class="tex" alt="a^{(j)}_i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/a/5/aa52f3c4e4bbcf7defbe2a8b936bc78e.png"/> for which several techniques have been developed (convex optimization software such as CVX can also be used to perform L1 regularized least squares). Assuming a differentiable <span class="texhtml"><i>S</i>(.)</span> such as the log penalty, gradient-based methods such as conjugate gradient methods can also be used.
+</p><p>Learning a set of basis vectors with a <span class="texhtml"><i>L</i><sub>2</sub></span> norm constraint also reduces to a least squares problem with quadratic constraints which is convex in <img class="tex" alt="\mathbf{\phi}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/a/9/aa970cc66d8a8408dd1811b678a367b0.png"/>. Standard convex optimization software (e.g. CVX) or other iterative methods can be used to solve for <img class="tex" alt="\mathbf{\phi}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/a/9/aa970cc66d8a8408dd1811b678a367b0.png"/> although significantly more efficient methods such as solving the Lagrange dual have also been developed.
+</p><p>As described above, a significant limitation of sparse coding is that even after a set of basis vectors have been learnt, in order to "encode" a new data example, optimization must be performed to obtain the required coefficients. This significant "runtime" cost means that sparse coding is computationally expensive to implement even at test time especially compared to typical feedforward architectures.
+</p><p><br/>
+</p>
+<div style="text-align: left;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
+<p>Language&nbsp;: <a href="/wayback-ufldl/stanford-ufldl/wiki/%E7%A8%80%E7%96%8F%E7%BC%96%E7%A0%81" title="稀疏编码">中文</a>
+</p>
+</div>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 728/1000000
+Post-expand include size: 168/2097152 bytes
+Template argument size: 18/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<div class="printfooter">
+</div>		<div id="catlinks" class="catlinks catlinks-allhidden"></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/Sparse_Coding" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-talk" class="new"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				 <li id="ca-viewsource"><a href="" title="This page is protected.
+You can view its source [e]" accesskey="e">View source</a></li>
+				 <li id="ca-history"><a href="" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-ufldl_resources">
+		<h5>ufldl resources</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-wiki">
+		<h5>wiki</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
+				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="" id="searchform">
+				<input type="hidden" name="title" value="Special:Search" disabled/>
+				<input id="searchInput" title="Search Ufldl" accesskey="f" type="search" name="search" disabled/>
+				<input type="submit" name="go" class="searchButton" id="searchGoButton" value="Go" title="Go to a page with this exact name if exists" disabled/>&nbsp;
+				<input type="submit" name="fulltext" class="searchButton" id="mw-searchButton" value="Search" title="Search the pages for this text" disabled/>
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="" title="List of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+<li id="t-specialpages"><a href="" title="List of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li id="t-print"><a href="" rel="alternate" title="Printable version of this page [p]" accesskey="p">Printable version</a></li>				<li id="t-permalink"><a href="" title="Permanent link to this revision of the page">Permanent link</a></li>			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 8 April 2013, at 04:28.</li>
+		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+
+<!-- Served in 0.145 secs. -->
+</body>
+</html>

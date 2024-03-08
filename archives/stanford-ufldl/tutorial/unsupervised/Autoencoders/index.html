@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Unsupervised Feature Learning and Deep Learning Tutorial</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/bootstrap_readable.min.css" rel="stylesheet">
+    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/pygments/default.css" rel="stylesheet">
+    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/custom.css" rel="stylesheet">
+    <script type="text/javascript"
+          src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="../../assets/js/html5shiv.js"></script>
+    <script src="../../assets/js/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/wayback-ufldl/stanford-ufldl/tutorial/">UFLDL Tutorial</a>
+        </div>
+        <!---
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+          </ul>
+        </div>
+        !-->
+      </div>
+    </div>
+
+
+    <div class="row-fluid">
+      <div class = "container"> 
+        <div class = "col-xs-9">
+          <h3>Autoencoders</h3>
+<hr>
+<!---<p class="meta">28 Aug 2013</p>--->
+
+<div class="post">
+<p>So far, we have described the application of neural networks to supervised learning, in which we have labeled training examples. Now suppose we have only a set of unlabeled training examples <m>\textstyle \{x^{(1)}, x^{(2)}, x^{(3)}, \ldots\}</m>, where <m>\textstyle x^{(i)} \in \Re^{n}</m>. An <strong>autoencoder</strong> neural network is an unsupervised learning algorithm that applies backpropagation, setting the target values to be equal to the inputs. I.e., it uses <m>\textstyle y^{(i)} = x^{(i)}</m>.</p>
+
+<p>Here is an autoencoder:</p>
+
+<p><img src='/wayback-ufldl/stanford-ufldl/tutorial/images/Autoencoder636.png' width='100%' /></p>
+
+<p>The autoencoder tries to learn a function <m>\textstyle h_{W,b}(x) \approx x</m>. In other words, it is trying to learn an approximation to the identity function, so as to output <m>\textstyle \hat{x}</m> that is similar to <m>\textstyle x</m>. The identity function seems a particularly trivial function to be trying to learn; but by placing constraints on the network, such as by limiting the number of hidden units, we can discover interesting structure about the data. As a concrete example, suppose the inputs <m>\textstyle x</m> are the pixel intensity values from a <m>\textstyle 10 \times 10</m> image (100 pixels) so <m>\textstyle n=100</m>, and there are <m>\textstyle s_2=50</m> hidden units in layer <m>\textstyle L_2</m>. Note that we also have <m>\textstyle y \in \Re^{100}</m>. Since there are only 50 hidden units, the network is forced to learn a ”compressed” representation of the input. I.e., given only the vector of hidden unit activations <m>\textstyle a^{(2)} \in \Re^{50}</m>, it must try to ”‘reconstruct”’ the 100-pixel input <m>\textstyle x</m>. If the input were completely random—say, each <m>\textstyle x_i</m> comes from an IID Gaussian independent of the other features—then this compression task would be very difficult. But if there is structure in the data, for example, if some of the input features are correlated, then this algorithm will be able to discover some of those correlations. In fact, this simple autoencoder often ends up learning a low-dimensional representation very similar to PCAs.</p>
+
+<p>Our argument above relied on the number of hidden units <m>\textstyle s_2</m> being small. But even when the number of hidden units is large (perhaps even greater than the number of input pixels), we can still discover interesting structure, by imposing other constraints on the network. In particular, if we impose a ”‘sparsity”’ constraint on the hidden units, then the autoencoder will still discover interesting structure in the data, even if the number of hidden units is large.</p>
+
+<p>Informally, we will think of a neuron as being “active” (or as “firing”) if its output value is close to 1, or as being “inactive” if its output value is close to 0. We would like to constrain the neurons to be inactive most of the time. This discussion assumes a sigmoid activation function. If you are using a tanh activation function, then we think of a neuron as being inactive when it outputs values close to -1.</p>
+
+<p>Recall that <m>\textstyle a^{(2)}_j</m> denotes the activation of hidden unit <m>\textstyle j</m> in the autoencoder. However, this notation doesn’t make explicit what was the input <m>\textstyle x</m> that led to that activation. Thus, we will write <m>\textstyle a^{(2)}_j(x)</m> to denote the activation of this hidden unit when the network is given a specific input <m>\textstyle x</m>.</p>
+
+<p>Further, let</p>
+<m>\begin{align}
+\hat\rho_j = \frac{1}{m} \sum_{i=1}^m \left[ a^{(2)}_j(x^{(i)}) \right]
+\end{align}</m>
+<p>be the average activation of hidden unit <m>\textstyle j</m> (averaged over the training set). We would like to (approximately) enforce the constraint</p>
+<m>\begin{align}
+\hat\rho_j = \rho,
+\end{align}</m>
+<p>where <m>\textstyle \rho</m> is a ”‘sparsity parameter”’, typically a small value close to zero (say <m>\textstyle \rho = 0.05</m>). In other words, we would like the average activation of each hidden neuron <m>\textstyle j</m> to be close to 0.05 (say). To satisfy this constraint, the hidden unit’s activations must mostly be near 0.</p>
+
+<p>To achieve this, we will add an extra penalty term to our optimization objective that penalizes <m>\textstyle \hat\rho_j</m> deviating significantly from <m>\textstyle \rho</m>. Many choices of the penalty term will give reasonable results. We will choose the following:</p>
+<m>\begin{align}
+\sum_{j=1}^{s_2} \rho \log \frac{\rho}{\hat\rho_j} + (1-\rho) \log \frac{1-\rho}{1-\hat\rho_j}.
+\end{align}</m>
+<p>Here, <m>\textstyle s_2</m> is the number of neurons in the hidden layer, and the index <m>\textstyle j</m> is summing over the hidden units in our network. If you are familiar with the concept of KL divergence, this penalty term is based on it, and can also be written</p>
+<m>\begin{align}
+\sum_{j=1}^{s_2} {\rm KL}(\rho || \hat\rho_j),
+\end{align}</m>
+<p>where <m>\textstyle {\rm KL}(\rho || \hat\rho_j)
+ = \rho \log \frac{\rho}{\hat\rho_j} + (1-\rho) \log \frac{1-\rho}{1-\hat\rho_j}</m> is the Kullback-Leibler (KL) divergence between a Bernoulli random variable with mean <m>\textstyle \rho</m> and a Bernoulli random variable with mean <m>\textstyle \hat\rho_j</m>. KL-divergence is a standard function for measuring how different two different distributions are. (If you’ve not seen KL-divergence before, don’t worry about it; everything you need to know about it is contained in these notes.)</p>
+
+<p>This penalty function has the property that <m>\textstyle {\rm KL}(\rho || \hat\rho_j) = 0</m> if <m>\textstyle \hat\rho_j = \rho</m>, and otherwise it increases monotonically as <m>\textstyle \hat\rho_j</m> diverges from <m>\textstyle \rho</m>. For example, in the figure below, we have set <m>\textstyle \rho = 0.2</m>, and plotted <m>\textstyle {\rm KL}(\rho || \hat\rho_j)</m> for a range of values of <m>\textstyle \hat\rho_j</m>:</p>
+
+<p><img src='/wayback-ufldl/stanford-ufldl/tutorial/images/KLPenaltyExample.png' width='100%' /></p>
+
+<p>We see that the KL-divergence reaches its minimum of 0 at</p>
+<m>\textstyle \hat\rho_j = \rho</m>
+<p>, and blows up (it actually</p>
+
+<p>approaches <m>\textstyle \infty</m>) as <m>\textstyle
+\hat\rho_j</m> approaches 0 or 1. Thus, minimizing this penalty term has the effect of causing <m>\textstyle \hat\rho_j</m> to be close to <m>\textstyle \rho</m>.</p>
+
+<p>Our overall cost function is now</p>
+<m>\begin{align}
+J_{\rm sparse}(W,b) = J(W,b) + \beta \sum_{j=1}^{s_2} {\rm KL}(\rho || \hat\rho_j),
+\end{align}</m>
+<p>where <m>\textstyle J(W,b)</m> is as defined previously, and <m>\textstyle \beta</m> controls the weight of the sparsity penalty term. The term <m>\textstyle \hat\rho_j</m> (implicitly) depends on <m>\textstyle W,b</m> also, because it is the average activation of hidden unit <m>\textstyle j</m>, and the activation of a hidden unit depends on the parameters <m>\textstyle W,b</m>.</p>
+
+<p>To incorporate the KL-divergence term into your derivative calculation, there is a simple-to-implement trick involving only a small change to your code. Specifically, where previously for the second layer (<m>\textstyle l=2</m>), during backpropagation you would have computed</p>
+<m>\begin{align}
+\delta^{(2)}_i = \left( \sum_{j=1}^{s_{2}} W^{(2)}_{ji} \delta^{(3)}_j \right) f'(z^{(2)}_i),
+\end{align}</m>
+<p>now instead compute</p>
+<m>\begin{align}
+\delta^{(2)}_i =
+  \left( \left( \sum_{j=1}^{s_{2}} W^{(2)}_{ji} \delta^{(3)}_j \right)
++ \beta \left( - \frac{\rho}{\hat\rho_i} + \frac{1-\rho}{1-\hat\rho_i} \right) \right) f'(z^{(2)}_i) .
+\end{align}</m>
+<p>One subtlety is that you’ll need to know <m>\textstyle \hat\rho_i</m> to compute this term. Thus, you’ll need to compute a forward pass on all the training examples first to compute the average activations on the training set, before computing backpropagation on any example. If your training set is small enough to fit comfortably in computer memory (this will be the case for the programming assignment), you can compute forward passes on all your examples and keep the resulting activations in memory and compute the <m>\textstyle \hat\rho_i</m>s. Then you can use your precomputed activations to perform backpropagation on all your examples. If your data is too large to fit in memory, you may have to scan through your examples computing a forward pass on each to accumulate (sum up) the activations and compute <m>\textstyle \hat\rho_i</m> (discarding the result of each forward pass after you have taken its activations <m>\textstyle a^{(2)}_i</m> into account for computing <m>\textstyle \hat\rho_i</m>). Then after having computed <m>\textstyle \hat\rho_i</m>, you’d have to redo the forward pass for each example so that you can do backpropagation on that example. In this latter case, you would end up computing a forward pass twice on each example in your training set, making it computationally less efficient.</p>
+
+<p>The full derivation showing that the algorithm above results in gradient descent is beyond the scope of these notes. But if you implement the autoencoder using backpropagation modified this way, you will be performing gradient descent exactly on the objective <m>\textstyle J_{\rm sparse}(W,b)</m>. Using the derivative checking method, you will be able to verify this for yourself as well.</p>
+
+<h3 id="visualizing_a_trained_autoencoder">Visualizing a Trained Autoencoder</h3>
+
+<p>Having trained a (sparse) autoencoder, we would now like to visualize the function learned by the algorithm, to try to understand what it has learned. Consider the case of training an autoencoder on <m>\textstyle 10 \times 10</m> images, so that <m>\textstyle n = 100</m>. Each hidden unit <m>\textstyle i</m> computes a function of the input:</p>
+<m>\begin{align}
+a^{(2)}_i = f\left(\sum_{j=1}^{100} W^{(1)}_{ij} x_j  + b^{(1)}_i \right).
+\end{align}</m>
+<p>We will visualize the function computed by hidden unit <m>\textstyle i</m>—which depends on the parameters <m>\textstyle W^{(1)}_{ij}</m> (ignoring the bias term for now)—using a 2D image. In particular, we think of <m>\textstyle a^{(2)}_i</m> as some non-linear feature of the input <m>\textstyle x</m>. We ask: What input image <m>\textstyle x</m> would cause <m>\textstyle a^{(2)}_i</m> to be maximally activated? (Less formally, what is the feature that hidden unit <m>\textstyle i</m> is looking for?) For this question to have a non-trivial answer, we must impose some constraints on <m>\textstyle x</m>. If we suppose that the input is norm constrained by <m>\textstyle ||x||^2 = \sum_{i=1}^{100} x_i^2 \leq 1</m>, then one can show (try doing this yourself) that the input which maximally activates hidden unit <m>\textstyle i</m> is given by setting pixel <m>\textstyle x_j</m> (for all 100 pixels, <m>\textstyle j=1,\ldots, 100</m>) to</p>
+<m>\begin{align}
+x_j = \frac{W^{(1)}_{ij}}{\sqrt{\sum_{j=1}^{100} (W^{(1)}_{ij})^2}}.
+\end{align}</m>
+<p>By displaying the image formed by these pixel intensity values, we can begin to understand what feature hidden unit <m>\textstyle i</m> is looking for.</p>
+
+<p>If we have an autoencoder with 100 hidden units (say), then we our visualization will have 100 such images—one per hidden unit. By examining these 100 images, we can try to understand what the ensemble of hidden units is learning.</p>
+
+<p>When we do this for a sparse autoencoder (trained with 100 hidden units on 10x10 pixel inputs<sup>1</sup> we get the following result:</p>
+
+<p><img src='/wayback-ufldl/stanford-ufldl/tutorial/images/ExampleSparseAutoencoderWeights.png' width='400px' /></p>
+
+<p>Each square in the figure above shows the (norm bounded) input image <m>\textstyle x</m> that maximally actives one of 100 hidden units. We see that the different hidden units have learned to detect edges at different positions and orientations in the image.</p>
+
+<p>These features are, not surprisingly, useful for such tasks as object recognition and other vision tasks. When applied to other input domains (such as audio), this algorithm also learns useful representations/features for those domains too.</p>
+<hr />
+<p><sup>1</sup>”The learned features were obtained by training on ”‘whitened”’ natural images. Whitening is a preprocessing step which removes redundancy in the input, by causing adjacent pixels to become less correlated.</p>
+</div>
+
+        </div>
+        <div class = "col-xs-3 sidebar">
+          <div id="sidebar-holder">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Generate sidebar --->
+    <script src='/wayback-ufldl/stanford-ufldl/tutorial/sidebar/sidebar.js'></script>
+    <script>
+      function renderHeading(name) {
+        return '<div class = "panel-heading">' + name + '</div>';
+      };
+      function renderItem(name, link) { 
+        return '<a href="/wayback-ufldl/stanford-ufldl/tutorial/' + link + '" class="list-group-item nav">' + name +
+          '</a>';
+      };
+      renderedHtml = '<div class = "panel panel-default">';
+        for (var i = 0; i < pages.length; i++) {
+          if (pages[i].type == 'Heading') {
+            renderedHtml += renderHeading(pages[i].name);
+          }
+          if (pages[i].type == 'Page') { 
+            renderedHtml += renderItem(pages[i].name, pages[i].link);
+          }
+        };
+        renderedHtml += '</div>';
+      document.getElementById('sidebar-holder').innerHTML = renderedHtml;
+    </script>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="//code.jquery.com/jquery.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="/wayback-ufldl/stanford-ufldl/tutorial/js/bootstrap.min.js"></script>
+    <script>
+      var inputs = document.getElementsByTagName("m");
+      for (var i = 0; i < inputs.length; i++) { 
+        wrap = '$$';
+        if (inputs[i].parentNode.nodeName.toLowerCase() == 'p' || 
+        inputs[i].parentNode.nodeName.toLowerCase() == 'li')  {
+          wrap = '$'
+        }
+        inputs[i].textContent = wrap + inputs[i].textContent + wrap;
+      }
+    </script>
+    <script>
+      MathJax.Hub.Config({
+        tex2jax: {
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+          inlineMath: [ ['$','$'], ["\\(","\\)"] ]
+        }
+      });
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += 'has-jax';
+        }
+      });
+    </script>
+    <script>
+      /*menu handler*/
+      function stripTrailingSlash(str) {
+        if(str.substr(-1) == '/') {
+          return str.substr(0, str.length - 1);
+        }
+        return str;
+      }
+
+      var url = window.location.href;  
+      var activePage = stripTrailingSlash(url);
+
+      $('.nav').each(function(){ 
+        currentPage = stripTrailingSlash(this.href) 
+        if (activePage == currentPage) {
+          $(this).addClass('active'); 
+        } 
+      });
+    </script>
+  </body>
+</html>

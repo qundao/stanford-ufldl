@@ -1,0 +1,232 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise:Convolution and Pooling - Ufldl</title>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+
+</head>
+
+<body class="mediawiki ltr ns-0 ns-subject page-Exercise_Convolution_and_Pooling skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">Exercise:Convolution and Pooling</h1>
+	<div id="bodyContent">
+		<h3 id="siteSub">From Ufldl</h3>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+<table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Convolution_and_Pooling"><span class="tocnumber">1</span> <span class="toctext">Convolution and Pooling</span></a>
+<ul>
+<li class="toclevel-2 tocsection-2"><a href="#Dependencies"><span class="tocnumber">1.1</span> <span class="toctext">Dependencies</span></a></li>
+<li class="toclevel-2 tocsection-3"><a href="#Step_1:_Load_learned_features"><span class="tocnumber">1.2</span> <span class="toctext">Step 1: Load learned features</span></a></li>
+<li class="toclevel-2 tocsection-4"><a href="#Step_2:_Implement_and_test_convolution_and_pooling"><span class="tocnumber">1.3</span> <span class="toctext">Step 2: Implement and test convolution and pooling</span></a>
+<ul>
+<li class="toclevel-3 tocsection-5"><a href="#Step_2a:_Implement_convolution"><span class="tocnumber">1.3.1</span> <span class="toctext">Step 2a: Implement convolution</span></a></li>
+<li class="toclevel-3 tocsection-6"><a href="#Step_2b:_Check_your_convolution"><span class="tocnumber">1.3.2</span> <span class="toctext">Step 2b: Check your convolution</span></a></li>
+<li class="toclevel-3 tocsection-7"><a href="#Step_2c:_Pooling"><span class="tocnumber">1.3.3</span> <span class="toctext">Step 2c: Pooling</span></a></li>
+<li class="toclevel-3 tocsection-8"><a href="#Step_2d:_Check_your_pooling"><span class="tocnumber">1.3.4</span> <span class="toctext">Step 2d: Check your pooling</span></a></li>
+</ul>
+</li>
+<li class="toclevel-2 tocsection-9"><a href="#Step_3:_Convolve_and_pool_with_the_dataset"><span class="tocnumber">1.4</span> <span class="toctext">Step 3: Convolve and pool with the dataset</span></a></li>
+<li class="toclevel-2 tocsection-10"><a href="#Step_4:_Use_pooled_features_for_classification"><span class="tocnumber">1.5</span> <span class="toctext">Step 4: Use pooled features for classification</span></a></li>
+<li class="toclevel-2 tocsection-11"><a href="#Step_5:_Test_classifier"><span class="tocnumber">1.6</span> <span class="toctext">Step 5: Test classifier</span></a></li>
+</ul>
+</li>
+</ul>
+</td></tr></table><script>if (window.showTocToggle) { var tocShowText = "show"; var tocHideText = "hide"; showTocToggle(); } </script>
+<h2> <span class="mw-headline" id="Convolution_and_Pooling"> Convolution and Pooling </span></h2>
+<p>In this exercise you will use the features you learned on 8x8 patches sampled from images from the STL-10 dataset in <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Learning_color_features_with_Sparse_Autoencoders" title="Exercise:Learning color features with Sparse Autoencoders"> the earlier exercise on linear decoders</a> for classifying images from a reduced STL-10 dataset applying <a href="/wayback-ufldl/stanford-ufldl/wiki/Feature_extraction_using_convolution" title="Feature extraction using convolution"> convolution</a> and <a href="/wayback-ufldl/stanford-ufldl/wiki/Pooling" title="Pooling"> pooling</a>. The reduced STL-10 dataset comprises 64x64 images from 4 classes (airplane, car, cat, dog).
+</p><p>In the file <tt><a href="http://ufldl.stanford.edu/wiki/resources/cnn_exercise.zip" class="external text" rel="nofollow">cnn_exercise.zip</a></tt> we have provided some starter code. You should write your code at the places indicated "YOUR CODE HERE" in the files.
+</p><p>For this exercise, you will need to modify <b><tt>cnnConvolve.m</tt></b> and <b><tt>cnnPool.m</tt></b>.
+</p>
+<h3> <span class="mw-headline" id="Dependencies"> Dependencies </span></h3>
+<p>The following additional files are required for this exercise:
+</p>
+<ul><li> <a href="http://ufldl.stanford.edu/wiki/resources/stlSubset.zip" class="external text" rel="nofollow">A subset of the STL10 Dataset (stlSubset.zip)</a>
+</li><li> <a href="http://ufldl.stanford.edu/wiki/resources/cnn_exercise.zip" class="external text" rel="nofollow">Starter Code (cnn_exercise.zip)</a>
+</li></ul>
+<p>You will also need:
+</p>
+<ul><li> <tt>sparseAutoencoderLinear.m</tt> or your saved features from <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Learning_color_features_with_Sparse_Autoencoders" title="Exercise:Learning color features with Sparse Autoencoders">Exercise:Learning color features with Sparse Autoencoders</a>
+</li><li> <tt>feedForwardAutoencoder.m</tt> (and related functions) from <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Self-Taught_Learning" title="Exercise:Self-Taught Learning">Exercise:Self-Taught Learning</a>
+</li><li> <tt>softmaxTrain.m</tt> (and related functions) from <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Softmax_Regression" title="Exercise:Softmax Regression">Exercise:Softmax Regression</a>
+</li></ul>
+<p><i>If you have not completed the exercises listed above, we strongly suggest you complete them first.</i>
+</p>
+<h3> <span class="mw-headline" id="Step_1:_Load_learned_features"> Step 1: Load learned features </span></h3>
+<p>In this step, you will use the features from  <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Learning_color_features_with_Sparse_Autoencoders" title="Exercise:Learning color features with Sparse Autoencoders">Exercise:Learning color features with Sparse Autoencoders</a>. If you have completed that exercise, you can load the color features that were previously saved. To verify that the features are good, the visualized features should look like the following:
+</p><p><a href="" class="image"><img alt="CNN Features Good.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/1/1b/CNN_Features_Good.png/300px-CNN_Features_Good.png" width="300" height="300"/></a>
+</p>
+<h3> <span class="mw-headline" id="Step_2:_Implement_and_test_convolution_and_pooling"> Step 2: Implement and test convolution and pooling </span></h3>
+<p>In this step, you will implement convolution and pooling, and test them on a small part of the data set to ensure that you have implemented these two functions correctly. In the next step, you will actually convolve and pool the features with the STL-10 images.
+</p>
+<h4> <span class="mw-headline" id="Step_2a:_Implement_convolution"> Step 2a: Implement convolution </span></h4>
+<p>Implement convolution, as described in <a href="/wayback-ufldl/stanford-ufldl/wiki/Feature_extraction_using_convolution" title="Feature extraction using convolution">feature extraction using convolution</a>, in the function <tt>cnnConvolve</tt> in <tt>cnnConvolve.m</tt>. Implementing convolution is somewhat involved, so we will guide you through the process below.
+</p><p>First, we want to compute <span class="texhtml">&sigma;(<i>W</i><i>x</i><sub>(<i>r</i>,<i>c</i>)</sub> + <i>b</i>)</span> for all <i>valid</i> <span class="texhtml">(<i>r</i>,<i>c</i>)</span> (<i>valid</i> meaning that the entire 8x8 patch is contained within the image; this is as opposed to a <i>full</i> convolution, which allows the patch to extend outside the image, with the area outside the image assumed to be 0), where <span class="texhtml"><i>W</i></span> and <span class="texhtml"><i>b</i></span> are the learned weights and biases from the input layer to the hidden layer, and <span class="texhtml"><i>x</i><sub>(<i>r</i>,<i>c</i>)</sub></span> is the 8x8 patch with the upper left corner at <span class="texhtml">(<i>r</i>,<i>c</i>)</span>. To accomplish this, one naive method is to loop over all such patches and compute <span class="texhtml">&sigma;(<i>W</i><i>x</i><sub>(<i>r</i>,<i>c</i>)</sub> + <i>b</i>)</span> for each of them; while this is fine in theory, it can very slow. Hence, we usually use Matlab's built in convolution functions, which are well optimized.
+</p><p>Observe that the convolution above can be broken down into the following three small steps. First, compute <span class="texhtml"><i>W</i><i>x</i><sub>(<i>r</i>,<i>c</i>)</sub></span> for all <span class="texhtml">(<i>r</i>,<i>c</i>)</span>. Next, add b to all the computed values. Finally, apply the sigmoid function to the resulting values. This doesn't seem to buy you anything, since the first step still requires a loop. However, you can replace the loop in the first step with one of MATLAB's optimized convolution functions, <tt>conv2</tt>, speeding up the process significantly.
+</p><p>However, there are two important points to note in using <tt>conv2</tt>. 
+</p><p>First, <tt>conv2</tt> performs a 2-D convolution, but you have 5 "dimensions" - image number, feature number, row of image, column of image, and (color) channel of image - that you want to convolve over.  Because of this, you will have to convolve each feature and image channel separately for each image, using the row and column of the image as the 2 dimensions you convolve over. This means that you will need three outer loops over the image number <tt>imageNum</tt>, feature number <tt>featureNum</tt>, and the channel number of the image <tt>channel</tt>.  Inside the three nested for-loops, you will perform a <tt>conv2</tt> 2-D convolution, using the weight matrix for the <tt>featureNum</tt>-th feature and <tt>channel</tt>-th channel, and the image matrix for the <tt>imageNum</tt>-th image. 
+</p><p>Second, because of the mathematical definition of convolution, the feature matrix must be "flipped" before passing it to <tt>conv2</tt>. The following implementation tip explains the "flipping" of feature matrices when using MATLAB's convolution functions:
+</p>
+<div style="border:1px solid black; padding: 5px">
+<p><b>Implementation tip:</b> Using <tt>conv2</tt> and <tt>convn</tt>
+</p><p>Because the mathematical definition of convolution involves "flipping" the matrix to convolve with (reversing its rows and its columns), to use MATLAB's convolution functions, you must first "flip" the weight matrix so that when MATLAB "flips" it according to the mathematical definition the entries will be at the correct place. For example, suppose you wanted to convolve two matrices <tt>image</tt> (a large image) and <tt>W</tt> (the feature) using <tt>conv2(image, W)</tt>, and W is a 3x3 matrix as below:
+</p><p><img class="tex" alt="
+ W = 
+ \begin{pmatrix}
+  1 &amp; 2 &amp; 3 \\
+  4 &amp; 5 &amp; 6 \\
+  7 &amp; 8 &amp; 9  \\
+ \end{pmatrix}
+" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/4/2/2423d882ece0459f0e5ffdf90666cc2d.png"/>
+</p><p>If you use <tt>conv2(image, W)</tt>, MATLAB will first "flip" <tt>W</tt>, reversing its rows and columns, before convolving <tt>W</tt> with <tt>image</tt>, as below:
+</p><p><img class="tex" alt="
+ \begin{pmatrix}
+  1 &amp; 2 &amp; 3 \\
+  4 &amp; 5 &amp; 6 \\
+  7 &amp; 8 &amp; 9  \\
+ \end{pmatrix}
+
+ \xrightarrow{flip}
+
+ \begin{pmatrix}
+  9 &amp; 8 &amp; 7 \\
+  6 &amp; 5 &amp; 4 \\
+  3 &amp; 2 &amp; 1  \\
+ \end{pmatrix}
+" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/4/4/0/44029542404c534a36982cb7b1307a91.png"/>
+</p><p>If the original layout of <tt>W</tt> was correct, after flipping, it would be incorrect. For the layout to be correct after flipping, you will have to flip <tt>W</tt> before passing it into <tt>conv2</tt>, so that after MATLAB flips <tt>W</tt> in <tt>conv2</tt>, the layout will be correct. For <tt>conv2</tt>, this means reversing the rows and columns, which can be done with <tt>flipud</tt> and <tt>fliplr</tt>, as shown below:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="matlab source-matlab"><pre class="de1"><span class="co1">% Flip W for use in conv2</span>
+W = <span class="kw2">flipud</span><span class="br0">&#40;</span><span class="kw2">fliplr</span><span class="br0">&#40;</span>W<span class="br0">&#41;</span><span class="br0">&#41;</span>;</pre></div></div>
+</div>
+<p>Next, to each of the <tt>convolvedFeatures</tt>, you should then add <tt>b</tt>, the corresponding bias for the <tt>featureNum</tt>-th feature.  
+</p><p>However, there is one additional complication.  If we had not done any preprocessing of the input patches, you could just follow the procedure as described above, and apply the sigmoid function to obtain the convolved features, and we'd be done. However, because you preprocessed the patches before learning features on them, you must also apply the same preprocessing steps to the convolved patches to get the correct feature activations.  
+</p><p>In particular, you did the following to the patches:
+</p>
+<ol>
+<li> subtract the mean patch, <tt>meanPatch</tt> to zero the mean of the patches 
+<li> ZCA whiten using the whitening matrix <tt>ZCAWhite</tt>.
+</ol>
+<p>These same three steps must also be applied to the input image patches. 
+</p><p>Taking the preprocessing steps into account, the feature activations that you should compute is <img class="tex" alt="\sigma(W(T(x-\bar{x})) + b)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/8/5/c8505bb46ce1caedbf7b0599b00c5216.png"/>, where <span class="texhtml"><i>T</i></span> is the whitening matrix and <img class="tex" alt="\bar{x}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/4/7/84790e2b15a305120bc3fbeb4a4eeb4f.png"/> is the mean patch. Expanding this, you obtain <img class="tex" alt="\sigma(WTx - WT\bar{x} + b)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/3/d/c3df283f63146108db92fa386df9c4ed.png"/>, which suggests that you should convolve the images with <span class="texhtml"><i>W</i><i>T</i></span> rather than <span class="texhtml"><i>W</i></span> as earlier, and you should add <img class="tex" alt="(b - WT\bar{x})" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/a/4/fa463ec5d86b08bc00438a38f1da617b.png"/>, rather than just <span class="texhtml"><i>b</i></span> to <tt>convolvedFeatures</tt>, before finally applying the sigmoid function.
+</p>
+<h4> <span class="mw-headline" id="Step_2b:_Check_your_convolution"> Step 2b: Check your convolution </span></h4>
+<p>We have provided some code for you to check that you have done the convolution correctly. The code randomly checks the convolved values for a number of (feature, row, column) tuples by computing the feature activations using <tt>feedForwardAutoencoder</tt> for the selected features and patches directly using the sparse autoencoder. 
+</p>
+<h4> <span class="mw-headline" id="Step_2c:_Pooling"> Step 2c: Pooling </span></h4>
+<p>Implement <a href="/wayback-ufldl/stanford-ufldl/wiki/Pooling" title="Pooling">pooling</a> in the function <tt>cnnPool</tt> in <tt>cnnPool.m</tt>. You should implement <i>mean</i> pooling (i.e., averaging over feature responses) for this part.
+</p>
+<h4> <span class="mw-headline" id="Step_2d:_Check_your_pooling"> Step 2d: Check your pooling </span></h4>
+<p>We have provided some code for you to check that you have done the pooling correctly. The code runs <tt>cnnPool</tt> against a test matrix to see if it produces the expected result.
+</p>
+<h3> <span class="mw-headline" id="Step_3:_Convolve_and_pool_with_the_dataset"> Step 3: Convolve and pool with the dataset </span></h3>
+<p>In this step, you will convolve each of the features you learned with the full 64x64 images from the STL-10 dataset to obtain the convolved features for both the training and test sets. You will then pool the convolved features to obtain the pooled features for both training and test sets.  The pooled features for the training set will be used to train your  classifier, which you can then test on the test set.
+</p><p>Because the convolved features matrix is very large, the code provided does the convolution and pooling 50 features at a time to avoid running out of memory.
+</p>
+<h3> <span class="mw-headline" id="Step_4:_Use_pooled_features_for_classification"> Step 4: Use pooled features for classification </span></h3>
+<p>In this step, you will use the pooled features to train a softmax classifier to map the pooled features to the class labels. The code in this section uses <tt>softmaxTrain</tt> from the softmax exercise to train a softmax classifier on the pooled features for 500 iterations, which should take around a few minutes.
+</p>
+<h3> <span class="mw-headline" id="Step_5:_Test_classifier"> Step 5: Test classifier </span></h3>
+<p>Now that you have a trained softmax classifier, you can see how well it performs on the test set. These pooled features for the test set will be run through the softmax classifier, and the accuracy of the predictions will be computed. You should expect to get an accuracy of around 80%.
+</p>
+<!-- 
+NewPP limit report
+Preprocessor node count: 223/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<div class="printfooter">
+</div>		<div id="catlinks" class="catlinks catlinks-allhidden"></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Convolution_and_Pooling" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-talk" class="new"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				 <li id="ca-viewsource"><a href="" title="This page is protected.
+You can view its source [e]" accesskey="e">View source</a></li>
+				 <li id="ca-history"><a href="" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-ufldl_resources">
+		<h5>ufldl resources</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-wiki">
+		<h5>wiki</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
+				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="" id="searchform">
+				<input type="hidden" name="title" value="Special:Search" disabled/>
+				<input id="searchInput" title="Search Ufldl" accesskey="f" type="search" name="search" disabled/>
+				<input type="submit" name="go" class="searchButton" id="searchGoButton" value="Go" title="Go to a page with this exact name if exists" disabled/>&nbsp;
+				<input type="submit" name="fulltext" class="searchButton" id="mw-searchButton" value="Search" title="Search the pages for this text" disabled/>
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="" title="List of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+<li id="t-specialpages"><a href="" title="List of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li id="t-print"><a href="" rel="alternate" title="Printable version of this page [p]" accesskey="p">Printable version</a></li>				<li id="t-permalink"><a href="" title="Permanent link to this revision of the page">Permanent link</a></li>			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 3 June 2011, at 19:16.</li>
+		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+
+<!-- Served in 0.118 secs. -->
+</body>
+</html>

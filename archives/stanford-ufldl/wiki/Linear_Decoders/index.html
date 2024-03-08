@@ -1,0 +1,181 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linear Decoders - Ufldl</title>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+
+</head>
+
+<body class="mediawiki ltr ns-0 ns-subject page-Linear_Decoders skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">Linear Decoders</h1>
+	<div id="bodyContent">
+		<h3 id="siteSub">From Ufldl</h3>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+<h2> <span class="mw-headline" id="Sparse_Autoencoder_Recap"> Sparse Autoencoder Recap </span></h2>
+<p>In the sparse autoencoder, we had 3 layers of neurons: an input layer, a hidden layer and an output layer.  In our previous description
+of autoencoders (and of neural networks), every neuron in the neural network used the same activation function.
+In these notes, we describe a modified version of the autoencoder in which some of the neurons use a different activation function.
+This will result in a model that is sometimes simpler to apply, and can also be more robust to variations in the parameters. 
+</p><p>Recall that each neuron (in the output layer) computed the following:
+</p><p><img class="tex" alt="
+\begin{align}
+z^{(3)} &amp;= W^{(2)} a^{(2)} + b^{(2)} \\
+a^{(3)} &amp;= f(z^{(3)})
+\end{align}
+" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/5/7/9570514e4c49fb8fe34abba34b0700b1.png"/>
+</p><p>where <span class="texhtml"><i>a</i><sup>(3)</sup></span> is the output.  In the autoencoder, <span class="texhtml"><i>a</i><sup>(3)</sup></span> is our approximate reconstruction of the input <span class="texhtml"><i>x</i> = <i>a</i><sup>(1)</sup></span>. 
+</p><p>Because we used a sigmoid activation function for <span class="texhtml"><i>f</i>(<i>z</i><sup>(3)</sup>)</span>, we needed to constrain or scale the inputs to be in the range <span class="texhtml">[0,1]</span>, 
+since the sigmoid function outputs numbers in the range <span class="texhtml">[0,1]</span>. 
+While some datasets like MNIST fit well with this scaling of the output, this can sometimes be awkward to satisfy. For example, if one uses PCA whitening, the input is 
+no longer constrained to <span class="texhtml">[0,1]</span> and it's not clear what the best way is to scale the data to ensure it fits into the constrained range.
+</p><p><br/>
+</p>
+<h2> <span class="mw-headline" id="Linear_Decoder"> Linear Decoder </span></h2>
+<p>One easy fix for this problem is to set <span class="texhtml"><i>a</i><sup>(3)</sup> = <i>z</i><sup>(3)</sup></span>.  Formally, this is achieved by having the output
+nodes use an activation function that's the identity function <span class="texhtml"><i>f</i>(<i>z</i>) = <i>z</i></span>, so that <span class="texhtml"><i>a</i><sup>(3)</sup> = <i>f</i>(<i>z</i><sup>(3)</sup>) = <i>z</i><sup>(3)</sup></span>. 
+This particular activation function <img class="tex" alt="f(\cdot)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/1/0/a1044326f95cfbf46f9859c97cf280be.png"/> is called the <b>linear activation function</b> (though perhaps
+"identity activation function" would have been a better name).  Note however that in the <i>hidden</i> layer of the network, we still use a sigmoid (or tanh) activation function,
+so that the hidden unit activations are given by (say) <img class="tex" alt="\textstyle a^{(2)} = \sigma(W^{(1)}x + b^{(1)})" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/e/3/8e3c4f24762c1b95ca2e7d989870a6c7.png"/>, where <img class="tex" alt="\sigma(\cdot)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/b/e/8be99f6016f333abbed2696126611fc2.png"/> is the sigmoid function, 
+<span class="texhtml"><i>x</i></span> is the input, and <span class="texhtml"><i>W</i><sup>(1)</sup></span> and <span class="texhtml"><i>b</i><sup>(1)</sup></span> are the weight and bias terms for the hidden units. 
+It is only in the <i>output</i> layer that we use the linear activation function.  
+</p><p>An autoencoder in this configuration--with a sigmoid (or tanh) hidden layer and a linear output layer--is called a <b>linear decoder</b>. 
+In this model, we have <img class="tex" alt="\hat{x} = a^{(3)} = z^{(3)} = W^{(2)}a + b^{(2)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/8/f/c8f74a340290cdf07c78ac17a0af7b70.png"/>. Because the output <img class="tex" alt="\hat{x} " src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/b/a/8baf9dc7043aae61e37e171dc9f537e9.png"/> is a now linear function of the hidden unit activations, by varying <span class="texhtml"><i>W</i><sup>(2)</sup></span>, each output unit <span class="texhtml"><i>a</i><sup>(3)</sup></span> can be made to produce values greater than 1 or less than 0 as well.  This allows us to train the sparse autoencoder real-valued inputs without needing to pre-scale every example to a specific range.  
+</p><p>Since we have changed the activation function of the output units, the gradients of the output units also change. Recall that for each output unit, we had set set the error terms as follows:
+</p>
+<dl><dd><img class="tex" alt="
+\begin{align}
+\delta_i^{(3)}
+= \frac{\partial}{\partial z_i} \;\;
+        \frac{1}{2} \left\|y - \hat{x}\right\|^2 = - (y_i - \hat{x}_i) \cdot f'(z_i^{(3)})
+\end{align}
+" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/f/0/cf0aa3a41ce16db8a53854e6fe751d4f.png"/>
+</dd></dl>
+<p>where <span class="texhtml"><i>y</i> = <i>x</i></span> is the desired output, <img class="tex" alt="\hat{x}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/b/a/8baf9dc7043aae61e37e171dc9f537e9.png"/> is the output of our autoencoder, and <img class="tex" alt="f(\cdot)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/1/0/a1044326f95cfbf46f9859c97cf280be.png"/> is our activation function.  Because in
+the output layer we now have <span class="texhtml"><i>f</i>(<i>z</i>) = <i>z</i></span>, that implies <span class="texhtml"><i>f</i>'(<i>z</i>) = 1</span> and thus 
+the above now simplifies to:
+</p>
+<dl><dd><img class="tex" alt="
+\begin{align}
+\delta_i^{(3)} = - (y_i - \hat{x}_i)
+\end{align}
+" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/4/1/b41a77713e3497581a691ea4be158037.png"/>
+</dd></dl>
+<p>Of course, when using backpropagation to compute the error terms for the <i>hidden</i> layer:
+</p>
+<dl><dd><img class="tex" alt="
+\begin{align}
+\delta^{(2)} &amp;= \left( (W^{(2)})^T\delta^{(3)}\right) \bullet f'(z^{(2)})
+\end{align}
+" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/7/e/37e5f0d83c10a8e923467fb72eee56e0.png"/> 
+</dd></dl>
+<p>Because the hidden layer is using a sigmoid (or tanh) activation <span class="texhtml"><i>f</i></span>, in the equation above <img class="tex" alt="f'(\cdot)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/f/6/ff62381ad386ec3826477d743df34b6c.png"/> should still be the
+derivative of the sigmoid (or tanh) function.
+</p><p><br/>
+</p>
+<div style="text-align: left;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
+<p>Language&nbsp;: <a href="/wayback-ufldl/stanford-ufldl/wiki/%E7%BA%BF%E6%80%A7%E8%A7%A3%E7%A0%81%E5%99%A8" title="线性解码器">中文</a>
+</p>
+</div>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 154/1000000
+Post-expand include size: 171/2097152 bytes
+Template argument size: 21/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<div class="printfooter">
+</div>		<div id="catlinks" class="catlinks catlinks-allhidden"></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/Linear_Decoders" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-talk" class="new"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				 <li id="ca-viewsource"><a href="" title="This page is protected.
+You can view its source [e]" accesskey="e">View source</a></li>
+				 <li id="ca-history"><a href="" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-ufldl_resources">
+		<h5>ufldl resources</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-wiki">
+		<h5>wiki</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
+				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="" id="searchform">
+				<input type="hidden" name="title" value="Special:Search" disabled/>
+				<input id="searchInput" title="Search Ufldl" accesskey="f" type="search" name="search" disabled/>
+				<input type="submit" name="go" class="searchButton" id="searchGoButton" value="Go" title="Go to a page with this exact name if exists" disabled/>&nbsp;
+				<input type="submit" name="fulltext" class="searchButton" id="mw-searchButton" value="Search" title="Search the pages for this text" disabled/>
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="" title="List of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+<li id="t-specialpages"><a href="" title="List of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li id="t-print"><a href="" rel="alternate" title="Printable version of this page [p]" accesskey="p">Printable version</a></li>				<li id="t-permalink"><a href="" title="Permanent link to this revision of the page">Permanent link</a></li>			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 8 April 2013, at 04:06.</li>
+		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+
+<!-- Served in 0.118 secs. -->
+</body>
+</html>

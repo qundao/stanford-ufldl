@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Unsupervised Feature Learning and Deep Learning Tutorial</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/bootstrap_readable.min.css" rel="stylesheet">
+    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/pygments/default.css" rel="stylesheet">
+    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/custom.css" rel="stylesheet">
+    <script type="text/javascript"
+          src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="../../assets/js/html5shiv.js"></script>
+    <script src="../../assets/js/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/wayback-ufldl/stanford-ufldl/tutorial/">UFLDL Tutorial</a>
+        </div>
+        <!---
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+          </ul>
+        </div>
+        !-->
+      </div>
+    </div>
+
+
+    <div class="row-fluid">
+      <div class = "container"> 
+        <div class = "col-xs-9">
+          <h3>Softmax Regression</h3>
+<hr>
+<!---<p class="meta">28 Aug 2013</p>--->
+
+<div class="post">
+<h3 id="introduction">Introduction</h3>
+
+<p>Softmax regression (or multinomial logistic regression) is a generalization of logistic regression to the case where we want to handle multiple classes. In logistic regression we assumed that the labels were binary: <m>y^{(i)} \in \{0,1\}</m>. We used such a classifier to distinguish between two kinds of hand-written digits. Softmax regression allows us to handle <m>y^{(i)} \in \{1,\ldots,K\}</m> where <m>K</m> is the number of classes.</p>
+
+<p>Recall that in logistic regression, we had a training set <m>\{ (x^{(1)}, y^{(1)}), \ldots, (x^{(m)}, y^{(m)}) \}</m> of <m>m</m> labeled examples, where the input features are <m>x^{(i)} \in \Re^{n}</m>. With logistic regression, we were in the binary classification setting, so the labels were <m>y^{(i)} \in \{0,1\}</m>. Our hypothesis took the form:</p>
+<m>\begin{align}
+h_\theta(x) = \frac{1}{1+\exp(-\theta^\top x)},
+\end{align}</m>
+<p>and the model parameters <m>\theta</m> were trained to minimize the cost function</p>
+<m>
+\begin{align}
+J(\theta) = -\left[ \sum_{i=1}^m y^{(i)} \log h_\theta(x^{(i)}) + (1-y^{(i)}) \log (1-h_\theta(x^{(i)})) \right]
+\end{align}
+</m>
+<p>In the softmax regression setting, we are interested in multi-class classification (as opposed to only binary classification), and so the label <m>y</m> can take on <m>K</m> different values, rather than only two. Thus, in our training set <m>\{ (x^{(1)}, y^{(1)}), \ldots, (x^{(m)}, y^{(m)}) \}</m>, we now have that <m>y^{(i)} \in \{1, 2, \ldots, K\}</m>. (Note that our convention will be to index the classes starting from 1, rather than from 0.) For example, in the MNIST digit recognition task, we would have <m>K=10</m> different classes.</p>
+
+<p>Given a test input <m>x</m>, we want our hypothesis to estimate the probability that <m>P(y=k | x)</m> for each value of <m>k = 1, \ldots, K</m>. I.e., we want to estimate the probability of the class label taking on each of the <m>K</m> different possible values. Thus, our hypothesis will output a <m>K</m>-dimensional vector (whose elements sum to 1) giving us our <m>K</m> estimated probabilities. Concretely, our hypothesis <m>h_{\theta}(x)</m> takes the form:</p>
+<m>
+\begin{align}
+h_\theta(x) =
+\begin{bmatrix}
+P(y = 1 | x; \theta) \\
+P(y = 2 | x; \theta) \\
+\vdots \\
+P(y = K | x; \theta)
+\end{bmatrix}
+=
+\frac{1}{ \sum_{j=1}^{K}{\exp(\theta^{(j)\top} x) }}
+\begin{bmatrix}
+\exp(\theta^{(1)\top} x ) \\
+\exp(\theta^{(2)\top} x ) \\
+\vdots \\
+\exp(\theta^{(K)\top} x ) \\
+\end{bmatrix}
+\end{align}
+</m>
+<p>Here <m>\theta^{(1)}, \theta^{(2)}, \ldots, \theta^{(K)} \in \Re^{n}</m> are the parameters of our model. Notice that the term <m>\frac{1}{ \sum_{j=1}^{K}{\exp(\theta^{(j)\top} x) } } </m> normalizes the distribution, so that it sums to one.</p>
+
+<p>For convenience, we will also write <m>\theta</m> to denote all the parameters of our model. When you implement softmax regression, it is usually convenient to represent <m>\theta</m> as a <m>n</m>-by-<m>K</m> matrix obtained by concatenating <m>\theta^{(1)}, \theta^{(2)}, \ldots, \theta^{(K)}</m> into columns, so that</p>
+<m>
+\theta = \left[\begin{array}{cccc}| &amp; | &amp; | &amp; | \\
+\theta^{(1)} &amp; \theta^{(2)} &amp; \cdots &amp; \theta^{(K)} \\
+| &amp; | &amp; | &amp; |
+\end{array}\right].
+</m>
+<h3 id="cost_function">Cost Function</h3>
+
+<p>We now describe the cost function that we’ll use for softmax regression. In the equation below, <m>1\{\cdot\}</m> is the ”‘indicator function,”’ so that <m>1\{\hbox{a true statement}\}=1</m>, and <m>1\{\hbox{a false statement}\}=0</m>. For example, <m>1\{2+2=4\}</m> evaluates to 1; whereas <m>1\{1+1=5\}</m> evaluates to 0. Our cost function will be:</p>
+<m>
+\begin{align}
+J(\theta) = - \left[ \sum_{i=1}^{m} \sum_{k=1}^{K}  1\left\{y^{(i)} = k\right\} \log \frac{\exp(\theta^{(k)\top} x^{(i)})}{\sum_{j=1}^K \exp(\theta^{(j)\top} x^{(i)})}\right]
+\end{align}
+</m>
+<p>Notice that this generalizes the logistic regression cost function, which could also have been written:</p>
+<m>
+\begin{align}
+J(\theta) &amp;= - \left[ \sum_{i=1}^m   (1-y^{(i)}) \log (1-h_\theta(x^{(i)})) + y^{(i)} \log h_\theta(x^{(i)}) \right] \\
+&amp;= - \left[ \sum_{i=1}^{m} \sum_{k=0}^{1} 1\left\{y^{(i)} = k\right\} \log P(y^{(i)} = k | x^{(i)} ; \theta) \right]
+\end{align}
+</m>
+<p>The softmax cost function is similar, except that we now sum over the <m>K</m> different possible values of the class label. Note also that in softmax regression, we have that</p>
+<m> P(y^{(i)} = k | x^{(i)} ; \theta) = \frac{\exp(\theta^{(k)\top} x^{(i)})}{\sum_{j=1}^K \exp(\theta^{(j)\top} x^{(i)}) }
+</m>
+<p>.</p>
+
+<p>We cannot solve for the minimum of <m>J(\theta)</m> analytically, and thus as usual we’ll resort to an iterative optimization algorithm. Taking derivatives, one can show that the gradient is:</p>
+<m>
+\begin{align}
+\nabla_{\theta^{(k)}} J(\theta) = - \sum_{i=1}^{m}{ \left[ x^{(i)} \left( 1\{ y^{(i)} = k\}  - P(y^{(i)} = k | x^{(i)}; \theta) \right) \right]  }
+\end{align}
+</m>
+<p>Recall the meaning of the ”<m>\nabla_{\theta^{(k)}}</m>” notation. In particular, <m>\nabla_{\theta^{(k)}} J(\theta)</m> is itself a vector, so that its <m>j</m>-th element is <m>\frac{\partial J(\theta)}{\partial \theta_{lk}}</m> the partial derivative of <m>J(\theta)</m> with respect to the <m>j</m>-th element of <m>\theta^{(k)}</m>.</p>
+
+<p>Armed with this formula for the derivative, one can then plug it into a standard optimization package and have it minimize <m>J(\theta)</m>.</p>
+<!--
+When implementing softmax regression, we will typically use a modified version of the cost function described above;
+specifically, one that incorporates weight decay.  We describe the motivation and details below. -->
+<h3 id="properties_of_softmax_regression_parameterization">Properties of softmax regression parameterization</h3>
+
+<p>Softmax regression has an unusual property that it has a “redundant” set of parameters. To explain what this means, suppose we take each of our parameter vectors <m>\theta^{(j)}</m>, and subtract some fixed vector <m>\psi</m> from it, so that every <m>\theta^{(j)}</m> is now replaced with <m>\theta^{(j)} - \psi</m> (for every <m>j=1, \ldots, k</m>). Our hypothesis now estimates the class label probabilities as</p>
+<m>
+\begin{align}
+P(y^{(i)} = k | x^{(i)} ; \theta)
+&amp;= \frac{\exp((\theta^{(k)}-\psi)^\top x^{(i)})}{\sum_{j=1}^K \exp( (\theta^{(j)}-\psi)^\top x^{(i)})}  \\
+&amp;= \frac{\exp(\theta^{(k)\top} x^{(i)}) \exp(-\psi^\top x^{(i)})}{\sum_{j=1}^K \exp(\theta^{(j)\top} x^{(i)}) \exp(-\psi^\top x^{(i)})} \\
+&amp;= \frac{\exp(\theta^{(k)\top} x^{(i)})}{\sum_{j=1}^K \exp(\theta^{(j)\top} x^{(i)})}.
+\end{align}
+</m>
+<p>In other words, subtracting <m>\psi</m> from every <m>\theta^{(j)}</m> does not affect our hypothesis’ predictions at all! This shows that softmax regression’s parameters are “redundant.” More formally, we say that our softmax model is ”‘overparameterized,”’ meaning that for any hypothesis we might fit to the data, there are multiple parameter settings that give rise to exactly the same hypothesis function <m>h_\theta</m> mapping from inputs <m>x</m> to the predictions.</p>
+
+<p>Further, if the cost function <m>J(\theta)</m> is minimized by some setting of the parameters <m>(\theta^{(1)}, \theta^{(2)},\ldots, \theta^{(k)})</m>, then it is also minimized by <m>(\theta^{(1)} - \psi, \theta^{(2)} - \psi,\ldots,
+\theta^{(k)} - \psi)</m> for any value of <m>\psi</m>. Thus, the minimizer of <m>J(\theta)</m> is not unique. (Interestingly, <m>J(\theta)</m> is still convex, and thus gradient descent will not run into local optima problems. But the Hessian is singular/non-invertible, which causes a straightforward implementation of Newton’s method to run into numerical problems.)</p>
+
+<p>Notice also that by setting <m>\psi = \theta^{(K)}</m>, one can always replace <m>\theta^{(K)}</m> with <m>\theta^{(K)} - \psi = \vec{0}</m> (the vector of all 0’s), without affecting the hypothesis. Thus, one could “eliminate” the vector of parameters <m>\theta^{(K)}</m> (or any other <m>\theta^{(k)}</m>, for any single value of <m>k</m>), without harming the representational power of our hypothesis. Indeed, rather than optimizing over the <m>K\cdot n</m> parameters <m>(\theta^{(1)}, \theta^{(2)},\ldots, \theta^{(K)})</m> (where <m>\theta^{(k)} \in \Re^{n}</m>), one can instead set <m>\theta^{(K)} = \vec{0}</m> and optimize only with respect to the <m>K \cdot n</m> remaining parameters.</p>
+<!--
+In practice, however, it is often cleaner and simpler to implement the version which keeps
+all the parameters <m>(\theta^{(1)}, \theta^{(2)},\ldots, \theta^{(n)})</m>, without
+arbitrarily setting one of them to zero.  But we will
+make one change to the cost function: Adding weight decay.  This will take care of
+the numerical problems associated with softmax regression's overparameterized representation.
+
+### Weight Decay ###
+
+We will modify the cost function by adding a weight decay term 
+<m>\textstyle \frac{\lambda}{2} \sum_{i=1}^k \sum_{j=0}^{n} \theta_{ij}^2</m>
+which penalizes large values of the parameters.  Our cost function is now
+
+<m>
+\begin{align}
+J(\theta) = - \frac{1}{m} \left[ \sum_{i=1}^{m} \sum_{j=1}^{k} 1\left\{y^{(i)} = j\right\} \log \frac{e^{\theta^{(j)\top} x^{(i)}}}{\sum_{l=1}^k e^{ \theta^{(l)\top} x^{(i)} }}  \right]
+              + \frac{\lambda}{2} \sum_{i=1}^k \sum_{j=0}^n \theta_{ij}^2
+\end{align}
+</m>
+
+With this weight decay term (for any <m>\lambda > 0</m>), the cost function
+<m>J(\theta)</m> is now strictly convex, and is guaranteed to have a
+unique solution.  The Hessian is now invertible, and because <m>J(\theta)</m> is 
+convex, algorithms such as gradient descent, L-BFGS, etc. are guaranteed
+to converge to the global minimum.
+
+To apply an optimization algorithm, we also need the derivative of this
+new definition of <m>J(\theta)</m>.  One can show that the derivative is:
+<m>
+\begin{align}
+\nabla_{\theta^{(j)}} J(\theta) = - \frac{1}{m} \sum_{i=1}^{m}{ \left[ x^{(i)} ( 1\{ y^{(i)} = j\}  - P(y^{(i)} = j | x^{(i)}; \theta) ) \right]  } + \lambda \theta^{(j)}
+\end{align}
+</m>
+
+By minimizing <m>J(\theta)</m> with respect to <m>\theta</m>, we will have a working implementation of softmax regression.
+-->
+<h3 id="relationship_to_logistic_regression">Relationship to Logistic Regression</h3>
+
+<p>In the special case where <m>K = 2</m>, one can show that softmax regression reduces to logistic regression. This shows that softmax regression is a generalization of logistic regression. Concretely, when <m>K=2</m>, the softmax regression hypothesis outputs</p>
+<m>
+\begin{align}
+h_\theta(x) &amp;=
+
+\frac{1}{ \exp(\theta^{(1)\top}x)  + \exp( \theta^{(2)\top} x^{(i)} ) }
+\begin{bmatrix}
+\exp( \theta^{(1)\top} x ) \\
+\exp( \theta^{(2)\top} x )
+\end{bmatrix}
+\end{align}
+</m>
+<p>Taking advantage of the fact that this hypothesis is overparameterized and setting <m>\psi = \theta^{(2)}</m>, we can subtract <m>\theta^{(2)}</m> from each of the two parameters, giving us</p>
+<m>
+\begin{align}
+h(x) &amp;=
+
+\frac{1}{ \exp( (\theta^{(1)}-\theta^{(2)})^\top x^{(i)} ) + \exp(\vec{0}^\top x) }
+\begin{bmatrix}
+\exp( (\theta^{(1)}-\theta^{(2)})^\top x )
+\exp( \vec{0}^\top x ) \\
+\end{bmatrix} \\
+
+&amp;=
+\begin{bmatrix}
+\frac{1}{ 1 + \exp( (\theta^{(1)}-\theta^{(2)})^\top x^{(i)} ) } \\
+\frac{\exp( (\theta^{(1)}-\theta^{(2)})^\top x )}{ 1 + \exp( (\theta^{(1)}-\theta^{(2)})^\top x^{(i)} ) }
+\end{bmatrix} \\
+
+&amp;=
+\begin{bmatrix}
+\frac{1}{ 1  + \exp( (\theta^{(1)}-\theta^{(2)})^\top x^{(i)} ) } \\
+1 - \frac{1}{ 1  + \exp( (\theta^{(1)}-\theta^{(2)})^\top x^{(i)} ) } \\
+\end{bmatrix}
+\end{align}
+</m>
+<p>Thus, replacing <m>\theta^{(2)}-\theta^{(1)}</m> with a single parameter vector <m>\theta'</m>, we find that softmax regression predicts the probability of one of the classes as <m>\frac{1}{ 1  + \exp(- (\theta')^\top x^{(i)} ) }</m>, and that of the other class as <m>1 - \frac{1}{ 1 + \exp(- (\theta')^\top x^{(i)} ) }</m>, same as logistic regression.</p>
+<!--
+### Softmax Regression vs. k Binary Classifiers ###
+
+Suppose you are working on a music classification application, and there are
+<m>k</m> types of music that you are trying to recognize.  Should you use a
+softmax classifier, or should you build <m>k</m> separate binary classifiers using
+logistic regression?
+
+This will depend on whether the four classes are ''mutually exclusive.''  For example,
+if your four classes are classical, country, rock, and jazz, then assuming each
+of your training examples is labeled with exactly one of these four class labels,
+you should build a softmax classifier with <m>k=4</m>.
+(If there're also some examples that are none of the above four classes,
+then you can set <m>k=5</m> in softmax regression, and also have a fifth, "none of the above," class.)
+
+If however your categories are has_vocals, dance, soundtrack, pop, then the
+classes are not mutually exclusive; for example, there can be a piece of pop
+music that comes from a soundtrack and in addition has vocals.  In this case, it
+would be more appropriate to build 4 binary logistic regression classifiers. 
+This way, for each new musical piece, your algorithm can separately decide whether
+it falls into each of the four categories.
+
+Now, consider a computer vision example, where you're trying to classify images into
+three different classes.  (i) Suppose that your classes are indoor_scene,
+outdoor_urban_scene, and outdoor_wilderness_scene.  Would you use sofmax regression
+or three logistic regression classifiers?  (ii) Now suppose your classes are
+indoor_scene, black_and_white_image, and image_has_people.  Would you use softmax
+regression or multiple logistic regression classifiers?
+
+In the first case, the classes are mutually exclusive, so a softmax regression
+classifier would be appropriate.  In the second case, it would be more appropriate to build
+three separate logistic regression classifiers.
+-->
+<h3 id="exercise_1c">Exercise 1C</h3>
+
+<p>Starter code for this exercise is included in the <a href="https://github.com/amaas/stanford_dl_ex">Starter code GitHub Repo</a> in the <code>ex1/</code> directory.</p>
+
+<p>In this exercise you will train a classifier to handle all 10 digits in the MNIST dataset. The code is very similar to that used for Exercise 1B except that it will load the entire MNIST train and test sets (instead of just the 0 and 1 digits), and the labels <m>y^{(i)}</m> have 1 added to them so that <m>y^{(i)} \in \{1,\ldots,10\}</m>. (The change in the labels allows you to use <m>y^{(i)}</m> as an index into a matrix.)</p>
+
+<p>The code performs the same operations as in Exercise 1B: it loads the train and test data, adding an intercept term, then calls <code>minFunc</code> with the <code>softmax_regression_vec.m</code> file as the objective function. When training is complete, it will print out training and testing accuracies for the 10-class digit recognition problem.</p>
+
+<p>Your task is to implement the <code>softmax_regression_vec.m</code> file to compute the softmax objective function <m>J(\theta; X,y)</m> and store it in the variable <m>f</m>. You must also compute the gradient <m>\nabla_\theta J(\theta; X,y)</m> and store it in the variable <m>g</m>. Don’t forget that <code>minFunc</code> supplies the parameters <m>\theta</m> as a vector. The starter code will reshape <m>\theta</m> into a n-by-(K-1) matrix (for K=10 classes). You also need to remember to reshape the returned gradient <m>g</m> back into a vector using <m>g=g(:);</m></p>
+
+<p>You can start out with a for-loop version of the code if necessary to get the gradient right. (Be sure to use the gradient check debugging strategy covered earlier!) However, you might find that this implementation is too slow to run the optimizer all the way through. After you get the gradient right with a slow version of the code, try to vectorize your code as well as possible before running the full experiment.</p>
+
+<p>Here are a few MATLAB tips that you might find useful for implementing or speeding up your code (though these may or may not be useful depending on your implementation strategy):</p>
+
+<ol>
+<li>
+<p>Suppose we have a matrix <m>A</m> and we want to extract a single element from each row, where the column of the element to be extracted from row <m>i</m> is stored in <m>y(i)</m>, where <m>y</m> is a row vector. We can use the <code>sub2ind()</code> function like this:</p>
+
+<pre><code>I=sub2ind(size(A), 1:size(A,1), y);
+values = A(I);</code></pre>
+
+<p>This code will take each pair of indices <m>(i,j)</m> where <m>i</m> comes from the second argument and <m>j</m> comes from the corresponding element of the third argument, and compute the corresponding 1D index into <m>A</m> for the <m>(i,j)</m>‘th element. So, <m>I(1)</m> will be the index for the element at location <m>(1,y(1))</m>, and <m>I(2)</m> will be the index for the element at <m>(2,y(2))</m>.</p>
+</li>
+
+<li>
+<p>When you compute the predicted label probabilities <m>\hat{y}^{(i)}_k = \exp(\theta_{:,k}^\top x^{(i)}) / (\sum^K_{j=1} \exp(\theta_{:,j}^\top x^{(i)}))</m>, try to use matrix multiplications and <code>bsxfun</code> to speed up the computation. For example, once <m>\theta</m> is in matrix form, you can compute the products for every example and the first 9 classes using <m>a = \theta^\top X</m>. (Recall that the 10th class is left out of <m>\theta</m>, so that <m>a(10,:)</m> is just assumed to be 0.)</p>
+</li>
+</ol>
+</div>
+
+        </div>
+        <div class = "col-xs-3 sidebar">
+          <div id="sidebar-holder">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Generate sidebar --->
+    <script src='/wayback-ufldl/stanford-ufldl/tutorial/sidebar/sidebar.js'></script>
+    <script>
+      function renderHeading(name) {
+        return '<div class = "panel-heading">' + name + '</div>';
+      };
+      function renderItem(name, link) { 
+        return '<a href="/wayback-ufldl/stanford-ufldl/tutorial/' + link + '" class="list-group-item nav">' + name +
+          '</a>';
+      };
+      renderedHtml = '<div class = "panel panel-default">';
+        for (var i = 0; i < pages.length; i++) {
+          if (pages[i].type == 'Heading') {
+            renderedHtml += renderHeading(pages[i].name);
+          }
+          if (pages[i].type == 'Page') { 
+            renderedHtml += renderItem(pages[i].name, pages[i].link);
+          }
+        };
+        renderedHtml += '</div>';
+      document.getElementById('sidebar-holder').innerHTML = renderedHtml;
+    </script>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="//code.jquery.com/jquery.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="/wayback-ufldl/stanford-ufldl/tutorial/js/bootstrap.min.js"></script>
+    <script>
+      var inputs = document.getElementsByTagName("m");
+      for (var i = 0; i < inputs.length; i++) { 
+        wrap = '$$';
+        if (inputs[i].parentNode.nodeName.toLowerCase() == 'p' || 
+        inputs[i].parentNode.nodeName.toLowerCase() == 'li')  {
+          wrap = '$'
+        }
+        inputs[i].textContent = wrap + inputs[i].textContent + wrap;
+      }
+    </script>
+    <script>
+      MathJax.Hub.Config({
+        tex2jax: {
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+          inlineMath: [ ['$','$'], ["\\(","\\)"] ]
+        }
+      });
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += 'has-jax';
+        }
+      });
+    </script>
+    <script>
+      /*menu handler*/
+      function stripTrailingSlash(str) {
+        if(str.substr(-1) == '/') {
+          return str.substr(0, str.length - 1);
+        }
+        return str;
+      }
+
+      var url = window.location.href;  
+      var activePage = stripTrailingSlash(url);
+
+      $('.nav').each(function(){ 
+        currentPage = stripTrailingSlash(this.href) 
+        if (activePage == currentPage) {
+          $(this).addClass('active'); 
+        } 
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,152 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature extraction using convolution - Ufldl</title>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+
+</head>
+
+<body class="mediawiki ltr ns-0 ns-subject page-Feature_extraction_using_convolution skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">Feature extraction using convolution</h1>
+	<div id="bodyContent">
+		<h3 id="siteSub">From Ufldl</h3>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+<table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Overview"><span class="tocnumber">1</span> <span class="toctext">Overview</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Fully_Connected_Networks"><span class="tocnumber">2</span> <span class="toctext">Fully Connected Networks</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Locally_Connected_Networks"><span class="tocnumber">3</span> <span class="toctext">Locally Connected Networks</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Convolutions"><span class="tocnumber">4</span> <span class="toctext">Convolutions</span></a></li>
+</ul>
+</td></tr></table><script>if (window.showTocToggle) { var tocShowText = "show"; var tocHideText = "hide"; showTocToggle(); } </script>
+<h2> <span class="mw-headline" id="Overview"> Overview </span></h2>
+<p>In the previous exercises, you worked through problems which involved images that were relatively low in resolution, such as small image patches and small images of hand-written digits. In this section, we will develop methods which will allow us to scale up these methods to more realistic datasets that have larger images.
+</p>
+<h2> <span class="mw-headline" id="Fully_Connected_Networks"> Fully Connected Networks </span></h2>
+<p>In the sparse autoencoder, one design choice that we had made was to "fully connect" all the hidden units to all the input units. On the relatively small images that we were working with (e.g., 8x8 patches for the sparse autoencoder assignment, 28x28 images for the MNIST dataset), it was computationally feasible to learn features on the entire image. However, with larger images (e.g., 96x96 images) learning features that span the entire image (fully connected networks) is very computationally expensive--you would have about <span class="texhtml">10<sup>4</sup></span> input units, and assuming you want to learn 100 features, you would have on the order of <span class="texhtml">10<sup>6</sup></span> parameters to learn. The feedforward and backpropagation computations would also be about <span class="texhtml">10<sup>2</sup></span> times slower, compared to 28x28 images.
+</p>
+<h2> <span class="mw-headline" id="Locally_Connected_Networks"> Locally Connected Networks </span></h2>
+<p>One simple solution to this problem is to restrict the connections between the hidden units and the input units, allowing each hidden unit to connect to only a small subset of the input units.  Specifically, each hidden unit will connect to only a small contiguous region of pixels in the input.  (For input modalities different than images, there is often also a natural way to select "contiguous groups" of input units to connect to a single hidden unit as well; for example, for audio, a hidden unit might be connected to only the input units corresponding to a certain time span of the input audio clip.) 
+</p><p>This idea of having locally connected networks also draws inspiration from how the early visual system is wired up in biology.  Specifically, neurons in the visual cortex have localized receptive fields (i.e., they respond only to stimuli in a certain location).
+</p>
+<h2> <span class="mw-headline" id="Convolutions"> Convolutions </span></h2>
+<p>Natural images have the property of being <b>stationary</b>, meaning that the statistics of one part of the image are the same as any other part.  This suggests that the features that we learn at one part of the image can also be applied to other parts of the image, and we can use the same features at all locations. 
+</p><p><br/>
+More precisely, having learned features over small (say 8x8) patches sampled randomly from the larger image, we can then apply this learned 8x8 feature detector anywhere in the image.  Specifically, we can take the learned 8x8 features and 
+<b>convolve</b> them with the larger image, thus obtaining a different feature activation value at each location in the image.  
+</p><p><br/>
+To give a concrete example, suppose you have learned features on 8x8 patches sampled from a 96x96 image.  Suppose further this was done with an autoencoder that has 100 hidden units.  To get the convolved features, for every 8x8 region of the 96x96 image, that is, the 8x8 regions starting at <img class="tex" alt="(1, 1), (1, 2), \ldots (89, 89)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/5/7/e5789161297ffff9ced5d7dc95436084.png"/>, you would extract the 8x8 patch, and run it through your trained sparse autoencoder to get the feature activations.  This would result in 100 sets 89x89 convolved features.  
+</p><p><br/>
+</p><p><a href="" class="image"><img alt="Convolution schematic.gif" src="/wayback-ufldl/stanford-ufldl/wiki/images/6/6c/Convolution_schematic.gif" width="526" height="384"/></a>
+</p><p>Formally, given some large <img class="tex" alt="r \times c" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/5/b/f5b34ce727a51879b69d50dbb38cec68.png"/> images <span class="texhtml"><i>x</i><sub><i>l</i><i>a</i><i>r</i><i>g</i><i>e</i></sub></span>, we first train a sparse autoencoder on small <img class="tex" alt="a \times b" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/d/1/2d1dc88200d501549f9d6edae3d6c195.png"/> patches <span class="texhtml"><i>x</i><sub><i>s</i><i>m</i><i>a</i><i>l</i><i>l</i></sub></span> sampled from these images, learning <span class="texhtml"><i>k</i></span> features <span class="texhtml"><i>f</i> = &sigma;(<i>W</i><sup>(1)</sup><i>x</i><sub><i>s</i><i>m</i><i>a</i><i>l</i><i>l</i></sub> + <i>b</i><sup>(1)</sup>)</span> (where <span class="texhtml">&sigma;</span> is the sigmoid function), given by the weights <span class="texhtml"><i>W</i><sup>(1)</sup></span> and biases <span class="texhtml"><i>b</i><sup>(1)</sup></span> from the visible units to the hidden units. For every <img class="tex" alt="a \times b" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/d/1/2d1dc88200d501549f9d6edae3d6c195.png"/> patch <span class="texhtml"><i>x</i><sub><i>s</i></sub></span> in the large image, we compute <span class="texhtml"><i>f</i><sub><i>s</i></sub> = &sigma;(<i>W</i><sup>(1)</sup><i>x</i><sub><i>s</i></sub> + <i>b</i><sup>(1)</sup>)</span>, giving us <span class="texhtml"><i>f</i><sub><i>c</i><i>o</i><i>n</i><i>v</i><i>o</i><i>l</i><i>v</i><i>e</i><i>d</i></sub></span>, a <img class="tex" alt="k \times (r - a + 1) \times (c - b + 1)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/5/a/a5ac162e7a320af96172ebc954efc3d3.png"/> array of convolved features. 
+</p><p><br/>
+</p><p>In the next section, we further describe how to "pool" these features together to get even better features for classification.
+</p><p><br/>
+</p>
+<div style="text-align: left;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
+<p>Language&nbsp;: <a href="/wayback-ufldl/stanford-ufldl/wiki/%E5%8D%B7%E7%A7%AF%E7%89%B9%E5%BE%81%E6%8F%90%E5%8F%96" title="卷积特征提取">中文</a>
+</p>
+</div>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 93/1000000
+Post-expand include size: 174/2097152 bytes
+Template argument size: 24/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<div class="printfooter">
+</div>		<div id="catlinks" class="catlinks catlinks-allhidden"></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/Feature_extraction_using_convolution" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-talk" class="new"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				 <li id="ca-viewsource"><a href="" title="This page is protected.
+You can view its source [e]" accesskey="e">View source</a></li>
+				 <li id="ca-history"><a href="" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-ufldl_resources">
+		<h5>ufldl resources</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-wiki">
+		<h5>wiki</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
+				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="" id="searchform">
+				<input type="hidden" name="title" value="Special:Search" disabled/>
+				<input id="searchInput" title="Search Ufldl" accesskey="f" type="search" name="search" disabled/>
+				<input type="submit" name="go" class="searchButton" id="searchGoButton" value="Go" title="Go to a page with this exact name if exists" disabled/>&nbsp;
+				<input type="submit" name="fulltext" class="searchButton" id="mw-searchButton" value="Search" title="Search the pages for this text" disabled/>
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="" title="List of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+<li id="t-specialpages"><a href="" title="List of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li id="t-print"><a href="" rel="alternate" title="Printable version of this page [p]" accesskey="p">Printable version</a></li>				<li id="t-permalink"><a href="" title="Permanent link to this revision of the page">Permanent link</a></li>			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 8 April 2013, at 04:11.</li>
+		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+
+<!-- Served in 0.135 secs. -->
+</body>
+</html>

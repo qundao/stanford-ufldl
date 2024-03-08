@@ -1,0 +1,287 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deep Networks: Overview - Ufldl</title>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+
+</head>
+
+<body class="mediawiki ltr ns-0 ns-subject page-Deep_Networks_Overview skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">Deep Networks: Overview</h1>
+	<div id="bodyContent">
+		<h3 id="siteSub">From Ufldl</h3>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+<table id="toc" class="toc"><tr><td><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Overview"><span class="tocnumber">1</span> <span class="toctext">Overview</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Advantages_of_deep_networks"><span class="tocnumber">2</span> <span class="toctext">Advantages of deep networks</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Difficulty_of_training_deep_architectures"><span class="tocnumber">3</span> <span class="toctext">Difficulty of training deep architectures</span></a>
+<ul>
+<li class="toclevel-2 tocsection-4"><a href="#Availability_of_data"><span class="tocnumber">3.1</span> <span class="toctext">Availability of data</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#Local_optima"><span class="tocnumber">3.2</span> <span class="toctext">Local optima</span></a></li>
+<li class="toclevel-2 tocsection-6"><a href="#Diffusion_of_gradients"><span class="tocnumber">3.3</span> <span class="toctext">Diffusion of gradients</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-7"><a href="#Greedy_layer-wise_training"><span class="tocnumber">4</span> <span class="toctext">Greedy layer-wise training</span></a>
+<ul>
+<li class="toclevel-2 tocsection-8"><a href="#Availability_of_data_2"><span class="tocnumber">4.1</span> <span class="toctext">Availability of data</span></a></li>
+<li class="toclevel-2 tocsection-9"><a href="#Better_local_optima"><span class="tocnumber">4.2</span> <span class="toctext">Better local optima</span></a></li>
+</ul>
+</li>
+</ul>
+</td></tr></table><script>if (window.showTocToggle) { var tocShowText = "show"; var tocHideText = "hide"; showTocToggle(); } </script>
+<h2> <span class="mw-headline" id="Overview"> Overview </span></h2>
+<p>In the previous sections, you constructed a 3-layer neural network comprising
+an input, hidden and output layer.  While fairly effective for MNIST, this
+3-layer model is a fairly <b>shallow</b> network; by this, we mean that the
+features (hidden layer activations <span class="texhtml"><i>a</i><sup>(2)</sup></span>) are computed using
+only "one layer" of computation (the hidden layer).
+</p><p>In this section, we begin to discuss <b>deep</b> neural networks, meaning ones
+in which we have multiple hidden layers; this will allow us to compute much 
+more complex features of the input.  Because each hidden layer computes a 
+non-linear transformation of the previous layer, a deep network can have
+significantly greater representational power (i.e., can learn
+significantly more complex functions) than a shallow one. 
+</p><p>Note that when training a deep network, it is important to use a <i>non-linear</i>
+activation function <img class="tex" alt="f(\cdot)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/1/0/a1044326f95cfbf46f9859c97cf280be.png"/> in each hidden layer.   This is
+because multiple layers of linear functions would itself compute only a linear
+function of the input (i.e., composing multiple linear functions together
+results in just another linear function), and thus be no more expressive than
+using just a single layer of hidden units.
+</p>
+<h2> <span class="mw-headline" id="Advantages_of_deep_networks"> Advantages of deep networks </span></h2>
+<p>Why do we want to use a deep network?  The primary advantage is
+that it can compactly represent a significantly larger set of fuctions
+than shallow networks.  Formally, one can show that there are functions
+which a <span class="texhtml"><i>k</i></span>-layer network can represent compactly
+(with a number of hidden units that is <i>polynomial</i> in the number
+of inputs), that a <span class="texhtml">(<i>k</i> &minus; 1)</span>-layer network cannot represent
+unless it has an exponentially large number of hidden units.
+</p><p>To take a simple example, consider building a boolean circuit/network to
+compute the parity (or XOR) of <span class="texhtml"><i>n</i></span> input bits.  Suppose each node in
+the network can compute either the logical OR of its inputs (or the OR of the 
+negation of the inputs), or compute the logical AND.  If we have a network with
+only one input, one hidden, and one output layer, the parity function would require a number of nodes that
+is exponential in the input size <span class="texhtml"><i>n</i></span>.  If however we are allowed a
+deeper network, then the network/circuit size can be only polynomial in
+<span class="texhtml"><i>n</i></span>.
+</p><p>By using a deep network, in the case of images, one can also start to learn part-whole decompositions.
+For example, the first layer might learn to group together pixels in an image
+in order to detect edges (as seen in the earlier exercises).  The second layer might then group together edges to
+detect longer contours, or perhaps detect simple "parts of objects."  An even deeper layer
+might then group together these contours or detect even more complex features.
+</p><p>Finally, cortical computations (in the brain) also have multiple layers of
+processing.  For example, visual images are processed in multiple stages by the
+brain, by cortical area "V1", followed by cortical area "V2" (a different part
+of the brain), and so on. 
+</p><p><br/>
+</p>
+<h2> <span class="mw-headline" id="Difficulty_of_training_deep_architectures"> Difficulty of training deep architectures </span></h2>
+<p>While the theoretical benefits of deep networks in terms of their compactness
+and expressive power have been appreciated for many decades, until recently
+researchers had little success training deep architectures.
+</p><p>The main learning algorithm that researchers were using was to randomly initialize
+the weights of a deep network, and then train it using a labeled
+training set <img class="tex" alt="\{ (x^{(1)}_l, y^{(1)}), \ldots, (x^{(m_l)}_l, y^{(m_l)}) \}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/2/9/f290c22f1a4602ccbff79e88a921a19f.png"/>
+using a supervised learning objective, for example by applying gradient descent to try to
+drive down the training error.  However, this usually did not work well.
+There were several reasons for this.
+</p>
+<h3> <span class="mw-headline" id="Availability_of_data">Availability of data</span></h3>
+<p>With the method described above, one relies only on
+labeled data for training.  However, labeled data is often scarce, and thus for many
+problems it is difficult to get enough examples to fit the parameters of a
+complex model.  For example, given the high degree of expressive power of deep networks,
+training on insufficient data would also result in overfitting. 
+</p>
+<h3> <span class="mw-headline" id="Local_optima">Local optima</span></h3>
+<p>Training a shallow network (with 1 hidden layer) using
+supervised learning usually resulted in the parameters converging to reasonable values;
+but when we are training a deep network, this works much less well.  
+In particular, training a neural network using supervised learning
+involves solving a highly non-convex optimization problem (say, minimizing the
+training error <img class="tex" alt="\textstyle \sum_i ||h_W(x^{(i)}) - y^{(i)}||^2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/f/8/af88e32bad0255ab0bfe49108db2bd6e.png"/> as a
+function of the network parameters <img class="tex" alt="\textstyle W" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/c/9/8c9cb254a5e388f2bcaf294e52d745a6.png"/>).  
+In a deep network, this problem turns out to be rife with bad local optima, and
+training with gradient descent (or methods like conjugate gradient and L-BFGS)
+no longer work well. 
+</p>
+<h3> <span class="mw-headline" id="Diffusion_of_gradients">Diffusion of gradients</span></h3>
+<p>There is an additional technical reason,
+pertaining to the gradients becoming very small, that explains why gradient
+descent (and related algorithms like L-BFGS) do not work well on a deep networks
+with randomly initialized weights.  Specifically, when using backpropagation to
+compute the derivatives, the gradients that are propagated backwards (from the
+output layer to the earlier layers of the network) rapidly diminish in
+magnitude as the depth of the network increases. As a result, the derivative of
+the overall cost with respect to the weights in the earlier layers is very
+small.  Thus, when using gradient descent, the weights of the earlier layers
+change slowly, and the earlier layers fail to learn much.  This problem
+is often called the "diffusion of gradients."
+</p><p>A closely related problem to the diffusion of gradients is that if the last few
+layers in a neural network have a large enough number of neurons, it may be
+possible for them to model the labeled data alone without the help of the
+earlier layers.  Hence, training the entire network at once with all the layers
+randomly initialized ends up giving similar performance to training a
+shallow network (the last few layers) on corrupted input (the result of
+the processing done by the earlier layers). 
+</p><p><br/>
+</p>
+<h2> <span class="mw-headline" id="Greedy_layer-wise_training"> Greedy layer-wise training </span></h2>
+<p>How can we train a deep network?  One method that has seen some
+success is the <b>greedy layer-wise training</b> method.  We describe this
+method in detail in later sections, but briefly, the main idea is to train the
+layers of the network one at a time, so that we first train a network with 1 
+hidden layer, and only after that is done, train a network with 2 hidden layers,
+and so on.  At each step, we take the old network with <span class="texhtml"><i>k</i> &minus; 1</span> hidden
+layers, and add an additional <span class="texhtml"><i>k</i></span>-th hidden layer (that takes as 
+input the previous hidden layer <span class="texhtml"><i>k</i> &minus; 1</span> that we had just
+trained).  Training can either be 
+supervised (say, with classification error as the objective function on each
+step), but more frequently it is 
+unsupervised (as in an autoencoder; details to provided later).  
+The weights from training the layers individually are then used to initialize the weights 
+in the final/overall deep network, and only then is the entire architecture "fine-tuned" (i.e.,
+trained together to optimize the labeled training set error). 
+</p><p>The success of greedy
+layer-wise training has been attributed to a number of factors:
+</p>
+<h3> <span class="mw-headline" id="Availability_of_data_2">Availability of data</span></h3>
+<p>While labeled data can be expensive to obtain,
+unlabeled data is cheap and plentiful.  The promise of self-taught learning is
+that by exploiting the massive amount of unlabeled data, we can learn much
+better models.  By using unlabeled data to learn a good initial value for the
+weights in all the layers <img class="tex" alt="\textstyle W^{(l)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/8/f/f8f8834256f511d88fec05e3b27c67b1.png"/> (except for the final
+classification layer that maps to the outputs/predictions), our algorithm is
+able to learn and discover patterns from massively more amounts of data than
+purely supervised approaches.  This often results in much better classifiers 
+being learned. 
+</p>
+<h3> <span class="mw-headline" id="Better_local_optima">Better local optima</span></h3>
+<p>After having trained the network
+on the unlabeled data, the weights are now starting at a better location in
+parameter space than if they had been randomly initialized.  We can then
+further fine-tune the weights starting from this location.  Empirically, it
+turns out that gradient descent from this location is much more likely to
+lead to a good local minimum, because the unlabeled data has already provided
+a significant amount of "prior" information about what patterns there
+are in the input data. 
+</p><p><br/>
+In the next section, we will describe the specific details of how to go about
+implementing greedy layer-wise training. 
+</p><p><br/>
+</p>
+<div style="text-align: center;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
+<p><a href="/wayback-ufldl/stanford-ufldl/wiki/Self-Taught_Learning_to_Deep_Networks" title="Self-Taught Learning to Deep Networks"> From Self-Taught Learning to Deep Networks</a> | <strong class="selflink">Deep Networks: Overview</strong> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Stacked_Autoencoders" title="Stacked Autoencoders">Stacked Autoencoders</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Fine-tuning_Stacked_AEs" title="Fine-tuning Stacked AEs">Fine-tuning Stacked AEs</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise__Implement_deep_networks_for_digit_classification" title="Exercise: Implement deep networks for digit classification">Exercise: Implement deep networks for digit classification</a>
+</p>
+</div>
+<p><br/>
+</p><p><br/>
+</p>
+<div style="text-align: left;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
+<p>Language&nbsp;: <a href="/wayback-ufldl/stanford-ufldl/wiki/%E6%B7%B1%E5%BA%A6%E7%BD%91%E7%BB%9C%E6%A6%82%E8%A7%88" title="深度网络概览">中文</a>
+</p>
+</div>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 174/1000000
+Post-expand include size: 548/2097152 bytes
+Template argument size: 24/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<div class="printfooter">
+</div>		<div id="catlinks" class="catlinks catlinks-allhidden"></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/Deep_Networks__Overview" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-talk" class="new"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				 <li id="ca-viewsource"><a href="" title="This page is protected.
+You can view its source [e]" accesskey="e">View source</a></li>
+				 <li id="ca-history"><a href="" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-ufldl_resources">
+		<h5>ufldl resources</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-wiki">
+		<h5>wiki</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
+				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="" id="searchform">
+				<input type="hidden" name="title" value="Special:Search" disabled/>
+				<input id="searchInput" title="Search Ufldl" accesskey="f" type="search" name="search" disabled/>
+				<input type="submit" name="go" class="searchButton" id="searchGoButton" value="Go" title="Go to a page with this exact name if exists" disabled/>&nbsp;
+				<input type="submit" name="fulltext" class="searchButton" id="mw-searchButton" value="Search" title="Search the pages for this text" disabled/>
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="" title="List of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+<li id="t-specialpages"><a href="" title="List of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li id="t-print"><a href="" rel="alternate" title="Printable version of this page [p]" accesskey="p">Printable version</a></li>				<li id="t-permalink"><a href="" title="Permanent link to this revision of the page">Permanent link</a></li>			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 7 April 2013, at 13:31.</li>
+		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+
+<!-- Served in 0.396 secs. -->
+</body>
+</html>

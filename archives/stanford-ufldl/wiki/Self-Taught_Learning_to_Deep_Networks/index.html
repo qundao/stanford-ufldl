@@ -1,0 +1,194 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Self-Taught Learning to Deep Networks - Ufldl</title>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+
+</head>
+
+<body class="mediawiki ltr ns-0 ns-subject page-Self-Taught_Learning_to_Deep_Networks skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">Self-Taught Learning to Deep Networks</h1>
+	<div id="bodyContent">
+		<h3 id="siteSub">From Ufldl</h3>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+<p>In the previous section, you used an autoencoder to learn features that were then fed as input 
+to a softmax or logistic regression classifier.  In that method, the features were learned using
+only unlabeled data.  In this section, we describe how you can  <b>fine-tune</b> and further improve 
+the learned features using labeled data.  When you have a large amount of labeled
+training data, this can significantly improve your classifier's performance.
+</p><p>In self-taught learning, we first trained a sparse autoencoder on the unlabeled data.  Then, 
+given a new example <img class="tex" alt="\textstyle x" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/>, we used the hidden layer to extract 
+features <img class="tex" alt="\textstyle a" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/4/6/c469e9ab9efb42a55f860d809731dc77.png"/>.  This is illustrated in the following diagram: 
+</p><p><a href="" class="image"><img alt="STL SparseAE Features.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/7/73/STL_SparseAE_Features.png/300px-STL_SparseAE_Features.png" width="300" height="497"/></a>
+</p><p>We are interested in solving a classification task, where our goal is to
+predict labels <img class="tex" alt="\textstyle y" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/8/1/c81e76c28ed991b22b8c1bb8fa392701.png"/>.  We have a labeled training set <img class="tex" alt="\textstyle \{ (x_l^{(1)}, y^{(1)}),
+(x_l^{(2)}, y^{(2)}), \ldots (x_l^{(m_l)}, y^{(m_l)}) \}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/3/c/23cfc7b001a6a6b7a8df45a39d7ce812.png"/> of <img class="tex" alt="\textstyle m_l" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/c/2/6c270d29d4e7e24f2c756df33d564646.png"/> labeled examples.
+We showed previously that we can replace the original features <img class="tex" alt="\textstyle x^{(i)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/b/e/ebe8632b7c91a3dbbf9b590bea887a47.png"/> with features <img class="tex" alt="\textstyle a^{(l)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/d/2/bd2728b5337ccec5b5729756d5796b20.png"/>
+computed by the sparse autoencoder (the "replacement" representation).  This gives us a training set <img class="tex" alt="\textstyle \{(a^{(1)},
+y^{(1)}), \ldots (a^{(m_l)}, y^{(m_l)}) \}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/9/2/59294b4fd5d51b68aa1b764cee2a1f7f.png"/>.  Finally, we train a logistic
+classifier to map from the features <img class="tex" alt="\textstyle a^{(i)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/b/a/fbabb839d85b89df70d8cae9c597236b.png"/> to the classification label <img class="tex" alt="\textstyle y^{(i)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/a/e/eae20cb3cc0fee9c48330f614f3b343b.png"/>.
+To illustrate this step, similar to <a href="/wayback-ufldl/stanford-ufldl/wiki/Neural_Networks" title="Neural Networks">our earlier notes</a>, we can draw our logistic regression unit (shown in orange) as follows:
+</p>
+<dl><dd><dl><dd><dl><dd><dl><dd><a href="" class="image"><img alt="STL Logistic Classifier.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/8/85/STL_Logistic_Classifier.png/380px-STL_Logistic_Classifier.png" width="380" height="338"/></a>
+</dd></dl>
+</dd></dl>
+</dd></dl>
+</dd></dl>
+<p>Now, consider the overall classifier (i.e., the input-output mapping) that we have learned 
+using this method.  
+In particular, let us examine the function that our classifier uses to map from from a new test example 
+<img class="tex" alt="\textstyle x" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/> to a new prediction <span class="texhtml"><i>p</i>(<i>y</i> = 1 | <i>x</i>)</span>.  
+We can draw a representation of this function by putting together the 
+two pictures from above.  In particular, the final classifier looks like this:
+</p><p><a href="" class="image"><img alt="STL CombinedAE.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/8/8d/STL_CombinedAE.png/500px-STL_CombinedAE.png" width="500" height="525"/></a>
+</p><p>The parameters of this model were trained in two stages: The first layer of weights <img class="tex" alt="\textstyle W^{(1)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/f/b/2fbd7ff8e7ca646a4b3d802175c06838.png"/>
+mapping from the input <img class="tex" alt="\textstyle x" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/> to the hidden unit activations <img class="tex" alt="\textstyle a" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/4/6/c469e9ab9efb42a55f860d809731dc77.png"/> were trained
+as part of the sparse autoencoder training process.  The second layer
+of weights <img class="tex" alt="\textstyle W^{(2)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/7/2/f729f47c480091dda388911e095ead6e.png"/> mapping from the activations <img class="tex" alt="\textstyle a" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/4/6/c469e9ab9efb42a55f860d809731dc77.png"/> to the output <img class="tex" alt="\textstyle y" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/8/1/c81e76c28ed991b22b8c1bb8fa392701.png"/> was
+trained using logistic regression (or softmax regression).
+</p><p>But the form of our overall/final classifier is clearly just a whole big neural network.  So,
+having trained up an initial set of parameters for our model (training the first layer using an 
+autoencoder, and the second layer
+via logistic/softmax regression), we can further modify all the parameters in our model to try to 
+further reduce the training error.  In particular, we can <b>fine-tune</b> the parameters, meaning perform 
+gradient descent (or use L-BFGS) from the current setting of the
+parameters to try to reduce the training error on our labeled training set <img class="tex" alt="\textstyle \{ (x_l^{(1)}, y^{(1)}),
+(x_l^{(2)}, y^{(2)}), \ldots (x_l^{(m_l)}, y^{(m_l)}) \}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/3/c/23cfc7b001a6a6b7a8df45a39d7ce812.png"/>. 
+</p><p>When fine-tuning is used, sometimes the original unsupervised feature learning steps 
+(i.e., training the autoencoder and the logistic classifier) are called <b>pre-training.</b>
+The effect of fine-tuning is that the labeled data can be used to modify the weights <span class="texhtml"><i>W</i><sup>(1)</sup></span> as
+well, so that adjustments can be made to the features <span class="texhtml"><i>a</i></span> extracted by the layer
+of hidden units. 
+</p><p>So far, we have described this process assuming that you used the "replacement" representation, where
+the training examples seen by the logistic classifier are of the form <span class="texhtml">(<i>a</i><sup>(<i>i</i>)</sup>,<i>y</i><sup>(<i>i</i>)</sup>)</span>,
+rather than the "concatenation" representation, where the examples are of the form <span class="texhtml">((<i>x</i><sup>(<i>i</i>)</sup>,<i>a</i><sup>(<i>i</i>)</sup>),<i>y</i><sup>(<i>i</i>)</sup>)</span>.
+It is also possible to perform fine-tuning too using the "concatenation" representation.  (This corresponds
+to a neural network where the input units <span class="texhtml"><i>x</i><sub><i>i</i></sub></span> also feed directly to the logistic
+classifier in the output layer.  You can draw this using a slightly different type of neural network
+diagram than the ones we have seen so far; in particular, you would have edges that go directly
+from the first layer input nodes to the third layer output node, "skipping over" the hidden layer.) 
+However, so long as we are using finetuning, usually the "concatenation" representation 
+has little advantage over the "replacement" representation.  Thus, if we are using fine-tuning usually we will do so
+with a network built using the replacement representation.  (If you are not using fine-tuning however,
+then sometimes the concatenation representation can give much better performance.) 
+</p><p>When should we use fine-tuning?  It is typically used only if you have a large labeled training 
+set; in this setting, fine-tuning can significantly improve the performance of your classifier.  
+However, if you
+have a large <i>unlabeled</i> dataset (for unsupervised feature learning/pre-training) and
+only a relatively small labeled training set, then fine-tuning is significantly less likely to
+help.
+</p><p><br/>
+</p>
+<div style="text-align: center;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
+<p><strong class="selflink"> From Self-Taught Learning to Deep Networks</strong> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Deep_Networks__Overview" title="Deep Networks: Overview">Deep Networks: Overview</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Stacked_Autoencoders" title="Stacked Autoencoders">Stacked Autoencoders</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Fine-tuning_Stacked_AEs" title="Fine-tuning Stacked AEs">Fine-tuning Stacked AEs</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise__Implement_deep_networks_for_digit_classification" title="Exercise: Implement deep networks for digit classification">Exercise: Implement deep networks for digit classification</a>
+</p>
+</div>
+<p><br/>
+</p>
+<div style="text-align: left;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
+<p>Language&nbsp;: <a href="/wayback-ufldl/stanford-ufldl/wiki/%E4%BB%8E%E8%87%AA%E6%88%91%E5%AD%A6%E4%B9%A0%E5%88%B0%E6%B7%B1%E5%B1%82%E7%BD%91%E7%BB%9C" title="从自我学习到深层网络">中文</a>
+</p>
+</div>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 83/1000000
+Post-expand include size: 560/2097152 bytes
+Template argument size: 36/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<div class="printfooter">
+</div>		<div id="catlinks" class="catlinks catlinks-allhidden"></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/Self-Taught_Learning_to_Deep_Networks" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-talk" class="new"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				 <li id="ca-viewsource"><a href="" title="This page is protected.
+You can view its source [e]" accesskey="e">View source</a></li>
+				 <li id="ca-history"><a href="" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-ufldl_resources">
+		<h5>ufldl resources</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-wiki">
+		<h5>wiki</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
+				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="" id="searchform">
+				<input type="hidden" name="title" value="Special:Search" disabled/>
+				<input id="searchInput" title="Search Ufldl" accesskey="f" type="search" name="search" disabled/>
+				<input type="submit" name="go" class="searchButton" id="searchGoButton" value="Go" title="Go to a page with this exact name if exists" disabled/>&nbsp;
+				<input type="submit" name="fulltext" class="searchButton" id="mw-searchButton" value="Search" title="Search the pages for this text" disabled/>
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="" title="List of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+<li id="t-specialpages"><a href="" title="List of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li id="t-print"><a href="" rel="alternate" title="Printable version of this page [p]" accesskey="p">Printable version</a></li>				<li id="t-permalink"><a href="" title="Permanent link to this revision of the page">Permanent link</a></li>			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 7 April 2013, at 13:29.</li>
+		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+
+<!-- Served in 0.143 secs. -->
+</body>
+</html>

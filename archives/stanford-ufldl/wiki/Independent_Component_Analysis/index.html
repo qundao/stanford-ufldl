@@ -1,0 +1,167 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Independent Component Analysis - Ufldl</title>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+
+</head>
+
+<body class="mediawiki ltr ns-0 ns-subject page-Independent_Component_Analysis skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">Independent Component Analysis</h1>
+	<div id="bodyContent">
+		<h3 id="siteSub">From Ufldl</h3>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+<h2> <span class="mw-headline" id="Introduction"> Introduction </span></h2>
+<p>If you recall, in <a href="/wayback-ufldl/stanford-ufldl/wiki/Sparse_Coding" title="Sparse Coding"> sparse coding</a>, we wanted to learn an <b>over-complete</b> basis for the data. In particular, this implies that the basis vectors that we learn in sparse coding will not be linearly independent. While this may be desirable in certain situations, sometimes we want to learn a linearly independent basis for the data. In independent component analysis (ICA), this is exactly what we want to do. Further, in ICA, we want to learn not just any linearly independent basis, but an <b>orthonormal</b> basis for the data. (An orthonormal basis is a basis <img class="tex" alt="(\phi_1, \ldots \phi_n)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/0/7/e078088de2e18c58f059ccf6003bb02e.png"/> such that <img class="tex" alt="\phi_i \cdot \phi_j = 0" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/7/1/7714b6e595515d72c3f872b0bf8a66ca.png"/> if <img class="tex" alt="i \ne j" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/d/2/3d27367ea16a2a7b40b3eb3172a32120.png"/> and <span class="texhtml">1</span> if <span class="texhtml"><i>i</i> = <i>j</i></span>).
+</p><p>Like sparse coding, independent component analysis has a simple mathematical formulation. Given some data <span class="texhtml"><i>x</i></span>, we would like to learn a set of basis vectors which we represent in the columns of a matrix <span class="texhtml"><i>W</i></span>, such that, firstly, as in sparse coding, our features are <b>sparse</b>; and secondly, our basis is an <b>orthonormal</b> basis. (Note that while in sparse coding, our matrix <span class="texhtml"><i>A</i></span> was for mapping <b>features</b> <span class="texhtml"><i>s</i></span> to <b>raw data</b>, in independent component analysis, our matrix <span class="texhtml"><i>W</i></span> works in the opposite direction, mapping <b>raw data</b> <span class="texhtml"><i>x</i></span> to <b>features</b> instead). This gives us the following objective function:
+</p>
+<dl><dd><img class="tex" alt="
+J(W) = \lVert Wx \rVert_1 
+" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/3/a/73ad4fdda9d31a406703b227b18ffa8c.png"/>
+</dd></dl>
+<p>This objective function is equivalent to the sparsity penalty on the features <span class="texhtml"><i>s</i></span> in sparse coding, since <span class="texhtml"><i>W</i><i>x</i></span> is precisely the features that represent the data. Adding in the orthonormality constraint gives us the full optimization problem for independent component analysis:
+</p>
+<dl><dd><img class="tex" alt="
+\begin{array}{rcl}
+     {\rm minimize} &amp; \lVert Wx \rVert_1  \\
+     {\rm s.t.}     &amp; WW^T = I \\
+\end{array} 
+" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/7/0/a708fd5869392a2f83a3b9f662c8ad95.png"/>
+</dd></dl>
+<p>As is usually the case in deep learning, this problem has no simple analytic solution, and to make matters worse, the orthonormality constraint makes it slightly more difficult to optimize for the objective using gradient descent - every iteration of gradient descent must be followed by a step that maps the new basis back to the space of orthonormal bases (hence enforcing the constraint). 
+</p><p>In practice, optimizing for the objective function while enforcing the orthonormality constraint (as described in <a href="/wayback-ufldl/stanford-ufldl/wiki/Independent_Component_Analysis#Orthonormal_ICA" title="Independent Component Analysis"> Orthonormal ICA</a> section below) is feasible but slow. Hence, the use of orthonormal ICA is limited to situations where it is important to obtain an orthonormal basis (<a href="" class="new" title="TODO (page does not exist)">TODO</a>: what situations) .
+</p>
+<h2> <span class="mw-headline" id="Orthonormal_ICA"> Orthonormal ICA </span></h2>
+<p>The orthonormal ICA objective is:
+</p>
+<dl><dd><img class="tex" alt="
+\begin{array}{rcl}
+     {\rm minimize} &amp; \lVert Wx \rVert_1  \\
+     {\rm s.t.}     &amp; WW^T = I \\
+\end{array} 
+" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/7/0/a708fd5869392a2f83a3b9f662c8ad95.png"/>
+</dd></dl>
+<p>Observe that the constraint <span class="texhtml"><i>W</i><i>W</i><sup><i>T</i></sup> = <i>I</i></span> implies two other constraints. 
+</p><p>Firstly, since we are learning an orthonormal basis, the number of basis vectors we learn must be less than the dimension of the input. In particular, this means that we cannot learn over-complete bases as we usually do in <a href="/wayback-ufldl/stanford-ufldl/wiki/Sparse_Coding__Autoencoder_Interpretation" title="Sparse Coding: Autoencoder Interpretation"> sparse coding</a>. 
+</p><p>Secondly, the data must be <a href="/wayback-ufldl/stanford-ufldl/wiki/Whitening" title="Whitening"> ZCA whitened</a> with no regularization (that is, with <span class="texhtml">&epsilon;</span> set to 0). (<a href="" class="new" title="TODO (page does not exist)">TODO</a> Why must this be so?)
+</p><p>Hence, before we even begin to optimize for the orthonormal ICA objective, we must ensure that our data has been <b>whitened</b>, and that we are learning an <b>under-complete</b> basis. 
+</p><p>Following that, to optimize for the objective, we can use gradient descent, interspersing gradient descent steps with projection steps to enforce the orthonormality constraint. Hence, the procedure will be as follows:
+</p><p>Repeat until done:
+</p>
+<ol>
+<li><img class="tex" alt="W \leftarrow W - \alpha \nabla_W \lVert Wx \rVert_1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/4/7/0473c51ee006a1ebe67ea41048f464d4.png"/>
+<li><img class="tex" alt="W \leftarrow \operatorname{proj}_U W" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/d/d/3dd67ce73de20c6fa0f6d28655ffb3f2.png"/> where <span class="texhtml"><i>U</i></span> is the space of matrices satisfying <span class="texhtml"><i>W</i><i>W</i><sup><i>T</i></sup> = <i>I</i></span>
+</ol>
+<p>In practice, the learning rate <span class="texhtml">&alpha;</span> is varied using a line-search algorithm to speed up the descent, and the projection step is achieved by setting <img class="tex" alt="W \leftarrow (WW^T)^{-\frac{1}{2}} W" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/2/a/02a48a27174c21e10da8fee21b04f5cd.png"/>, which can actually be seen as ZCA whitening (<a href="" class="new" title="TODO (page does not exist)">TODO</a> explain how it is like ZCA whitening).
+</p>
+<h2> <span class="mw-headline" id="Topographic_ICA"> Topographic ICA </span></h2>
+<p>Just like <a href="/wayback-ufldl/stanford-ufldl/wiki/Sparse_Coding__Autoencoder_Interpretation" title="Sparse Coding: Autoencoder Interpretation"> sparse coding</a>, independent component analysis can be modified to give a topographic variant by adding a topographic cost term.
+</p><p><br/>
+</p>
+<div style="text-align: left;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
+<p>Language&nbsp;: <a href="/wayback-ufldl/stanford-ufldl/wiki/%E7%8B%AC%E7%AB%8B%E6%88%90%E5%88%86%E5%88%86%E6%9E%90" title="独立成分分析">中文</a>
+</p>
+</div>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 233/1000000
+Post-expand include size: 174/2097152 bytes
+Template argument size: 24/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<div class="printfooter">
+</div>		<div id="catlinks" class="catlinks catlinks-allhidden"></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/Independent_Component_Analysis" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-talk" class="new"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				 <li id="ca-viewsource"><a href="" title="This page is protected.
+You can view its source [e]" accesskey="e">View source</a></li>
+				 <li id="ca-history"><a href="" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-ufldl_resources">
+		<h5>ufldl resources</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-wiki">
+		<h5>wiki</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
+				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="" id="searchform">
+				<input type="hidden" name="title" value="Special:Search" disabled/>
+				<input id="searchInput" title="Search Ufldl" accesskey="f" type="search" name="search" disabled/>
+				<input type="submit" name="go" class="searchButton" id="searchGoButton" value="Go" title="Go to a page with this exact name if exists" disabled/>&nbsp;
+				<input type="submit" name="fulltext" class="searchButton" id="mw-searchButton" value="Search" title="Search the pages for this text" disabled/>
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="" title="List of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+<li id="t-specialpages"><a href="" title="List of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li id="t-print"><a href="" rel="alternate" title="Printable version of this page [p]" accesskey="p">Printable version</a></li>				<li id="t-permalink"><a href="" title="Permanent link to this revision of the page">Permanent link</a></li>			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 8 April 2013, at 04:35.</li>
+		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+
+<!-- Served in 0.125 secs. -->
+</body>
+</html>

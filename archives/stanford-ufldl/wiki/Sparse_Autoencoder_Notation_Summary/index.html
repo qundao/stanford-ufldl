@@ -1,0 +1,214 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sparse Autoencoder Notation Summary - Ufldl</title>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+
+</head>
+
+<body class="mediawiki ltr ns-0 ns-subject page-Sparse_Autoencoder_Notation_Summary skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">Sparse Autoencoder Notation Summary</h1>
+	<div id="bodyContent">
+		<h3 id="siteSub">From Ufldl</h3>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+<p>Here is a summary of the symbols used in our derivation of the sparse autoencoder: 
+</p>
+<table class="wikitable">
+
+<tr>
+<th> Symbol
+</th><th> Meaning
+</th></tr>
+<tr>
+<td> <img class="tex" alt="\textstyle x" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/>
+</td><td> Input features for a training example, <img class="tex" alt="\textstyle x \in \Re^{n}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/f/5/6f53475eea6dfbce242e8a5767d075c0.png"/>.
+</td></tr>
+<tr>
+<td> <img class="tex" alt="\textstyle y" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/8/1/c81e76c28ed991b22b8c1bb8fa392701.png"/>
+</td><td> Output/target values.  Here, <img class="tex" alt="\textstyle y" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/8/1/c81e76c28ed991b22b8c1bb8fa392701.png"/> can be vector valued.  In the case of an autoencoder, <img class="tex" alt="\textstyle y=x" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/3/5/03556391294aa050365c7e72dd5b5d89.png"/>.
+</td></tr>
+<tr>
+<td> <img class="tex" alt="\textstyle (x^{(i)}, y^{(i)})" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/1/7/f178249571382c3921d2c46f7abd47da.png"/>
+</td><td> The <img class="tex" alt="\textstyle i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/>-th training example
+</td></tr>
+<tr>
+<td> <img class="tex" alt="\textstyle h_{W,b}(x)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/8/d/58d3a4fe4ad68b333b180071dd46db82.png"/>
+</td><td> Output of our hypothesis on input <img class="tex" alt="\textstyle x" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/>, using parameters <img class="tex" alt="\textstyle W,b" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/c/9/7c9aa03f5258ecf79556ba374d7eb2cd.png"/>.  This should be a vector of
+<p>the same dimension as the target value <img class="tex" alt="\textstyle y" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/8/1/c81e76c28ed991b22b8c1bb8fa392701.png"/>.
+</p>
+</td></tr>
+<tr>
+<td> <img class="tex" alt="\textstyle W^{(l)}_{ij}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/f/e/dfe43c64e3c42ea4ff1774fc82b87805.png"/>
+</td><td> The parameter associated with the connection between unit <img class="tex" alt="\textstyle j" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/3/5/235c5146ab110558897640c34dad7d97.png"/> in layer <img class="tex" alt="\textstyle l" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/a/0/ba0593b3db2fa8535b077516f4b0d70b.png"/>, and
+<p>unit <img class="tex" alt="\textstyle i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/> in layer <img class="tex" alt="\textstyle l+1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/0/6/9068105ec8ebb97277c937bfa61b606d.png"/>.
+</p>
+</td></tr>
+<tr>
+<td> <img class="tex" alt="\textstyle b^{(l)}_{i}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/3/a/83a91ea957d6b447d22343715ccf8c8b.png"/>
+</td><td> The bias term associated with unit <img class="tex" alt="\textstyle i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/> in layer <img class="tex" alt="\textstyle l+1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/0/6/9068105ec8ebb97277c937bfa61b606d.png"/>.  Can also be thought of as the parameter associated with the connection between the bias unit in layer <img class="tex" alt="\textstyle l" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/a/0/ba0593b3db2fa8535b077516f4b0d70b.png"/> and unit <img class="tex" alt="\textstyle i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/> in layer <img class="tex" alt="\textstyle l+1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/0/6/9068105ec8ebb97277c937bfa61b606d.png"/>.
+</td></tr>
+<tr>
+<td> <img class="tex" alt="\textstyle \theta" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/9/d/69d920fe8e1da0543eb63d1097f21754.png"/>
+</td><td> Our parameter vector.  It is useful to think of this as the result of taking the parameters <img class="tex" alt="\textstyle W,b" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/c/9/7c9aa03f5258ecf79556ba374d7eb2cd.png"/> and ``unrolling<i> them into a long column vector.</i>
+</td></tr>
+<tr>
+<td> <img class="tex" alt="\textstyle a^{(l)}_i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/9/b/c9b144e0a6735fafb01b3615a2a0dc05.png"/>
+</td><td> Activation (output) of unit <img class="tex" alt="\textstyle i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/> in layer <img class="tex" alt="\textstyle l" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/a/0/ba0593b3db2fa8535b077516f4b0d70b.png"/> of the network.
+<p>In addition, since layer <img class="tex" alt="\textstyle L_1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/3/e/13e0887b9e716279d9a7b8bc8e6ad63b.png"/> is the input layer, we also have <img class="tex" alt="\textstyle a^{(1)}_i = x_i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/5/c/f5c1979e94318aee674de68348b96557.png"/>.
+</p>
+</td></tr>
+<tr>
+<td> <img class="tex" alt="\textstyle f(\cdot)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/3/0/0303dd697c0e1b72185d7939f9870784.png"/>
+</td><td> The activation function.  Throughout these notes, we used <img class="tex" alt="\textstyle f(z) = \tanh(z)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/6/4/364194ddbec46d059cdfc4b08354a59c.png"/>.
+</td></tr>
+<tr>
+<td> <img class="tex" alt="\textstyle z^{(l)}_i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/d/d/3dd5c56e0949e76de86690e1b868cdcf.png"/>
+</td><td> Total weighted sum of inputs to unit <img class="tex" alt="\textstyle i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/> in layer <img class="tex" alt="\textstyle l" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/a/0/ba0593b3db2fa8535b077516f4b0d70b.png"/>.  Thus, <img class="tex" alt="\textstyle a^{(l)}_i = f(z^{(l)}_i)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/f/8/cf8cb56750f5aaca7dc59480a53d9676.png"/>.
+</td></tr>
+<tr>
+<td> <img class="tex" alt="\textstyle \alpha" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/e/a/7eaa466003e48c1c96824a2edf3de038.png"/>
+</td><td> Learning rate parameter
+</td></tr>
+<tr>
+<td> <img class="tex" alt="\textstyle s_l" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/a/f/8afb62ac69ccb2911bb24795ff052a07.png"/>
+</td><td> Number of units in layer <img class="tex" alt="\textstyle l" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/a/0/ba0593b3db2fa8535b077516f4b0d70b.png"/> (not counting the bias unit).
+</td></tr>
+<tr>
+<td> <img class="tex" alt="\textstyle n_l" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/b/7/5b7a0657fdea25f29866c8e1d6e884ac.png"/>
+</td><td> Number layers in the network.  Layer <img class="tex" alt="\textstyle L_1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/3/e/13e0887b9e716279d9a7b8bc8e6ad63b.png"/> is usually the input layer, and layer <img class="tex" alt="\textstyle L_{n_l}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/2/1/221a7296664022427d488fdb9b14b19b.png"/> the output layer.
+</td></tr>
+<tr>
+<td> <img class="tex" alt="\textstyle \lambda" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/d/f/ddf8905bd6bfeba5cfd2936466d4139e.png"/>
+</td><td> Weight decay parameter.
+</td></tr>
+<tr>
+<td> <img class="tex" alt="\textstyle \hat{x}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/9/0/29035749c12270bcc8de7e36bc459ece.png"/>
+</td><td> For an autoencoder, its output; i.e., its reconstruction of the input <img class="tex" alt="\textstyle x" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/>.   Same meaning as <img class="tex" alt="\textstyle h_{W,b}(x)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/8/d/58d3a4fe4ad68b333b180071dd46db82.png"/>.
+</td></tr>
+<tr>
+<td> <img class="tex" alt="\textstyle \rho" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/c/9/7c941e85242c631f08f2c9aeec7e24bf.png"/>
+</td><td> Sparsity parameter, which specifies our desired level of sparsity
+</td></tr>
+<tr>
+<td> <img class="tex" alt="\textstyle \hat\rho_i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/9/0/39060ca518709da427114932253de53d.png"/>
+</td><td> The average activation of hidden unit <img class="tex" alt="\textstyle i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/> (in the sparse autoencoder).
+</td></tr>
+<tr>
+<td> <img class="tex" alt="\textstyle \beta" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/0/3/c03f7273f858c35d0a482846d7cd54bf.png"/>
+</td><td> Weight of the sparsity penalty term (in the sparse autoencoder objective).
+</td></tr></table>
+<p><br/>
+</p>
+<div style="text-align: center;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
+<p><a href="/wayback-ufldl/stanford-ufldl/wiki/Neural_Networks" title="Neural Networks">Neural Networks</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Backpropagation_Algorithm" title="Backpropagation Algorithm">Backpropagation Algorithm</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Gradient_checking_and_advanced_optimization" title="Gradient checking and advanced optimization">Gradient checking and advanced optimization</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Autoencoders_and_Sparsity" title="Autoencoders and Sparsity">Autoencoders and Sparsity</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Visualizing_a_Trained_Autoencoder" title="Visualizing a Trained Autoencoder">Visualizing a Trained Autoencoder</a> | <strong class="selflink">Sparse Autoencoder Notation Summary</strong> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Sparse_Autoencoder" title="Exercise:Sparse Autoencoder">Exercise:Sparse Autoencoder</a>
+</p>
+</div>
+<p><br/>
+</p>
+<div style="text-align: left;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
+<p>Language&nbsp;: <a href="/wayback-ufldl/stanford-ufldl/wiki/%E7%A8%80%E7%96%8F%E8%87%AA%E7%BC%96%E7%A0%81%E5%99%A8%E7%AC%A6%E5%8F%B7%E4%B8%80%E8%A7%88%E8%A1%A8" title="稀疏自编码器符号一览表">中文</a>
+</p>
+</div>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 158/1000000
+Post-expand include size: 574/2097152 bytes
+Template argument size: 39/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<div class="printfooter">
+</div>		<div id="catlinks" class="catlinks catlinks-allhidden"></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/Sparse_Autoencoder_Notation_Summary" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-talk" class="new"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				 <li id="ca-viewsource"><a href="" title="This page is protected.
+You can view its source [e]" accesskey="e">View source</a></li>
+				 <li id="ca-history"><a href="" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-ufldl_resources">
+		<h5>ufldl resources</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-wiki">
+		<h5>wiki</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
+				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="" id="searchform">
+				<input type="hidden" name="title" value="Special:Search" disabled/>
+				<input id="searchInput" title="Search Ufldl" accesskey="f" type="search" name="search" disabled/>
+				<input type="submit" name="go" class="searchButton" id="searchGoButton" value="Go" title="Go to a page with this exact name if exists" disabled/>&nbsp;
+				<input type="submit" name="fulltext" class="searchButton" id="mw-searchButton" value="Search" title="Search the pages for this text" disabled/>
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="" title="List of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+<li id="t-specialpages"><a href="" title="List of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li id="t-print"><a href="" rel="alternate" title="Printable version of this page [p]" accesskey="p">Printable version</a></li>				<li id="t-permalink"><a href="" title="Permanent link to this revision of the page">Permanent link</a></li>			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 7 April 2013, at 12:45.</li>
+		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+
+<!-- Served in 0.116 secs. -->
+</body>
+</html>

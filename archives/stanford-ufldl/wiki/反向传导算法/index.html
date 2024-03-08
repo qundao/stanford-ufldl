@@ -1,0 +1,345 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>反向传导算法 - Ufldl</title>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+
+</head>
+
+<body class="mediawiki ltr ns-0 ns-subject page-反向传导算法 skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">反向传导算法</h1>
+	<div id="bodyContent">
+		<h3 id="siteSub">From Ufldl</h3>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+<p>假设我们有一个固定样本集 <img class="tex" alt="\textstyle \{ (x^{(1)}, y^{(1)}), \ldots, (x^{(m)}, y^{(m)}) \}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/4/4/b449e6d375809abbc4097d2c55e9f8c0.png"/>，它包含 <img class="tex" alt="\textstyle m" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/5/e/25e97e8a905fc2cb05d76cd4872a8567.png"/> 个样例。我们可以用批量梯度下降法来求解神经网络。具体来讲，对于单个样例 <img class="tex" alt="\textstyle (x,y)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/d/c/0dc6f65ba6022a9a2f5ce13473eb35e8.png"/>，其代价函数为：
+</p>
+<dl><dd><img class="tex" alt="
+\begin{align}
+J(W,b; x,y) = \frac{1}{2} \left\| h_{W,b}(x) - y \right\|^2.
+\end{align}
+" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/2/9/029cdd402b83ee43c7e9a900dccd675a.png"/>
+</dd></dl>
+<p>这是一个（二分之一的）方差代价函数。给定一个包含 <img class="tex" alt="\textstyle m" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/5/e/25e97e8a905fc2cb05d76cd4872a8567.png"/> 个样例的数据集，我们可以定义整体代价函数为：
+</p>
+<dl><dd><img class="tex" alt=" 
+\begin{align}
+J(W,b)
+&amp;= \left[ \frac{1}{m} \sum_{i=1}^m J(W,b;x^{(i)},y^{(i)}) \right]
+                       + \frac{\lambda}{2} \sum_{l=1}^{n_l-1} \; \sum_{i=1}^{s_l} \; \sum_{j=1}^{s_{l+1}} \left( W^{(l)}_{ji} \right)^2
+ \\
+&amp;= \left[ \frac{1}{m} \sum_{i=1}^m \left( \frac{1}{2} \left\| h_{W,b}(x^{(i)}) - y^{(i)} \right\|^2 \right) \right]
+                       + \frac{\lambda}{2} \sum_{l=1}^{n_l-1} \; \sum_{i=1}^{s_l} \; \sum_{j=1}^{s_{l+1}} \left( W^{(l)}_{ji} \right)^2
+\end{align}
+" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/4/5/3/4539f5f00edca977011089b902670513.png"/>
+</dd></dl>
+<p>以上关于<img class="tex" alt="\textstyle J(W,b)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/e/9/8e94ae776ae14b36b3af183726ababb9.png"/>定义中的第一项是一个均方差项。第二项是一个规则化项（也叫<b>权重衰减项</b>），其目的是减小权重的幅度，防止过度拟合。
+</p><p><br/>
+[注：通常权重衰减的计算并不使用偏置项 <img class="tex" alt="\textstyle b^{(l)}_i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/4/c/7/4c786c16575b63bbb554254725b6b648.png"/>，比如我们在 <img class="tex" alt="\textstyle J(W, b)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/e/9/8e94ae776ae14b36b3af183726ababb9.png"/> 的定义中就没有使用。一般来说，将偏置项包含在权重衰减项中只会对最终的神经网络产生很小的影响。如果你在斯坦福选修过CS229（机器学习）课程，或者在YouTube上看过课程视频，你会发现这个权重衰减实际上是课上提到的贝叶斯规则化方法的变种。在贝叶斯规则化方法中，我们将高斯先验概率引入到参数中计算MAP（极大后验）估计（而不是极大似然估计）。]
+</p><p><br/>
+<b>权重衰减参数</b> <img class="tex" alt="\textstyle \lambda" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/d/f/ddf8905bd6bfeba5cfd2936466d4139e.png"/> 用于控制公式中两项的相对重要性。在此重申一下这两个复杂函数的含义：<img class="tex" alt="\textstyle J(W,b;x,y)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/7/b/67b844ee86f32de53bab325b8a76a94f.png"/> 是针对单个样例计算得到的方差代价函数；<img class="tex" alt="\textstyle J(W,b)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/e/9/8e94ae776ae14b36b3af183726ababb9.png"/> 是整体样本代价函数，它包含权重衰减项。
+</p><p><br/>
+以上的代价函数经常被用于分类和回归问题。在分类问题中，我们用 <img class="tex" alt="\textstyle y = 0" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/5/2/b52c56aff08fc87a9ce5b9439200906c.png"/> 或 <img class="tex" alt="\textstyle 1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/e/9/6e924e04b5c9d4c5be131609a038b821.png"/>，来代表两种类型的标签（回想一下，这是因为 sigmoid激活函数的值域为 <img class="tex" alt="\textstyle [0,1]" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/4/2/84235d31ac83fe764546463aba7acc0e.png"/>；如果我们使用双曲正切型激活函数，那么应该选用 <img class="tex" alt="\textstyle -1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/f/a/0fa78f9ce83744e1651c9d729c2d19b6.png"/> 和 <img class="tex" alt="\textstyle +1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/c/b/dcb8dd3d14a2c0aa9b06ec6ce4ec0d59.png"/> 作为标签）。对于回归问题，我们首先要变换输出值域（译者注：也就是 <img class="tex" alt="\textstyle y" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/8/1/c81e76c28ed991b22b8c1bb8fa392701.png"/>），以保证其范围为 <img class="tex" alt="\textstyle [0,1]" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/4/2/84235d31ac83fe764546463aba7acc0e.png"/> （同样地，如果我们使用双曲正切型激活函数，要使输出值域为 <img class="tex" alt="\textstyle [-1,1]" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/5/a/85a1c5a07f21a9eebbfb1dca380f8d38.png"/>）。
+</p><p><br/>
+我们的目标是针对参数 <img class="tex" alt="\textstyle W" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/c/9/8c9cb254a5e388f2bcaf294e52d745a6.png"/> 和 <img class="tex" alt="\textstyle b" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/2/5/5254b90d248051980262672a1bbc2433.png"/> 来求其函数 <img class="tex" alt="\textstyle J(W,b)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/e/9/8e94ae776ae14b36b3af183726ababb9.png"/> 的最小值。为了求解神经网络，我们需要将每一个参数 <img class="tex" alt="\textstyle W^{(l)}_{ij}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/f/e/dfe43c64e3c42ea4ff1774fc82b87805.png"/> 和 <img class="tex" alt="\textstyle b^{(l)}_i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/4/c/7/4c786c16575b63bbb554254725b6b648.png"/> 初始化为一个很小的、接近零的随机值（比如说，使用正态分布 <img class="tex" alt="\textstyle {Normal}(0,\epsilon^2)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/1/9/b19e677536c9c7b9da542e4d36c07001.png"/> 生成的随机值，其中 <img class="tex" alt="\textstyle \epsilon" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/8/e/a8eae7b5e90c024c40de690158e0e6b1.png"/> 设置为 <img class="tex" alt="\textstyle 0.01" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/0/e/60ec211aca4ac585f1c0ef4de8e08f39.png"/> ），之后对目标函数使用诸如批量梯度下降法的最优化算法。因为 <img class="tex" alt="\textstyle J(W, b)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/e/9/8e94ae776ae14b36b3af183726ababb9.png"/> 是一个非凸函数，梯度下降法很可能会收敛到局部最优解；但是在实际应用中，梯度下降法通常能得到令人满意的结果。最后，需要再次强调的是，要将参数进行随机初始化，而不是全部置为 <img class="tex" alt="\textstyle 0" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/6/f/96f7362eaaa825744141afe4d5c2d340.png"/>。如果所有参数都用相同的值作为初始值，那么所有隐藏层单元最终会得到与输入值有关的、相同的函数（也就是说，对于所有 <img class="tex" alt="\textstyle i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/>，<img class="tex" alt="\textstyle W^{(1)}_{ij}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/2/d/82d79561e2994ccba3e4fe2cc4d527e5.png"/>都会取相同的值，那么对于任何输入 <img class="tex" alt="\textstyle x" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/> 都会有：<img class="tex" alt="\textstyle a^{(2)}_1 = a^{(2)}_2 = a^{(2)}_3 = \ldots" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/a/a/3aa55fedae234afd387a314144cd6b32.png"/> ）。随机初始化的目的是使<b>对称失效</b>。
+</p><p><br/>
+梯度下降法中每一次迭代都按照如下公式对参数 <img class="tex" alt="\textstyle W" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/c/9/8c9cb254a5e388f2bcaf294e52d745a6.png"/> 和<img class="tex" alt="\textstyle b" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/2/5/5254b90d248051980262672a1bbc2433.png"/> 进行更新：
+</p>
+<dl><dd><img class="tex" alt="
+\begin{align}
+W_{ij}^{(l)} &amp;= W_{ij}^{(l)} - \alpha \frac{\partial}{\partial W_{ij}^{(l)}} J(W,b) \\
+b_{i}^{(l)} &amp;= b_{i}^{(l)} - \alpha \frac{\partial}{\partial b_{i}^{(l)}} J(W,b)
+\end{align}
+" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/f/e/6fe7c74511cd6d49a4c9cb6de2afdc33.png"/> 
+</dd></dl>
+<p>其中 <img class="tex" alt="\textstyle \alpha" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/e/a/7eaa466003e48c1c96824a2edf3de038.png"/> 是学习速率。其中关键步骤是计算偏导数。我们现在来讲一下<b>反向传播</b>算法，它是计算偏导数的一种有效方法。
+</p><p><br/>
+我们首先来讲一下如何使用反向传播算法来计算 <img class="tex" alt="\textstyle \frac{\partial}{\partial W_{ij}^{(l)}} J(W,b; x, y)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/f/b/5fb8e62e296ad365a076617b04d66d03.png"/> 和 <img class="tex" alt="\textstyle \frac{\partial}{\partial b_{i}^{(l)}} J(W,b; x, y)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/a/4/ca49d387f9ead91008f9688b3880e91b.png"/>，这两项是单个样例 <img class="tex" alt="\textstyle (x,y)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/d/c/0dc6f65ba6022a9a2f5ce13473eb35e8.png"/> 的代价函数 <img class="tex" alt="\textstyle J(W,b;x,y)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/7/b/67b844ee86f32de53bab325b8a76a94f.png"/> 的偏导数。一旦我们求出该偏导数，就可以推导出整体代价函数 <img class="tex" alt="\textstyle J(W,b)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/e/9/8e94ae776ae14b36b3af183726ababb9.png"/> 的偏导数：
+</p><p><br/>
+</p>
+<dl><dd><img class="tex" alt="
+\begin{align}
+\frac{\partial}{\partial W_{ij}^{(l)}} J(W,b) &amp;=
+\left[ \frac{1}{m} \sum_{i=1}^m \frac{\partial}{\partial W_{ij}^{(l)}} J(W,b; x^{(i)}, y^{(i)}) \right] + \lambda W_{ij}^{(l)} \\
+\frac{\partial}{\partial b_{i}^{(l)}} J(W,b) &amp;=
+\frac{1}{m}\sum_{i=1}^m \frac{\partial}{\partial b_{i}^{(l)}} J(W,b; x^{(i)}, y^{(i)})
+\end{align}
+" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/3/3/93367cceb154c392aa7f3e0f5684a495.png"/> 
+</dd></dl>
+<p>以上两行公式稍有不同，第一行比第二行多出一项，是因为权重衰减是作用于 <img class="tex" alt="\textstyle W" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/c/9/8c9cb254a5e388f2bcaf294e52d745a6.png"/> 而不是 <img class="tex" alt="\textstyle b" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/2/5/5254b90d248051980262672a1bbc2433.png"/>。
+</p><p><br/>
+反向传播算法的思路如下：给定一个样例 <img class="tex" alt="\textstyle (x,y)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/d/c/0dc6f65ba6022a9a2f5ce13473eb35e8.png"/>，我们首先进行“前向传导”运算，计算出网络中所有的激活值，包括 <img class="tex" alt="\textstyle h_{W,b}(x)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/8/d/58d3a4fe4ad68b333b180071dd46db82.png"/> 的输出值。之后，针对第 <img class="tex" alt="\textstyle l" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/a/0/ba0593b3db2fa8535b077516f4b0d70b.png"/> 层的每一个节点 <img class="tex" alt="\textstyle i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/>，我们计算出其“残差” <img class="tex" alt="\textstyle \delta^{(l)}_i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/8/5/585c0367cc7e9eb2cc244888c503e04e.png"/>，该残差表明了该节点对最终输出值的残差产生了多少影响。对于最终的输出节点，我们可以直接算出网络产生的激活值与实际值之间的差距，我们将这个差距定义为 <img class="tex" alt="\textstyle \delta^{(n_l)}_i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/e/8/ee873581c1e0d83e6e235f3240671f67.png"/>  （第 <img class="tex" alt="\textstyle n_l" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/b/7/5b7a0657fdea25f29866c8e1d6e884ac.png"/> 层表示输出层）。对于隐藏单元我们如何处理呢？我们将基于节点（译者注：第 <img class="tex" alt="\textstyle l+1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/0/6/9068105ec8ebb97277c937bfa61b606d.png"/> 层节点）残差的加权平均值计算 <img class="tex" alt="\textstyle \delta^{(l)}_i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/8/5/585c0367cc7e9eb2cc244888c503e04e.png"/>，这些节点以 <img class="tex" alt="\textstyle a^{(l)}_i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/9/b/c9b144e0a6735fafb01b3615a2a0dc05.png"/> 作为输入。下面将给出反向传导算法的细节：
+</p><p><br/>
+</p>
+<ol>
+<li>进行前馈传导计算，利用前向传导公式，得到 <img class="tex" alt="\textstyle L_2, L_3, \ldots " src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/2/e/a2ec4c7c0fce868f4b5275e8ce307469.png"/> 直到输出层 <img class="tex" alt="\textstyle L_{n_l}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/2/1/221a7296664022427d488fdb9b14b19b.png"/> 的激活值。
+<li>对于第 <img class="tex" alt="\textstyle n_l" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/b/7/5b7a0657fdea25f29866c8e1d6e884ac.png"/> 层（输出层）的每个输出单元 <img class="tex" alt="\textstyle i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/>，我们根据以下公式计算残差：
+
+
+<dl><dd><img class="tex" alt="
+\begin{align}
+\delta^{(n_l)}_i
+= \frac{\partial}{\partial z^{(n_l)}_i} \;\;
+        \frac{1}{2} \left\|y - h_{W,b}(x)\right\|^2 = - (y_i - a^{(n_l)}_i) \cdot f'(z^{(n_l)}_i)
+\end{align}
+" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/7/a/57a203683fc9c009c41ff97c1e1f6f54.png"/>
+</dd></dl>
+
+[译者注：
+<dl><dd><img class="tex" alt=" 
+\begin{align}
+\delta^{(n_l)}_i &amp;= \frac{\partial}{\partial z^{n_l}_i}J(W,b;x,y)
+ = \frac{\partial}{\partial z^{n_l}_i}\frac{1}{2} \left\|y - h_{W,b}(x)\right\|^2 \\
+ &amp;= \frac{\partial}{\partial z^{n_l}_i}\frac{1}{2} \sum_{j=1}^{S_{n_l}} (y_j-a_j^{(n_l)})^2
+ = \frac{\partial}{\partial z^{n_l}_i}\frac{1}{2} \sum_{j=1}^{S_{n_l}} (y_j-f(z_j^{(n_l)}))^2 \\
+ &amp;= - (y_i - f(z_i^{(n_l)})) \cdot f'(z^{(n_l)}_i)
+ = - (y_i - a^{(n_l)}_i) \cdot f'(z^{(n_l)}_i)
+\end{align}
+" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/b/0/0b057858cd01020adb2c41cd8a586049.png"/> 
+</dd></dl>
+]
+
+<li>对 <img class="tex" alt="\textstyle l = n_l-1, n_l-2, n_l-3, \ldots, 2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/c/5/dc5396666d7679f1dae597dbc1a8ff5d.png"/> 的各个层，第 <img class="tex" alt="\textstyle l" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/a/0/ba0593b3db2fa8535b077516f4b0d70b.png"/> 层的第 <img class="tex" alt="\textstyle i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/> 个节点的残差计算方法如下：
+<dl><dd> <img class="tex" alt=" 
+\delta^{(l)}_i = \left( \sum_{j=1}^{s_{l+1}} W^{(l)}_{ji} \delta^{(l+1)}_j \right) f'(z^{(l)}_i)
+" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/0/f/20f9979d6a46e7bca83f217bdfead4f0.png"/> 
+</dd></dl>
+
+{译者注：
+<dl><dd><img class="tex" alt=" 
+\begin{align}
+\delta^{(n_l-1)}_i &amp;=\frac{\partial}{\partial z^{n_l-1}_i}J(W,b;x,y)
+ = \frac{\partial}{\partial z^{n_l-1}_i}\frac{1}{2} \left\|y - h_{W,b}(x)\right\|^2 
+ = \frac{\partial}{\partial z^{n_l-1}_i}\frac{1}{2} \sum_{j=1}^{S_{n_l}}(y_j-a_j^{(n_l)})^2 \\
+&amp;= \frac{1}{2} \sum_{j=1}^{S_{n_l}}\frac{\partial}{\partial z^{n_l-1}_i}(y_j-a_j^{(n_l)})^2
+ = \frac{1}{2} \sum_{j=1}^{S_{n_l}}\frac{\partial}{\partial z^{n_l-1}_i}(y_j-f(z_j^{(n_l)}))^2 \\
+&amp;= \sum_{j=1}^{S_{n_l}}-(y_j-f(z_j^{(n_l)})) \cdot \frac{\partial}{\partial z_i^{(n_l-1)}}f(z_j^{(n_l)})
+ = \sum_{j=1}^{S_{n_l}}-(y_j-f(z_j^{(n_l)})) \cdot  f'(z_j^{(n_l)}) \cdot \frac{\partial z_j^{(n_l)}}{\partial z_i^{(n_l-1)}} \\
+&amp;= \sum_{j=1}^{S_{n_l}} \delta_j^{(n_l)} \cdot \frac{\partial z_j^{(n_l)}}{\partial z_i^{n_l-1}}
+ = \sum_{j=1}^{S_{n_l}} \left(\delta_j^{(n_l)} \cdot \frac{\partial}{\partial z_i^{n_l-1}}\sum_{k=1}^{S_{n_l-1}}f(z_k^{n_l-1}) \cdot W_{jk}^{n_l-1}\right) \\
+&amp;= \sum_{j=1}^{S_{n_l}} \delta_j^{(n_l)} \cdot  W_{ji}^{n_l-1} \cdot f'(z_i^{n_l-1})
+ = \left(\sum_{j=1}^{S_{n_l}}W_{ji}^{n_l-1}\delta_j^{(n_l)}\right)f'(z_i^{n_l-1})
+\end{align}
+" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/0/1/701c8dc8dbd71013c6a4110a1cb4f6f7.png"/> 
+</dd></dl>
+
+将上式中的<img class="tex" alt="\textstyle n_l-1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/4/f/6/4f6cfb751715090b0493154e4b912097.png"/>与<img class="tex" alt="\textstyle n_l" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/b/7/5b7a0657fdea25f29866c8e1d6e884ac.png"/>的关系替换为<img class="tex" alt="\textstyle l" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/a/0/ba0593b3db2fa8535b077516f4b0d70b.png"/>与<img class="tex" alt="\textstyle l+1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/0/6/9068105ec8ebb97277c937bfa61b606d.png"/>的关系，就可以得到：
+<dl><dd> <img class="tex" alt=" 
+\delta^{(l)}_i = \left( \sum_{j=1}^{s_{l+1}} W^{(l)}_{ji} \delta^{(l+1)}_j \right) f'(z^{(l)}_i)
+" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/0/f/20f9979d6a46e7bca83f217bdfead4f0.png"/> 
+</dd></dl>
+以上逐次从后向前求导的过程即为“反向传导”的本意所在。
+
+]
+
+
+
+<li>计算我们需要的偏导数，计算方法如下：
+<dl><dd><img class="tex" alt=" 
+\begin{align}
+\frac{\partial}{\partial W_{ij}^{(l)}} J(W,b; x, y) &amp;= a^{(l)}_j \delta_i^{(l+1)} \\
+\frac{\partial}{\partial b_{i}^{(l)}} J(W,b; x, y) &amp;= \delta_i^{(l+1)}.
+\end{align}
+" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/1/d/21db5874b1c1c14bcb675e9961dac9cb.png"/> 
+</dd></dl>
+</ol>
+<p><br/>
+最后，我们用矩阵-向量表示法重写以上算法。我们使用“<img class="tex" alt="\textstyle \bullet" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/9/3/9937b108a65d2d09961c23259e819e31.png"/>” 表示向量乘积运算符（在Matlab或Octave里用“<tt>.*</tt>”表示，也称作阿达马乘积）。若 <img class="tex" alt="\textstyle a = b \bullet c" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/1/3/b1362783e5c1d9d1e627ca2a91b04f28.png"/>，则 <img class="tex" alt="\textstyle a_i = b_ic_i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/4/b/14b4e060883883de874d0ebf1ab758d3.png"/>。在上一个教程中我们扩展了 <img class="tex" alt="\textstyle f(\cdot)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/3/0/0303dd697c0e1b72185d7939f9870784.png"/> 的定义，使其包含向量运算，这里我们也对偏导数 <img class="tex" alt="\textstyle f'(\cdot)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/e/d/fedde117b610fc785ad71db67e618ab2.png"/> 也做了同样的处理（于是又有 <img class="tex" alt=" \textstyle f'([z_1, z_2, z_3]) = [f'(z_1), f'(z_2), f'(z_3)]" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/7/5/c7515c53b59e670ceee277e06c1229cb.png"/> ）。
+</p><p><br/>
+那么，反向传播算法可表示为以下几个步骤：
+</p>
+<ol>
+<li>进行前馈传导计算，利用前向传导公式，得到 <img class="tex" alt="\textstyle L_2, L_3, \ldots" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/2/e/a2ec4c7c0fce868f4b5275e8ce307469.png"/>直到输出层 <img class="tex" alt="\textstyle L_{n_l}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/2/1/221a7296664022427d488fdb9b14b19b.png"/> 的激活值。
+
+<li>对输出层（第 <img class="tex" alt="\textstyle n_l" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/b/7/5b7a0657fdea25f29866c8e1d6e884ac.png"/> 层），计算：
+
+<dl><dd><img class="tex" alt=" \begin{align}
+\delta^{(n_l)}
+= - (y - a^{(n_l)}) \bullet f'(z^{(n_l)})
+\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/e/a/0ea6bda6255f544dca0bfa80d622f382.png"/> 
+</dd></dl>
+
+<li>对于 <img class="tex" alt="\textstyle l = n_l-1, n_l-2, n_l-3, \ldots, 2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/c/5/dc5396666d7679f1dae597dbc1a8ff5d.png"/> 的各层，计算：
+<dl><dd><img class="tex" alt=" \begin{align}
+\delta^{(l)} = \left((W^{(l)})^T \delta^{(l+1)}\right) \bullet f'(z^{(l)})
+\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/d/5/7d5660d4a911ecb84113c436f82b1109.png"/> 
+</dd></dl>
+
+<li>计算最终需要的偏导数值：
+<dl><dd><img class="tex" alt=" \begin{align}
+\nabla_{W^{(l)}} J(W,b;x,y) &amp;= \delta^{(l+1)} (a^{(l)})^T, \\
+\nabla_{b^{(l)}} J(W,b;x,y) &amp;= \delta^{(l+1)}.
+\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/3/9/5391ac390a4e279ac8a543d4d5498ecc.png"/> 
+</dd></dl>
+</ol>
+<p><br/>
+<b>实现中应注意：</b>在以上的第2步和第3步中，我们需要为每一个 <img class="tex" alt="\textstyle i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/> 值计算其 <img class="tex" alt="\textstyle f'(z^{(l)}_i)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/7/4/f745dea1a82d8cd64aa6b92466e3bbc5.png"/>。假设 <img class="tex" alt="\textstyle f(z)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/d/1/5d1c55e9d6b297473de425651557d4fc.png"/> 是sigmoid函数，并且我们已经在前向传导运算中得到了 <img class="tex" alt="\textstyle a^{(l)}_i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/9/b/c9b144e0a6735fafb01b3615a2a0dc05.png"/>。那么，使用我们早先推导出的 <img class="tex" alt="\textstyle f'(z)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/5/f/a5f7d3f914f4e383ce51e4998592caee.png"/>表达式，就可以计算得到 <img class="tex" alt="\textstyle f'(z^{(l)}_i) = a^{(l)}_i (1- a^{(l)}_i)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/4/d/d4d5e09ac8e035283671cc03d942f955.png"/>。
+</p><p><br/>
+最后，我们将对梯度下降算法做个全面总结。在下面的伪代码中，<img class="tex" alt="\textstyle \Delta W^{(l)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/c/6/6c600894179e37800af01a5795be30b8.png"/> 是一个与矩阵 <img class="tex" alt="\textstyle W^{(l)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/8/f/f8f8834256f511d88fec05e3b27c67b1.png"/> 维度相同的矩阵，<img class="tex" alt="\textstyle \Delta b^{(l)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/5/8/e580f95036a0ccb35019a866cb10191f.png"/> 是一个与 <img class="tex" alt="\textstyle b^{(l)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/c/2/8c2936afffcaf9eeabf8837d501ddb9d.png"/> 维度相同的向量。注意这里“<img class="tex" alt="\textstyle \Delta W^{(l)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/c/6/6c600894179e37800af01a5795be30b8.png"/>”是一个矩阵，而不是“<img class="tex" alt="\textstyle \Delta" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/2/9/529ca30eb74564461bc8e0e7d7864e95.png"/> 与 <img class="tex" alt="\textstyle W^{(l)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/8/f/f8f8834256f511d88fec05e3b27c67b1.png"/> 相乘”。下面，我们实现批量梯度下降法中的一次迭代：
+</p><p><br/>
+</p>
+<ol>
+<li>对于所有 <img class="tex" alt="\textstyle l" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/a/0/ba0593b3db2fa8535b077516f4b0d70b.png"/>，令 <img class="tex" alt="\textstyle \Delta W^{(l)} := 0" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/6/5/3650852a6b08d261b08a5f4f324fe3a0.png"/> ,  <img class="tex" alt="\textstyle \Delta b^{(l)} := 0" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/5/b/75bf8778e859c31930f7629fe5eab821.png"/> （设置为全零矩阵或全零向量）
+
+<li>对于 <img class="tex" alt="\textstyle i = 1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/9/6/2964cb4e8851d521d24364f0d409a51d.png"/> 到 <img class="tex" alt="\textstyle m" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/5/e/25e97e8a905fc2cb05d76cd4872a8567.png"/>，
+
+<ol type="a">
+<li>使用反向传播算法计算 <img class="tex" alt="\textstyle \nabla_{W^{(l)}} J(W,b;x,y)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/2/1/d21ff7e7308c9fd8c428fd926f671a39.png"/> 和 <img class="tex" alt="\textstyle \nabla_{b^{(l)}} J(W,b;x,y)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/e/d/fed489077fe3753c894638d131c0b442.png"/>。
+<li>计算 <img class="tex" alt="\textstyle \Delta W^{(l)} := \Delta W^{(l)} + \nabla_{W^{(l)}} J(W,b;x,y)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/0/b/50bd90d031437ba98debea738afad0a2.png"/>。
+<li>计算 <img class="tex" alt="\textstyle \Delta b^{(l)} := \Delta b^{(l)} + \nabla_{b^{(l)}} J(W,b;x,y)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/a/b/3abc7162b757ceac7bdb8f0c4555fe8e.png"/>。 
+</ol>
+<li>更新权重参数：
+<dl><dd><img class="tex" alt=" \begin{align}
+W^{(l)} &amp;= W^{(l)} - \alpha \left[ \left(\frac{1}{m} \Delta W^{(l)} \right) + \lambda W^{(l)}\right] \\
+b^{(l)} &amp;= b^{(l)} - \alpha \left[\frac{1}{m} \Delta b^{(l)}\right]
+\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/f/7/0f7430e97ec4df1bfc56357d1485405f.png"/> 
+</dd></dl>
+</ol>
+<p>现在，我们可以重复梯度下降法的迭代步骤来减小代价函数 <img class="tex" alt="\textstyle J(W,b)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/e/9/8e94ae776ae14b36b3af183726ababb9.png"/> 的值，进而求解我们的神经网络。
+</p><p><br/>
+</p>
+<h2> <span class="mw-headline" id=".E4.B8.AD.E8.8B.B1.E6.96.87.E5.AF.B9.E7.85.A7">中英文对照</span></h2>
+<dl><dd>反向传播算法	Backpropagation Algorithm
+</dd><dd>（批量）梯度下降法	(batch) gradient descent
+</dd><dd>（整体）代价函数	(overall) cost function
+</dd><dd>方差	squared-error
+</dd><dd>均方差	average sum-of-squares error
+</dd><dd>规则化项	regularization term
+</dd><dd>权重衰减	weight decay
+</dd><dd>偏置项	bias terms
+</dd><dd>贝叶斯规则化方法	Bayesian regularization method
+</dd><dd>高斯先验概率	Gaussian prior
+</dd><dd>极大后验估计	MAP
+</dd><dd>极大似然估计	maximum likelihood estimation
+</dd><dd>激活函数	activation function
+</dd><dd>双曲正切函数	tanh function
+</dd><dd>非凸函数	non-convex function
+</dd><dd>隐藏层单元	hidden (layer) units
+</dd><dd>对称失效	 symmetry breaking
+</dd><dd>学习速率	learning rate
+</dd><dd>前向传导	forward pass
+</dd><dd>假设值	hypothesis 
+</dd><dd>残差	error term
+</dd><dd>加权平均值	weighted average 
+</dd><dd>前馈传导	feedforward pass
+</dd><dd>阿达马乘积	Hadamard product
+</dd><dd>前向传播	forward propagation
+</dd></dl>
+<p><br/>
+</p>
+<h2> <span class="mw-headline" id=".E4.B8.AD.E6.96.87.E8.AF.91.E8.80.85">中文译者</span></h2>
+<p>王方（fangkey@gmail.com），林锋（xlfg@yeah.net），许利杰（csxulijie@gmail.com）
+</p><p><br/>
+</p>
+<div style="text-align: center;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
+<p><a href="/wayback-ufldl/stanford-ufldl/wiki/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C" title="神经网络">神经网络</a> | <strong class="selflink">反向传导算法</strong> | <a href="/wayback-ufldl/stanford-ufldl/wiki/%E6%A2%AF%E5%BA%A6%E6%A3%80%E9%AA%8C%E4%B8%8E%E9%AB%98%E7%BA%A7%E4%BC%98%E5%8C%96" title="梯度检验与高级优化">梯度检验与高级优化</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/%E8%87%AA%E7%BC%96%E7%A0%81%E7%AE%97%E6%B3%95%E4%B8%8E%E7%A8%80%E7%96%8F%E6%80%A7" title="自编码算法与稀疏性">自编码算法与稀疏性</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/%E5%8F%AF%E8%A7%86%E5%8C%96%E8%87%AA%E7%BC%96%E7%A0%81%E5%99%A8%E8%AE%AD%E7%BB%83%E7%BB%93%E6%9E%9C" title="可视化自编码器训练结果">可视化自编码器训练结果</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/%E7%A8%80%E7%96%8F%E8%87%AA%E7%BC%96%E7%A0%81%E5%99%A8%E7%AC%A6%E5%8F%B7%E4%B8%80%E8%A7%88%E8%A1%A8" title="稀疏自编码器符号一览表">稀疏自编码器符号一览表</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Sparse_Autoencoder" title="Exercise:Sparse Autoencoder">Exercise:Sparse_Autoencoder</a>
+</p>
+</div>
+<p><br/>
+</p>
+<div style="text-align: left;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
+<p>Language&nbsp;: <a href="/wayback-ufldl/stanford-ufldl/wiki/Backpropagation_Algorithm" title="Backpropagation Algorithm">English</a>
+</p>
+</div>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 1008/1000000
+Post-expand include size: 541/2097152 bytes
+Template argument size: 32/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<div class="printfooter">
+</div>		<div id="catlinks" class="catlinks catlinks-allhidden"></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/%E5%8F%8D%E5%90%91%E4%BC%A0%E5%AF%BC%E7%AE%97%E6%B3%95" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-talk" class="new"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				 <li id="ca-viewsource"><a href="" title="This page is protected.
+You can view its source [e]" accesskey="e">View source</a></li>
+				 <li id="ca-history"><a href="" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-ufldl_resources">
+		<h5>ufldl resources</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-wiki">
+		<h5>wiki</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
+				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="" id="searchform">
+				<input type="hidden" name="title" value="Special:Search" disabled/>
+				<input id="searchInput" title="Search Ufldl" accesskey="f" type="search" name="search" disabled/>
+				<input type="submit" name="go" class="searchButton" id="searchGoButton" value="Go" title="Go to a page with this exact name if exists" disabled/>&nbsp;
+				<input type="submit" name="fulltext" class="searchButton" id="mw-searchButton" value="Search" title="Search the pages for this text" disabled/>
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="" title="List of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+<li id="t-specialpages"><a href="" title="List of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li id="t-print"><a href="" rel="alternate" title="Printable version of this page [p]" accesskey="p">Printable version</a></li>				<li id="t-permalink"><a href="" title="Permanent link to this revision of the page">Permanent link</a></li>			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 2 December 2016, at 01:30.</li>
+		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+
+<!-- Served in 0.135 secs. -->
+</body>
+</html>

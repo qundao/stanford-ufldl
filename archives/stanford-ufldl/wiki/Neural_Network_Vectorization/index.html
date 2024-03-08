@@ -1,0 +1,253 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neural Network Vectorization - Ufldl</title>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+
+</head>
+
+<body class="mediawiki ltr ns-0 ns-subject page-Neural_Network_Vectorization skin-monobook">
+<div id="globalWrapper">
+<div id="column-content"><div id="content">
+	<a id="top"></a>
+	
+	<h1 id="firstHeading" class="firstHeading">Neural Network Vectorization</h1>
+	<div id="bodyContent">
+		<h3 id="siteSub">From Ufldl</h3>
+		<div id="contentSub"></div>
+		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
+<p>In this section, we derive a vectorized version of our neural network.  In our earlier description of <a href="/wayback-ufldl/stanford-ufldl/wiki/Neural_Networks" title="Neural Networks">Neural Networks</a>, we had already given a partially vectorized implementation, that is quite efficient if we are working with only a single example at a time.  We now describe how to implement the algorithm so that it simultaneously processes multiple training examples.  Specifically, we will do this for the forward propagation and backpropagation steps, as well as for learning a sparse set of features. 
+</p>
+<h2> <span class="mw-headline" id="Forward_propagation"> Forward propagation </span></h2>
+<p>Consider a 3 layer neural network (with one input, one hidden, and one output layer), and suppose <tt>x</tt> is a column vector containing a single training example <img class="tex" alt="x^{(i)} \in \Re^{n}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/5/6/75642aa64cbeaac87299d8950ef9e1e3.png"/>. Then the forward propagation step is given by: 
+</p>
+<dl><dd><img class="tex" alt="\begin{align}
+z^{(2)} &amp;= W^{(1)} x + b^{(1)} \\
+a^{(2)} &amp;= f(z^{(2)}) \\
+z^{(3)} &amp;= W^{(2)} a^{(2)} + b^{(2)} \\
+h_{W,b}(x) &amp;= a^{(3)} = f(z^{(3)})
+\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/6/9/9690acc03c1e5133b0509257b532b4f7.png"/>
+</dd></dl>
+<p>This is a fairly efficient implementation for a single example.  If we have <span class="texhtml"><i>m</i></span> examples, then we would wrap a <tt>for</tt> loop around this.  
+</p><p>Concretely, following the <a href="/wayback-ufldl/stanford-ufldl/wiki/Logistic_Regression_Vectorization_Example" title="Logistic Regression Vectorization Example">Logistic Regression Vectorization Example</a>, let the Matlab/Octave variable <tt>x</tt> be a matrix containing the training inputs, so that <tt>x(:,i)</tt> is the <img class="tex" alt="\textstyle i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/>-th training example.  We can then implement forward propagation as: 
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="matlab source-matlab"><pre class="de1">&nbsp;
+<span class="co1">% Unvectorized implementation</span>
+<span class="kw1">for</span> <span class="kw2"><span class="re0">i</span></span>=<span class="nu0">1</span>:m, 
+  z2 = W1 * x<span class="br0">&#40;</span>:,<span class="kw2"><span class="re0">i</span></span><span class="br0">&#41;</span> + b1;
+  a2 = f<span class="br0">&#40;</span>z2<span class="br0">&#41;</span>;
+  z3 = W2 * a2 + b2;
+  h<span class="br0">&#40;</span>:,<span class="kw2"><span class="re0">i</span></span><span class="br0">&#41;</span> = f<span class="br0">&#40;</span>z3<span class="br0">&#41;</span>;
+<span class="kw1">end</span>;</pre></div></div>
+<p>Can we get rid of the <tt>for</tt> loop?  For many algorithms, we will represent intermediate stages of computation via vectors.  For example, <tt>z2</tt>, <tt>a2</tt>, and <tt>z3</tt> here are all column vectors that're used to compute the activations of the hidden and output layers.  In order to take better advantage of parallelism and efficient matrix operations, we would like to <i>have our algorithm operate simultaneously on many training examples</i>.  Let us temporarily ignore <tt>b1</tt> and <tt>b2</tt> (say, set them to zero for now).  We can then implement the following:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="matlab source-matlab"><pre class="de1"><span class="co1">% Vectorized implementation (ignoring b1, b2)</span>
+z2 = W1 * x;
+a2 = f<span class="br0">&#40;</span>z2<span class="br0">&#41;</span>;
+z3 = W2 * a2;
+h = f<span class="br0">&#40;</span>z3<span class="br0">&#41;</span></pre></div></div>
+<p>In this implementation, <tt>z2</tt>, <tt>a2</tt>, and <tt>z3</tt> are all matrices, with one column per training example.  A common design pattern in vectorizing across training examples is that whereas previously we had a column vector (such as <tt>z2</tt>) per training example, we can often instead try to compute a matrix so that all of these column vectors are stacked together to form a matrix.  Concretely, in this example, <tt>a2</tt> becomes a <span class="texhtml"><i>s</i><sub>2</sub></span> by <span class="texhtml"><i>m</i></span> matrix (where <span class="texhtml"><i>s</i><sub>2</sub></span> is the number of units in layer 2 of the network, and <span class="texhtml"><i>m</i></span> is the number of training examples).  And, the <span class="texhtml"><i>i</i></span>-th column of <tt>a2</tt> contains the activations of the hidden units (layer 2 of the network) when the <span class="texhtml"><i>i</i></span>-th training example <tt>x(:,i)</tt> is input to the network. 
+</p><p>In the implementation above, we have assumed that the activation function <tt>f(z)</tt> takes as input a matrix <tt>z</tt>, and applies the activation function component-wise to the input.  Note that your implementation of <tt>f(z)</tt> should use Matlab/Octave's matrix operations as much as possible, and avoid <tt>for</tt> loops as well.  We illustrate this below, assuming that <tt>f(z)</tt> is the sigmoid activation function:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="matlab source-matlab"><pre class="de1"><span class="co1">% Inefficient, unvectorized implementation of the activation function</span>
+<span class="kw1">function</span> output = unvectorized_f<span class="br0">&#40;</span>z<span class="br0">&#41;</span>
+output = <span class="kw2">zeros</span><span class="br0">&#40;</span><span class="kw2">size</span><span class="br0">&#40;</span>z<span class="br0">&#41;</span><span class="br0">&#41;</span>
+<span class="kw1">for</span> <span class="kw2"><span class="re0">i</span></span>=<span class="nu0">1</span>:<span class="kw2">size</span><span class="br0">&#40;</span>z,<span class="nu0">1</span><span class="br0">&#41;</span>, 
+  <span class="kw1">for</span> <span class="kw2"><span class="re0">j</span></span>=<span class="nu0">1</span>:<span class="kw2">size</span><span class="br0">&#40;</span>z,<span class="nu0">2</span><span class="br0">&#41;</span>,
+    output<span class="br0">&#40;</span><span class="kw2"><span class="re0">i</span></span>,<span class="kw2"><span class="re0">j</span></span><span class="br0">&#41;</span> = <span class="nu0">1</span>/<span class="br0">&#40;</span><span class="nu0">1</span>+<span class="kw2">exp</span><span class="br0">&#40;</span>-z<span class="br0">&#40;</span><span class="kw2"><span class="re0">i</span></span>,<span class="kw2"><span class="re0">j</span></span><span class="br0">&#41;</span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+  <span class="kw1">end</span>; 
+<span class="kw1">end</span>;
+<span class="kw1">end</span>
+&nbsp;
+<span class="co1">% Efficient, vectorized implementation of the activation function</span>
+<span class="kw1">function</span> output = vectorized_f<span class="br0">&#40;</span>z<span class="br0">&#41;</span>
+output = <span class="nu0">1</span>./<span class="br0">&#40;</span><span class="nu0">1</span>+<span class="kw2">exp</span><span class="br0">&#40;</span>-z<span class="br0">&#41;</span><span class="br0">&#41;</span>;     <span class="co1">% &quot;./&quot; is Matlab/Octave's element-wise division operator. </span>
+<span class="kw1">end</span></pre></div></div>
+<p>Finally, our vectorized implementation of forward propagation above had ignored <tt>b1</tt> and <tt>b2</tt>.  To incorporate those back in, we will use Matlab/Octave's built-in <tt>repmat</tt> function.  We have:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="matlab source-matlab"><pre class="de1"><span class="co1">% Vectorized implementation of forward propagation</span>
+z2 = W1 * x + <span class="kw2">repmat</span><span class="br0">&#40;</span>b1,<span class="nu0">1</span>,m<span class="br0">&#41;</span>;
+a2 = f<span class="br0">&#40;</span>z2<span class="br0">&#41;</span>;
+z3 = W2 * a2 + <span class="kw2">repmat</span><span class="br0">&#40;</span>b2,<span class="nu0">1</span>,m<span class="br0">&#41;</span>;
+h = f<span class="br0">&#40;</span>z3<span class="br0">&#41;</span></pre></div></div>
+<p>The result of <tt>repmat(b1,1,m)</tt> is a matrix formed by taking the column vector <tt>b1</tt> and stacking <span class="texhtml"><i>m</i></span> copies of them in columns as follows
+</p>
+<dl><dd><dl><dd><img class="tex" alt="
+\begin{bmatrix}
+| &amp; | &amp;  &amp; |  \\
+{\rm b1}  &amp; {\rm b1}  &amp; \cdots &amp; {\rm b1} \\
+| &amp; | &amp;  &amp; |  
+\end{bmatrix}.
+" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/b/a/7ba1557030d1461b87b462be4ed864ac.png"/>
+</dd></dl>
+</dd></dl>
+<p>This forms a <span class="texhtml"><i>s</i><sub>2</sub></span> by <span class="texhtml"><i>m</i></span> matrix. 
+Thus, the result of adding this to <tt>W1 * x</tt> is that each column of the matrix gets <tt>b1</tt> added to it, as desired.
+See Matlab/Octave's documentation (type "<tt>help repmat</tt>") for more information.  As a Matlab/Octave built-in function, <tt>repmat</tt> is very efficient as well, and runs much faster than if you were to implement the same thing yourself using a <tt>for</tt> loop. 
+</p><p><br/>
+</p>
+<h2> <span class="mw-headline" id="Backpropagation"> Backpropagation </span></h2>
+<p>We now describe the main ideas behind vectorizing backpropagation.  Before reading this section, we strongly encourage you to carefully step through all the forward propagation code examples above to make sure you fully understand them.  In this text, we'll only sketch the details of how to vectorize backpropagation, and leave you to derive the details in the <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Vectorization" title="Exercise:Vectorization">Vectorization exercise</a>. 
+</p><p>We are in a supervised learning setting, so that we have a training set <img class="tex" alt="\{ (x^{(1)}, y^{(1)}), \ldots, (x^{(m)}, y^{(m)}) \}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/e/c/5ec89e9cf3712d45b80e93258352ea8f.png"/> of <span class="texhtml"><i>m</i></span> training examples.  (For the autoencoder, we simply set <span class="texhtml"><i>y</i><sup>(<i>i</i>)</sup> = <i>x</i><sup>(<i>i</i>)</sup></span>, but our derivation here will consider this more general setting.)
+</p><p>Suppose we have <span class="texhtml"><i>s</i><sub>3</sub></span> dimensional outputs, so that our target labels are <img class="tex" alt="y^{(i)} \in \Re^{s_3}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/d/f/edfdd985de42e6c6724064dfa79499e2.png"/>.  In our Matlab/Octave datastructure, we will stack these in columns to form a Matlab/Octave variable <tt>y</tt>, so that the <span class="texhtml"><i>i</i></span>-th column <tt>y(:,i)</tt> is <span class="texhtml"><i>y</i><sup>(<i>i</i>)</sup></span>. 
+</p><p>We now want to compute the gradient terms 
+<img class="tex" alt="\nabla_{W^{(l)}} J(W,b)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/0/4/a048bebd8683f9762667261147708bdb.png"/> and <img class="tex" alt="\nabla_{b^{(l)}} J(W,b)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/0/7/70718292fd6a578aae46a709a4c72030.png"/>.  Consider the first of
+these terms.  Following our earlier description of the <a href="/wayback-ufldl/stanford-ufldl/wiki/Backpropagation_Algorithm" title="Backpropagation Algorithm">Backpropagation Algorithm</a>, we had that for a single training example <span class="texhtml">(<i>x</i>,<i>y</i>)</span>, we can compute the derivatives as
+</p>
+<dl><dd><dl><dd><img class="tex" alt="
+\begin{align}
+\delta^{(3)} &amp;= - (y - a^{(3)}) \bullet f'(z^{(3)}), \\
+\delta^{(2)} &amp;= ((W^{(2)})^T\delta^{(3)}) \bullet f'(z^{(2)}), \\
+\nabla_{W^{(2)}} J(W,b;x,y) &amp;= \delta^{(3)} (a^{(2)})^T, \\
+\nabla_{W^{(1)}} J(W,b;x,y) &amp;= \delta^{(2)} (a^{(1)})^T. 
+\end{align} 
+" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/4/7/6/4761878cb051fffcff5d159a49e0163e.png"/>
+</dd></dl>
+</dd></dl>
+<p>Here, <img class="tex" alt="\bullet" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/f/5/bf588c17a2f1ba670dd67abd8ef6b8c6.png"/> denotes element-wise product.  For simplicity, our description here will ignore the derivatives with respect to <span class="texhtml"><i>b</i><sup>(<i>l</i>)</sup></span>, though your implementation of backpropagation will have to compute those derivatives too. 
+</p><p>Suppose we have already implemented the vectorized forward propagation method, so that the matrix-valued <tt>z2</tt>, <tt>a2</tt>,  <tt>z3</tt> and <tt>h</tt> are computed as described above. We can then implement an <i>unvectorized</i> version of backpropagation as follows:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="matlab source-matlab"><pre class="de1">gradW1 = <span class="kw2">zeros</span><span class="br0">&#40;</span><span class="kw2">size</span><span class="br0">&#40;</span>W1<span class="br0">&#41;</span><span class="br0">&#41;</span>;
+gradW2 = <span class="kw2">zeros</span><span class="br0">&#40;</span><span class="kw2">size</span><span class="br0">&#40;</span>W2<span class="br0">&#41;</span><span class="br0">&#41;</span>; 
+<span class="kw1">for</span> <span class="kw2"><span class="re0">i</span></span>=<span class="nu0">1</span>:m,
+  delta3 = -<span class="br0">&#40;</span>y<span class="br0">&#40;</span>:,<span class="kw2"><span class="re0">i</span></span><span class="br0">&#41;</span> - h<span class="br0">&#40;</span>:,<span class="kw2"><span class="re0">i</span></span><span class="br0">&#41;</span><span class="br0">&#41;</span> .* fprime<span class="br0">&#40;</span>z3<span class="br0">&#40;</span>:,<span class="kw2"><span class="re0">i</span></span><span class="br0">&#41;</span><span class="br0">&#41;</span>; 
+  delta2 = W2'*delta3<span class="br0">&#40;</span>:,<span class="kw2"><span class="re0">i</span></span><span class="br0">&#41;</span> .* fprime<span class="br0">&#40;</span>z2<span class="br0">&#40;</span>:,<span class="kw2"><span class="re0">i</span></span><span class="br0">&#41;</span><span class="br0">&#41;</span>;
+&nbsp;
+  gradW2 = gradW2 + delta3*a2<span class="br0">&#40;</span>:,<span class="kw2"><span class="re0">i</span></span><span class="br0">&#41;</span>';
+  gradW1 = gradW1 + delta2*a1<span class="br0">&#40;</span>:,<span class="kw2"><span class="re0">i</span></span><span class="br0">&#41;</span>'; 
+<span class="kw1">end</span>;</pre></div></div> 
+<p>This implementation has a <tt>for</tt> loop.  We would like to come up with an implementation that simultaneously performs backpropagation on all the examples, and eliminates this <tt>for</tt> loop. 
+</p><p>To do so, we will replace the vectors <tt>delta3</tt> and <tt>delta2</tt> with matrices, where one column of each matrix corresponds to each training example.  We will also implement a function <tt>fprime(z)</tt> that takes as input a matrix <tt>z</tt>, and applies <img class="tex" alt="f'(\cdot)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/f/6/ff62381ad386ec3826477d743df34b6c.png"/> element-wise.  Each of the four lines of Matlab in the <tt>for</tt> loop above can then be vectorized and replaced with a single line of Matlab code (without a surrounding <tt>for</tt> loop).  
+</p><p>In the <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Vectorization" title="Exercise:Vectorization">Vectorization exercise</a>, we ask you to derive the vectorized version of this algorithm by yourself.  If you are able to do it from this description, we strongly encourage you to do so.  Here also are some <a href="/wayback-ufldl/stanford-ufldl/wiki/Backpropagation_vectorization_hints" title="Backpropagation vectorization hints">Backpropagation vectorization hints</a>; however, we encourage you to try to carry out the vectorization yourself without looking at the hints. 
+</p><p><br/>
+</p>
+<h2> <span class="mw-headline" id="Sparse_autoencoder"> Sparse autoencoder </span></h2>
+<p>The <a href="/wayback-ufldl/stanford-ufldl/wiki/Autoencoders_and_Sparsity" title="Autoencoders and Sparsity">sparse autoencoder</a> neural network has an additional sparsity penalty that constrains neurons' average firing rate to be close to some target activation <span class="texhtml">&rho;</span>.  When performing backpropagation on a single training example, we had taken into the account the sparsity penalty by computing the following:
+</p>
+<dl><dd><img class="tex" alt="\begin{align}
+\delta^{(2)}_i =
+  \left( \left( \sum_{j=1}^{s_{2}} W^{(2)}_{ji} \delta^{(3)}_j \right)
++ \beta \left( - \frac{\rho}{\hat\rho_i} + \frac{1-\rho}{1-\hat\rho_i} \right) \right) f'(z^{(2)}_i) .
+\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/e/f/bef8a29947bfb0d746c54a7d922874e8.png"/>
+</dd></dl>
+<p>In the <i>unvectorized</i> case, this was computed as:
+</p>
+<div dir="ltr" class="mw-geshi" style="text-align: left;"><div class="matlab source-matlab"><pre class="de1"><span class="co1">% Sparsity Penalty Delta</span>
+sparsity_delta = - rho ./ rho_hat + <span class="br0">&#40;</span><span class="nu0">1</span> - rho<span class="br0">&#41;</span> ./ <span class="br0">&#40;</span><span class="nu0">1</span> - rho_hat<span class="br0">&#41;</span>;
+<span class="kw1">for</span> <span class="kw2"><span class="re0">i</span></span>=<span class="nu0">1</span>:m,
+  <span class="sy0">...</span>
+  <span class="me1">delta2</span> = <span class="br0">&#40;</span>W2'*delta3<span class="br0">&#40;</span>:,<span class="kw2"><span class="re0">i</span></span><span class="br0">&#41;</span> + <span class="kw2">beta</span>*sparsity_delta<span class="br0">&#41;</span>.* fprime<span class="br0">&#40;</span>z2<span class="br0">&#40;</span>:,<span class="kw2"><span class="re0">i</span></span><span class="br0">&#41;</span><span class="br0">&#41;</span>; 
+  <span class="sy0">...</span>
+<span class="kw1">end</span>;</pre></div></div> 
+<p>The code above still had a <tt>for</tt> loop over the training set, and <tt>delta2</tt> was a column vector. 
+</p><p>In contrast, recall that in the vectorized case, <tt>delta2</tt> is now a matrix with <span class="texhtml"><i>m</i></span> columns corresponding to the <span class="texhtml"><i>m</i></span> training examples.  Now, notice that the <tt>sparsity_delta</tt> term is the same regardless of what training example we are processing.  This suggests that vectorizing the computation above can be done by simply adding the same value to each column when constructing the <tt>delta2</tt> matrix. Thus, to vectorize the above computation, we can simply add <tt>sparsity_delta</tt> (e.g., using <tt>repmat</tt>) to each column of <tt>delta2</tt>.
+</p><p><br/>
+</p>
+<div style="text-align: center;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
+<p><a href="/wayback-ufldl/stanford-ufldl/wiki/Vectorization" title="Vectorization">Vectorization</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Logistic_Regression_Vectorization_Example" title="Logistic Regression Vectorization Example">Logistic Regression Vectorization Example</a> | <strong class="selflink">Neural Network Vectorization</strong> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Vectorization" title="Exercise:Vectorization">Exercise:Vectorization</a>
+</p>
+</div>
+<p><br/>
+</p>
+<div style="text-align: left;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
+<p>Language&nbsp;: <a href="/wayback-ufldl/stanford-ufldl/wiki/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E5%90%91%E9%87%8F%E5%8C%96" title="神经网络向量化">中文</a>
+</p>
+</div>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 333/1000000
+Post-expand include size: 442/2097152 bytes
+Template argument size: 27/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<div class="printfooter">
+</div>		<div id="catlinks" class="catlinks catlinks-allhidden"></div>		<!-- end content -->
+				<div class="visualClear"></div>
+	</div>
+</div></div>
+<div id="column-one">
+	<div id="p-cactions" class="portlet">
+		<h5>Views</h5>
+		<div class="pBody">
+			<ul>
+				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/Neural_Network_Vectorization" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-talk"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
+				 <li id="ca-viewsource"><a href="" title="This page is protected.
+You can view its source [e]" accesskey="e">View source</a></li>
+				 <li id="ca-history"><a href="" title="Past revisions of this page [h]" accesskey="h">History</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-personal">
+		<h5>Personal tools</h5>
+		<div class="pBody">
+			<ul>
+			</ul>
+		</div>
+	</div>
+	<div class="portlet" id="p-logo">
+		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+	</div>
+	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
+	<div class="generated-sidebar portlet" id="p-ufldl_resources">
+		<h5>ufldl resources</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="generated-sidebar portlet" id="p-wiki">
+		<h5>wiki</h5>
+		<div class="pBody">
+			<ul>
+				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
+				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
+				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="p-search" class="portlet">
+		<h5><label for="searchInput">Search</label></h5>
+		<div id="searchBody" class="pBody">
+			<form action="" id="searchform">
+				<input type="hidden" name="title" value="Special:Search" disabled/>
+				<input id="searchInput" title="Search Ufldl" accesskey="f" type="search" name="search" disabled/>
+				<input type="submit" name="go" class="searchButton" id="searchGoButton" value="Go" title="Go to a page with this exact name if exists" disabled/>&nbsp;
+				<input type="submit" name="fulltext" class="searchButton" id="mw-searchButton" value="Search" title="Search the pages for this text" disabled/>
+			</form>
+		</div>
+	</div>
+	<div class="portlet" id="p-tb">
+		<h5>Toolbox</h5>
+		<div class="pBody">
+			<ul>
+				<li id="t-whatlinkshere"><a href="" title="List of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+<li id="t-specialpages"><a href="" title="List of all special pages [q]" accesskey="q">Special pages</a></li>
+				<li id="t-print"><a href="" rel="alternate" title="Printable version of this page [p]" accesskey="p">Printable version</a></li>				<li id="t-permalink"><a href="" title="Permanent link to this revision of the page">Permanent link</a></li>			</ul>
+		</div>
+	</div>
+</div><!-- end of the left (by default at least) column -->
+<div class="visualClear"></div>
+<div id="footer">
+	<ul id="f-list">
+		<li id="lastmod"> This page was last modified on 7 April 2013, at 13:13.</li>
+		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+	</ul>
+</div>
+</div>
+
+<!-- Served in 0.121 secs. -->
+</body>
+</html>
