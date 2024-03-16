@@ -8,7 +8,7 @@ repo_url: https://github.com/qundao/stanford-ufldl
 theme:
   name: material
   icon:
-    logo: material/sprout
+    logo: material/island
     repo: fontawesome/brands/github-alt
   font:
     text: Open Sans, Helvetica Neue, Roboto, sans-serif, serif
