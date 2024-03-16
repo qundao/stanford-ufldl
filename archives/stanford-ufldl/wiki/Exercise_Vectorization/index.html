@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Exercise:Vectorization - Ufldl</title>
-<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
-<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+<link rel="stylesheet" href="/stanford-ufldl/archive/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/stanford-ufldl/archive/wiki/skins/monobook/main.css" media="screen"/>
 
 </head>
 
@@ -39,15 +39,15 @@
 </p>
 <ul><li> <a href="http://yann.lecun.com/exdb/mnist/train-images-idx3-ubyte.gz" class="external text" rel="nofollow">MNIST Dataset (Training Images)</a>
 </li><li> <a href="http://yann.lecun.com/exdb/mnist/train-labels-idx1-ubyte.gz" class="external text" rel="nofollow">MNIST Dataset (Training Labels)</a>
-</li><li> <a href="/wayback-ufldl/stanford-ufldl/wiki/Using_the_MNIST_Dataset" title="Using the MNIST Dataset"> Support functions for loading MNIST in Matlab </a>
+</li><li> <a href="/stanford-ufldl/archive/wiki/Using_the_MNIST_Dataset" title="Using the MNIST Dataset"> Support functions for loading MNIST in Matlab </a>
 </li></ul>
 <h3> <span class="mw-headline" id="Step_1:_Vectorize_your_Sparse_Autoencoder_Implementation"> Step 1: Vectorize your Sparse Autoencoder Implementation </span></h3>
-<p>Using the ideas from <a href="/wayback-ufldl/stanford-ufldl/wiki/Vectorization" title="Vectorization">Vectorization</a> and <a href="/wayback-ufldl/stanford-ufldl/wiki/Neural_Network_Vectorization" title="Neural Network Vectorization">Neural Network Vectorization</a>, vectorize your implementation of <tt>sparseAutoencoderCost.m</tt>. In our implementation, we were able to remove all for-loops with the use of matrix operations and <tt>repmat</tt>. (If you want to play with more advanced vectorization ideas, also type <tt>help bsxfun</tt>.  The <tt>bsxfun</tt> function provides an alternative to <tt>repmat</tt> for some of the vectorization steps, but is not necessary for this exercise).  A vectorized version of our sparse autoencoder code ran in under one minute on a fast computer (for learning 25 features from 10000 8x8 image patches). 
+<p>Using the ideas from <a href="/stanford-ufldl/archive/wiki/Vectorization" title="Vectorization">Vectorization</a> and <a href="/stanford-ufldl/archive/wiki/Neural_Network_Vectorization" title="Neural Network Vectorization">Neural Network Vectorization</a>, vectorize your implementation of <tt>sparseAutoencoderCost.m</tt>. In our implementation, we were able to remove all for-loops with the use of matrix operations and <tt>repmat</tt>. (If you want to play with more advanced vectorization ideas, also type <tt>help bsxfun</tt>.  The <tt>bsxfun</tt> function provides an alternative to <tt>repmat</tt> for some of the vectorization steps, but is not necessary for this exercise).  A vectorized version of our sparse autoencoder code ran in under one minute on a fast computer (for learning 25 features from 10000 8x8 image patches). 
 </p><p>(Note that you do not need to vectorize the code in the other files.)
 </p>
 <h3> <span class="mw-headline" id="Step_2:_Learn_features_for_handwritten_digits"> Step 2: Learn features for handwritten digits </span></h3>
 <p>Now that you have vectorized the code, it is easy to learn larger sets of features on medium sized images. In this part of the exercise, you will use your sparse autoencoder to learn features for handwritten digits from the MNIST dataset.  
-</p><p>The MNIST data is available at <a href="http://yann.lecun.com/exdb/mnist/" class="external autonumber" rel="nofollow">[1]</a>. Download the file <tt>train-images-idx3-ubyte.gz</tt> and decompress it. After obtaining the source images, you should use <a href="/wayback-ufldl/stanford-ufldl/wiki/Using_the_MNIST_Dataset" title="Using the MNIST Dataset"> helper functions that we provide</a> to load the data into Matlab as matrices.  While the helper functions that we provide will load both the input examples <span class="texhtml"><i>x</i></span> and the class labels <span class="texhtml"><i>y</i></span>, for this assignment, you will only need the input examples <span class="texhtml"><i>x</i></span> since the sparse autoencoder is an <i>unsupervised</i> learning algorithm.  (In a later assignment, we will use the labels <span class="texhtml"><i>y</i></span> as well.) 
+</p><p>The MNIST data is available at <a href="http://yann.lecun.com/exdb/mnist/" class="external autonumber" rel="nofollow">[1]</a>. Download the file <tt>train-images-idx3-ubyte.gz</tt> and decompress it. After obtaining the source images, you should use <a href="/stanford-ufldl/archive/wiki/Using_the_MNIST_Dataset" title="Using the MNIST Dataset"> helper functions that we provide</a> to load the data into Matlab as matrices.  While the helper functions that we provide will load both the input examples <span class="texhtml"><i>x</i></span> and the class labels <span class="texhtml"><i>y</i></span>, for this assignment, you will only need the input examples <span class="texhtml"><i>x</i></span> since the sparse autoencoder is an <i>unsupervised</i> learning algorithm.  (In a later assignment, we will use the labels <span class="texhtml"><i>y</i></span> as well.) 
 </p><p>The following set of parameters worked well for us to learn good features on the MNIST dataset:
 </p>
 <pre>visibleSize = 28*28
@@ -58,17 +58,17 @@ beta = 3
 patches = first 10000 images from the MNIST dataset
 </pre>
 <p>After 400 iterations of updates using minFunc, your autoencoder should have learned features that resemble pen strokes.  In other words, this has learned to represent handwritten characters in terms of what pen strokes appear in an image.  Our implementation takes around 15-20 minutes on a fast machine. Visualized, the features should look like the following image: 
-</p><p><a href="" class="image"><img alt="MnistVectorizationEx.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/a/a3/MnistVectorizationEx.png/400px-MnistVectorizationEx.png" width="400" height="400"/></a>
+</p><p><a href="" class="image"><img alt="MnistVectorizationEx.png" src="/stanford-ufldl/archive/wiki/images/thumb/a/a3/MnistVectorizationEx.png/400px-MnistVectorizationEx.png" width="400" height="400"/></a>
 </p><p>If your parameters are improperly tuned, or if your implementation of the autoencoder is buggy, you may get one of the following images instead:
 </p>
 <table>
-<tr><td><a href="" class="image"><img alt="MNIST-false-bad-1.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/6/63/MNIST-false-bad-1.png" width="240" height="244"/></a></td><td><a href="" class="image"><img alt="MNIST-false-bad-2.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/e/eb/MNIST-false-bad-2.png" width="240" height="242"/></a></td></tr>
+<tr><td><a href="" class="image"><img alt="MNIST-false-bad-1.png" src="/stanford-ufldl/archive/wiki/images/6/63/MNIST-false-bad-1.png" width="240" height="244"/></a></td><td><a href="" class="image"><img alt="MNIST-false-bad-2.png" src="/stanford-ufldl/archive/wiki/images/e/eb/MNIST-false-bad-2.png" width="240" height="242"/></a></td></tr>
 </table>
 <p>If your image looks like one of the above images, check your code and parameters again. Learning these features are a prelude to the later exercises, where we shall see how they will be useful for classification.
 </p><p><br/>
 </p>
 <div style="text-align: center;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
-<p><a href="/wayback-ufldl/stanford-ufldl/wiki/Vectorization" title="Vectorization">Vectorization</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Logistic_Regression_Vectorization_Example" title="Logistic Regression Vectorization Example">Logistic Regression Vectorization Example</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Neural_Network_Vectorization" title="Neural Network Vectorization">Neural Network Vectorization</a> | <strong class="selflink">Exercise:Vectorization</strong>
+<p><a href="/stanford-ufldl/archive/wiki/Vectorization" title="Vectorization">Vectorization</a> | <a href="/stanford-ufldl/archive/wiki/Logistic_Regression_Vectorization_Example" title="Logistic Regression Vectorization Example">Logistic Regression Vectorization Example</a> | <a href="/stanford-ufldl/archive/wiki/Neural_Network_Vectorization" title="Neural Network Vectorization">Neural Network Vectorization</a> | <strong class="selflink">Exercise:Vectorization</strong>
 </p>
 </div>
 
@@ -90,7 +90,7 @@ Expensive parser function count: 0/100
 		<h5>Views</h5>
 		<div class="pBody">
 			<ul>
-				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Vectorization" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-nstab-main" class="selected"><a href="/stanford-ufldl/archive/wiki/Exercise_Vectorization" title="View the content page [c]" accesskey="c">Page</a></li>
 				 <li id="ca-talk" class="new"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
 				 <li id="ca-viewsource"><a href="" title="This page is protected.
 You can view its source [e]" accesskey="e">View source</a></li>
@@ -106,15 +106,15 @@ You can view its source [e]" accesskey="e">View source</a></li>
 		</div>
 	</div>
 	<div class="portlet" id="p-logo">
-		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+		<a style="background-image: url(/stanford-ufldl/archive/wiki/skins/common/images/dolphin-openclipart.png);" href="/stanford-ufldl/archive/wiki/Main_Page" title="Visit the main page"></a>
 	</div>
 	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
 	<div class="generated-sidebar portlet" id="p-ufldl_resources">
 		<h5>ufldl resources</h5>
 		<div class="pBody">
 			<ul>
-				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
-				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+				<li id="n-UFLDL-Tutorial"><a href="/stanford-ufldl/archive/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/stanford-ufldl/archive/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
 			</ul>
 		</div>
 	</div>
@@ -122,7 +122,7 @@ You can view its source [e]" accesskey="e">View source</a></li>
 		<h5>wiki</h5>
 		<div class="pBody">
 			<ul>
-				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-mainpage-description"><a href="/stanford-ufldl/archive/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
 				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
 				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
 				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
@@ -155,9 +155,9 @@ You can view its source [e]" accesskey="e">View source</a></li>
 <div id="footer">
 	<ul id="f-list">
 		<li id="lastmod"> This page was last modified on 26 May 2011, at 11:00.</li>
-		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
-		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
-		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+		<li id="privacy"><a href="/stanford-ufldl/archive/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/stanford-ufldl/archive/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/stanford-ufldl/archive/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
 	</ul>
 </div>
 </div>

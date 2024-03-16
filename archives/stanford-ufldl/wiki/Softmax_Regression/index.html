@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Softmax Regression - Ufldl</title>
-<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
-<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+<link rel="stylesheet" href="/stanford-ufldl/archive/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/stanford-ufldl/archive/wiki/skins/monobook/main.css" media="screen"/>
 
 </head>
 
@@ -37,32 +37,32 @@ This will be useful for such problems as MNIST digit classification, where the g
 numerical digits.  Softmax regression is a supervised learning algorithm, but we will later be
 using it in conjuction with our deep learning/unsupervised feature learning methods.
 </p><p>Recall that in logistic regression, we had a training set
-<img class="tex" alt="\{ (x^{(1)}, y^{(1)}), \ldots, (x^{(m)}, y^{(m)}) \}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/e/c/5ec89e9cf3712d45b80e93258352ea8f.png"/>
-of <span class="texhtml"><i>m</i></span> labeled examples, where the input features are <img class="tex" alt="x^{(i)} \in \Re^{n+1}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/2/3/123c8ca74aa217158129b671fc7e75a8.png"/>.  
+<img class="tex" alt="\{ (x^{(1)}, y^{(1)}), \ldots, (x^{(m)}, y^{(m)}) \}" src="/stanford-ufldl/archive/wiki/images/math/5/e/c/5ec89e9cf3712d45b80e93258352ea8f.png"/>
+of <span class="texhtml"><i>m</i></span> labeled examples, where the input features are <img class="tex" alt="x^{(i)} \in \Re^{n+1}" src="/stanford-ufldl/archive/wiki/images/math/1/2/3/123c8ca74aa217158129b671fc7e75a8.png"/>.  
 (In this set of notes, we will use the notational convention of letting the feature vectors <span class="texhtml"><i>x</i></span> be
 <span class="texhtml"><i>n</i> + 1</span> dimensional, with <span class="texhtml"><i>x</i><sub>0</sub> = 1</span> corresponding to the intercept term.) 
 With logistic regression, we were in the binary classification setting, so the labels 
-were <img class="tex" alt="y^{(i)} \in \{0,1\}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/5/8/a589c252daed983404e6f9b3b1219954.png"/>.  Our hypothesis took the form:
+were <img class="tex" alt="y^{(i)} \in \{0,1\}" src="/stanford-ufldl/archive/wiki/images/math/a/5/8/a589c252daed983404e6f9b3b1219954.png"/>.  Our hypothesis took the form:
 </p><p><img class="tex" alt="\begin{align}
 h_\theta(x) = \frac{1}{1+\exp(-\theta^Tx)},
-\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/b/3/bb3791d463b832a88731b94f1d8e5279.png"/>
+\end{align}" src="/stanford-ufldl/archive/wiki/images/math/b/b/3/bb3791d463b832a88731b94f1d8e5279.png"/>
 </p><p>and the model parameters <span class="texhtml">&theta;</span> were trained to minimize
 the cost function
 </p><p><img class="tex" alt="
 \begin{align}
 J(\theta) = -\frac{1}{m} \left[ \sum_{i=1}^m y^{(i)} \log h_\theta(x^{(i)}) + (1-y^{(i)}) \log (1-h_\theta(x^{(i)})) \right]
 \end{align}
-" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/a/6/fa6565f1e7b91831e306ec404ccc1156.png"/>
+" src="/stanford-ufldl/archive/wiki/images/math/f/a/6/fa6565f1e7b91831e306ec404ccc1156.png"/>
 </p><p>In the softmax regression setting, we are interested in multi-class
 classification (as opposed to only binary classification), and so the label
 <span class="texhtml"><i>y</i></span> can take on <span class="texhtml"><i>k</i></span> different values, rather than only
 two.  Thus, in our training set
-<img class="tex" alt="\{ (x^{(1)}, y^{(1)}), \ldots, (x^{(m)}, y^{(m)}) \}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/e/c/5ec89e9cf3712d45b80e93258352ea8f.png"/>,
-we now have that <img class="tex" alt="y^{(i)} \in \{1, 2, \ldots, k\}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/d/c/7dc095cfb7e3e1fc6bdbc358bd3e2888.png"/>.  (Note that
+<img class="tex" alt="\{ (x^{(1)}, y^{(1)}), \ldots, (x^{(m)}, y^{(m)}) \}" src="/stanford-ufldl/archive/wiki/images/math/5/e/c/5ec89e9cf3712d45b80e93258352ea8f.png"/>,
+we now have that <img class="tex" alt="y^{(i)} \in \{1, 2, \ldots, k\}" src="/stanford-ufldl/archive/wiki/images/math/7/d/c/7dc095cfb7e3e1fc6bdbc358bd3e2888.png"/>.  (Note that
 our convention will be to index the classes starting from 1, rather than from 0.)  For example,
 in the MNIST digit recognition task, we would have <span class="texhtml"><i>k</i> = 10</span> different classes.
 </p><p>Given a test input <span class="texhtml"><i>x</i></span>, we want our hypothesis to estimate
-the probability that <span class="texhtml"><i>p</i>(<i>y</i> = <i>j</i> | <i>x</i>)</span> for each value of <img class="tex" alt="j = 1, \ldots, k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/b/9/fb9db94a64ef15d63436fa6103921b86.png"/>.
+the probability that <span class="texhtml"><i>p</i>(<i>y</i> = <i>j</i> | <i>x</i>)</span> for each value of <img class="tex" alt="j = 1, \ldots, k" src="/stanford-ufldl/archive/wiki/images/math/f/b/9/fb9db94a64ef15d63436fa6103921b86.png"/>.
 I.e., we want to estimate the probability of the class label taking
 on each of the <span class="texhtml"><i>k</i></span> different possible values.  Thus, our hypothesis
 will output a <span class="texhtml"><i>k</i></span> dimensional vector (whose elements sum to 1) giving
@@ -86,17 +86,17 @@ e^{ \theta_2^T x^{(i)} } \\
 e^{ \theta_k^T x^{(i)} } \\
 \end{bmatrix}
 \end{align}
-" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/1/b/a1b0d7b40fe624cd8a24354792223a9d.png"/>
-</p><p>Here <img class="tex" alt="\theta_1, \theta_2, \ldots, \theta_k \in \Re^{n+1}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/d/9/fd93be6ab8e2b869691579202d7b4417.png"/> are the
+" src="/stanford-ufldl/archive/wiki/images/math/a/1/b/a1b0d7b40fe624cd8a24354792223a9d.png"/>
+</p><p>Here <img class="tex" alt="\theta_1, \theta_2, \ldots, \theta_k \in \Re^{n+1}" src="/stanford-ufldl/archive/wiki/images/math/f/d/9/fd93be6ab8e2b869691579202d7b4417.png"/> are the
 parameters of our model.  
 Notice that
-the term <img class="tex" alt="\frac{1}{ \sum_{j=1}^{k}{e^{ \theta_j^T x^{(i)} }} } " src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/a/b/aab84964dbe1a2f77c9c91327ea0d6d6.png"/>
+the term <img class="tex" alt="\frac{1}{ \sum_{j=1}^{k}{e^{ \theta_j^T x^{(i)} }} } " src="/stanford-ufldl/archive/wiki/images/math/a/a/b/aab84964dbe1a2f77c9c91327ea0d6d6.png"/>
 normalizes the distribution, so that it sums to one. 
 </p><p>For convenience, we will also write 
 <span class="texhtml">&theta;</span> to denote all the
 parameters of our model.  When you implement softmax regression, it is usually
 convenient to represent <span class="texhtml">&theta;</span> as a <span class="texhtml"><i>k</i></span>-by-<span class="texhtml">(<i>n</i> + 1)</span> matrix obtained by
-stacking up <img class="tex" alt="\theta_1, \theta_2, \ldots, \theta_k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/f/f/1ff687194349ee543cd4f1baa7bcaa58.png"/> in rows, so that
+stacking up <img class="tex" alt="\theta_1, \theta_2, \ldots, \theta_k" src="/stanford-ufldl/archive/wiki/images/math/1/f/f/1ff687194349ee543cd4f1baa7bcaa58.png"/> in rows, so that
 </p><p><img class="tex" alt="
 \theta = \begin{bmatrix}
 \mbox{---} \theta_1^T \mbox{---} \\
@@ -104,44 +104,44 @@ stacking up <img class="tex" alt="\theta_1, \theta_2, \ldots, \theta_k" src="/wa
 \vdots \\
 \mbox{---} \theta_k^T \mbox{---} \\
 \end{bmatrix}
-" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/b/4/ab4ba0d1df4b93696eec7d8bef86e9cd.png"/>
+" src="/stanford-ufldl/archive/wiki/images/math/a/b/4/ab4ba0d1df4b93696eec7d8bef86e9cd.png"/>
 </p><p><br/>
 </p>
 <h2> <span class="mw-headline" id="Cost_Function"> Cost Function </span></h2>
-<p>We now describe the cost function that we'll use for softmax regression.  In the equation below, <img class="tex" alt="1\{\cdot\}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/e/1/fe105f91ad94aa996a47cb0ec3e2e2e8.png"/> is
+<p>We now describe the cost function that we'll use for softmax regression.  In the equation below, <img class="tex" alt="1\{\cdot\}" src="/stanford-ufldl/archive/wiki/images/math/f/e/1/fe105f91ad94aa996a47cb0ec3e2e2e8.png"/> is
 the <b>indicator function,</b> so that <span class="texhtml">1{a true statement} = 1</span>, and <span class="texhtml">1{a false statement} = 0</span>.
 For example, <span class="texhtml">1{2 + 2 = 4}</span> evaluates to 1; whereas <span class="texhtml">1{1 + 1 = 5}</span> evaluates to 0. Our cost function will be:
 </p><p><img class="tex" alt="
 \begin{align}
 J(\theta) = - \frac{1}{m} \left[ \sum_{i=1}^{m} \sum_{j=1}^{k}  1\left\{y^{(i)} = j\right\} \log \frac{e^{\theta_j^T x^{(i)}}}{\sum_{l=1}^k e^{ \theta_l^T x^{(i)} }}\right]
 \end{align}
-" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/6/3/7634eb3b08dc003aa4591a95824d4fbd.png"/>
+" src="/stanford-ufldl/archive/wiki/images/math/7/6/3/7634eb3b08dc003aa4591a95824d4fbd.png"/>
 </p><p>Notice that this generalizes the logistic regression cost function, which could also have been written:
 </p><p><img class="tex" alt="
 \begin{align}
 J(\theta) &amp;= -\frac{1}{m} \left[ \sum_{i=1}^m   (1-y^{(i)}) \log (1-h_\theta(x^{(i)})) + y^{(i)} \log h_\theta(x^{(i)}) \right] \\
 &amp;= - \frac{1}{m} \left[ \sum_{i=1}^{m} \sum_{j=0}^{1} 1\left\{y^{(i)} = j\right\} \log p(y^{(i)} = j | x^{(i)} ; \theta) \right]
 \end{align}
-" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/4/9/5491271f19161f8ea6a6b2a82c83fc3a.png"/>
+" src="/stanford-ufldl/archive/wiki/images/math/5/4/9/5491271f19161f8ea6a6b2a82c83fc3a.png"/>
 </p><p>The softmax cost function is similar, except that we now sum over the <span class="texhtml"><i>k</i></span> different possible values
 of the class label.  Note also that in softmax regression, we have that
 <img class="tex" alt="
 p(y^{(i)} = j | x^{(i)} ; \theta) = \frac{e^{\theta_j^T x^{(i)}}}{\sum_{l=1}^k e^{ \theta_l^T x^{(i)}} }
-" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/2/e/a2e69ec139cdd4828130c175d990d4e3.png"/>.
+" src="/stanford-ufldl/archive/wiki/images/math/a/2/e/a2e69ec139cdd4828130c175d990d4e3.png"/>.
 </p><p>There is no known closed-form way to solve for the minimum of <span class="texhtml"><i>J</i>(&theta;)</span>, and thus as usual we'll resort to an iterative
 optimization algorithm such as gradient descent or L-BFGS.  Taking derivatives, one can show that the gradient is:
 </p><p><img class="tex" alt="
 \begin{align}
 \nabla_{\theta_j} J(\theta) = - \frac{1}{m} \sum_{i=1}^{m}{ \left[ x^{(i)} \left( 1\{ y^{(i)} = j\}  - p(y^{(i)} = j | x^{(i)}; \theta) \right) \right]  }
 \end{align}
-" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/9/e/59ef406cef112eb75e54808b560587c9.png"/>
+" src="/stanford-ufldl/archive/wiki/images/math/5/9/e/59ef406cef112eb75e54808b560587c9.png"/>
 </p><p><br/>
-Recall the meaning of the "<img class="tex" alt="\nabla_{\theta_j}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/3/4/134b68f25065e33e0aee78aa8515824a.png"/>" notation.  In particular, <img class="tex" alt="\nabla_{\theta_j} J(\theta)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/d/8/ed816f8f2d99908bc1b6024da4cfa0bd.png"/>
-is itself a vector, so that its <span class="texhtml"><i>l</i></span>-th element is <img class="tex" alt="\frac{\partial J(\theta)}{\partial \theta_{jl}}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/6/b/26bcda13f2b17ee8067d93022198e2c7.png"/>
+Recall the meaning of the "<img class="tex" alt="\nabla_{\theta_j}" src="/stanford-ufldl/archive/wiki/images/math/1/3/4/134b68f25065e33e0aee78aa8515824a.png"/>" notation.  In particular, <img class="tex" alt="\nabla_{\theta_j} J(\theta)" src="/stanford-ufldl/archive/wiki/images/math/e/d/8/ed816f8f2d99908bc1b6024da4cfa0bd.png"/>
+is itself a vector, so that its <span class="texhtml"><i>l</i></span>-th element is <img class="tex" alt="\frac{\partial J(\theta)}{\partial \theta_{jl}}" src="/stanford-ufldl/archive/wiki/images/math/2/6/b/26bcda13f2b17ee8067d93022198e2c7.png"/>
 the partial derivative of <span class="texhtml"><i>J</i>(&theta;)</span> with respect to the <span class="texhtml"><i>l</i></span>-th element of <span class="texhtml">&theta;<sub><i>j</i></sub></span>. 
 </p><p>Armed with this formula for the derivative, one can then plug it into an algorithm such as gradient descent, and have it
 minimize <span class="texhtml"><i>J</i>(&theta;)</span>.  For example, with the standard implementation of gradient descent, on each iteration
-we would perform the update <img class="tex" alt="\theta_j := \theta_j - \alpha \nabla_{\theta_j} J(\theta)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/f/6/ef6c858d8567880f0943848df352242f.png"/> (for each <img class="tex" alt="j=1,\ldots,k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/b/9/fb9db94a64ef15d63436fa6103921b86.png"/>).
+we would perform the update <img class="tex" alt="\theta_j := \theta_j - \alpha \nabla_{\theta_j} J(\theta)" src="/stanford-ufldl/archive/wiki/images/math/e/f/6/ef6c858d8567880f0943848df352242f.png"/> (for each <img class="tex" alt="j=1,\ldots,k" src="/stanford-ufldl/archive/wiki/images/math/f/b/9/fb9db94a64ef15d63436fa6103921b86.png"/>).
 </p><p>When implementing softmax regression, we will typically use a modified version of the cost function described above;
 specifically, one that incorporates weight decay.  We describe the motivation and details below.
 </p>
@@ -149,7 +149,7 @@ specifically, one that incorporates weight decay.  We describe the motivation an
 <p>Softmax regression has an unusual property that it has a "redundant" set of parameters.  To explain what this means, 
 suppose we take each of our parameter vectors <span class="texhtml">&theta;<sub><i>j</i></sub></span>, and subtract some fixed vector <span class="texhtml">&psi;</span>
 from it, so that every <span class="texhtml">&theta;<sub><i>j</i></sub></span> is now replaced with <span class="texhtml">&theta;<sub><i>j</i></sub> &minus; &psi;</span> 
-(for every <img class="tex" alt="j=1, \ldots, k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/b/9/fb9db94a64ef15d63436fa6103921b86.png"/>).  Our hypothesis
+(for every <img class="tex" alt="j=1, \ldots, k" src="/stanford-ufldl/archive/wiki/images/math/f/b/9/fb9db94a64ef15d63436fa6103921b86.png"/>).  Our hypothesis
 now estimates the class label probabilities as
 </p><p><img class="tex" alt="
 \begin{align}
@@ -158,7 +158,7 @@ p(y^{(i)} = j | x^{(i)} ; \theta)
 &amp;= \frac{e^{\theta_j^T x^{(i)}} e^{-\psi^Tx^{(i)}}}{\sum_{l=1}^k e^{\theta_l^T x^{(i)}} e^{-\psi^Tx^{(i)}}} \\
 &amp;= \frac{e^{\theta_j^T x^{(i)}}}{\sum_{l=1}^k e^{ \theta_l^T x^{(i)}}}.
 \end{align}
-" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/8/0/d8076908fb40b49db821dc410b03700f.png"/>
+" src="/stanford-ufldl/archive/wiki/images/math/d/8/0/d8076908fb40b49db821dc410b03700f.png"/>
 </p><p>In other words, subtracting <span class="texhtml">&psi;</span> from every <span class="texhtml">&theta;<sub><i>j</i></sub></span>
 does not affect our hypothesis' predictions at all!  This shows that softmax
 regression's parameters are "redundant."  More formally, we say that our
@@ -167,40 +167,40 @@ fit to the data, there are multiple parameter settings that give rise to exactly
 the same hypothesis function <span class="texhtml"><i>h</i><sub>&theta;</sub></span> mapping from inputs <span class="texhtml"><i>x</i></span>
 to the predictions. 
 </p><p>Further, if the cost function <span class="texhtml"><i>J</i>(&theta;)</span> is minimized by some
-setting of the parameters <img class="tex" alt="(\theta_1, \theta_2,\ldots, \theta_k)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/1/e/61ead124771be0fc0903a00ed3dc5e56.png"/>,
+setting of the parameters <img class="tex" alt="(\theta_1, \theta_2,\ldots, \theta_k)" src="/stanford-ufldl/archive/wiki/images/math/6/1/e/61ead124771be0fc0903a00ed3dc5e56.png"/>,
 then it is also minimized by <img class="tex" alt="(\theta_1 - \psi, \theta_2 - \psi,\ldots,
-\theta_k - \psi)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/0/c/00cafcc498a2911c01b1ca5db6855869.png"/> for any value of <span class="texhtml">&psi;</span>.  Thus, the
+\theta_k - \psi)" src="/stanford-ufldl/archive/wiki/images/math/0/0/c/00cafcc498a2911c01b1ca5db6855869.png"/> for any value of <span class="texhtml">&psi;</span>.  Thus, the
 minimizer of <span class="texhtml"><i>J</i>(&theta;)</span> is not unique.  (Interestingly, 
 <span class="texhtml"><i>J</i>(&theta;)</span> is still convex, and thus gradient descent will
 not run into a local optima problems.  But the Hessian is singular/non-invertible,
 which causes a straightforward implementation of Newton's method to run into
 numerical problems.) 
 </p><p>Notice also that by setting <span class="texhtml">&psi; = &theta;<sub>1</sub></span>, one can always
-replace <span class="texhtml">&theta;<sub>1</sub></span> with <img class="tex" alt="\theta_1 - \psi = \vec{0}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/c/d/1cd054c99a1711d008e82fffd83b83e1.png"/> (the vector of all
+replace <span class="texhtml">&theta;<sub>1</sub></span> with <img class="tex" alt="\theta_1 - \psi = \vec{0}" src="/stanford-ufldl/archive/wiki/images/math/1/c/d/1cd054c99a1711d008e82fffd83b83e1.png"/> (the vector of all
 0's), without affecting the hypothesis.  Thus, one could "eliminate" the vector
 of parameters <span class="texhtml">&theta;<sub>1</sub></span> (or any other <span class="texhtml">&theta;<sub><i>j</i></sub></span>, for
 any single value of <span class="texhtml"><i>j</i></span>), without harming the representational power
 of our hypothesis.  Indeed, rather than optimizing over the <span class="texhtml"><i>k</i>(<i>n</i> + 1)</span>
-parameters <img class="tex" alt="(\theta_1, \theta_2,\ldots, \theta_k)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/1/e/61ead124771be0fc0903a00ed3dc5e56.png"/> (where
-<img class="tex" alt="\theta_j \in \Re^{n+1}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/0/f/50f9d0b22f8fd210e7c611bb10869566.png"/>), one could instead set <img class="tex" alt="\theta_1 =
-\vec{0}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/a/9/da9190c2e350c287b0ab05acbb87f3aa.png"/> and optimize only with respect to the <span class="texhtml">(<i>k</i> &minus; 1)(<i>n</i> + 1)</span>
+parameters <img class="tex" alt="(\theta_1, \theta_2,\ldots, \theta_k)" src="/stanford-ufldl/archive/wiki/images/math/6/1/e/61ead124771be0fc0903a00ed3dc5e56.png"/> (where
+<img class="tex" alt="\theta_j \in \Re^{n+1}" src="/stanford-ufldl/archive/wiki/images/math/5/0/f/50f9d0b22f8fd210e7c611bb10869566.png"/>), one could instead set <img class="tex" alt="\theta_1 =
+\vec{0}" src="/stanford-ufldl/archive/wiki/images/math/d/a/9/da9190c2e350c287b0ab05acbb87f3aa.png"/> and optimize only with respect to the <span class="texhtml">(<i>k</i> &minus; 1)(<i>n</i> + 1)</span>
 remaining parameters, and this would work fine. 
 </p><p>In practice, however, it is often cleaner and simpler to implement the version which keeps
-all the parameters <img class="tex" alt="(\theta_1, \theta_2,\ldots, \theta_n)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/b/6/1b6575b1c6961fafeef894594bfc69ec.png"/>, without
+all the parameters <img class="tex" alt="(\theta_1, \theta_2,\ldots, \theta_n)" src="/stanford-ufldl/archive/wiki/images/math/1/b/6/1b6575b1c6961fafeef894594bfc69ec.png"/>, without
 arbitrarily setting one of them to zero.  But we will
 make one change to the cost function: Adding weight decay.  This will take care of
 the numerical problems associated with softmax regression's overparameterized representation.
 </p>
 <h2> <span class="mw-headline" id="Weight_Decay"> Weight Decay </span></h2>
 <p>We will modify the cost function by adding a weight decay term 
-<img class="tex" alt="\textstyle \frac{\lambda}{2} \sum_{i=1}^k \sum_{j=0}^{n} \theta_{ij}^2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/6/6/766dfa7931741fa72672b9093205a850.png"/>
+<img class="tex" alt="\textstyle \frac{\lambda}{2} \sum_{i=1}^k \sum_{j=0}^{n} \theta_{ij}^2" src="/stanford-ufldl/archive/wiki/images/math/7/6/6/766dfa7931741fa72672b9093205a850.png"/>
 which penalizes large values of the parameters.  Our cost function is now
 </p><p><img class="tex" alt="
 \begin{align}
 J(\theta) = - \frac{1}{m} \left[ \sum_{i=1}^{m} \sum_{j=1}^{k} 1\left\{y^{(i)} = j\right\} \log \frac{e^{\theta_j^T x^{(i)}}}{\sum_{l=1}^k e^{ \theta_l^T x^{(i)} }}  \right]
               + \frac{\lambda}{2} \sum_{i=1}^k \sum_{j=0}^n \theta_{ij}^2
 \end{align}
-" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/4/7/1/471592d82c7f51526bb3876c6b0f868d.png"/>
+" src="/stanford-ufldl/archive/wiki/images/math/4/7/1/471592d82c7f51526bb3876c6b0f868d.png"/>
 </p><p>With this weight decay term (for any <span class="texhtml">&lambda; &gt; 0</span>), the cost function
 <span class="texhtml"><i>J</i>(&theta;)</span> is now strictly convex, and is guaranteed to have a
 unique solution.  The Hessian is now invertible, and because <span class="texhtml"><i>J</i>(&theta;)</span> is 
@@ -212,7 +212,7 @@ new definition of <span class="texhtml"><i>J</i>(&theta;)</span>.  One can show 
 \begin{align}
 \nabla_{\theta_j} J(\theta) = - \frac{1}{m} \sum_{i=1}^{m}{ \left[ x^{(i)} ( 1\{ y^{(i)} = j\}  - p(y^{(i)} = j | x^{(i)}; \theta) ) \right]  } + \lambda \theta_j
 \end{align}
-" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/a/f/3afb4b9181a3063ddc639099bc919197.png"/>
+" src="/stanford-ufldl/archive/wiki/images/math/3/a/f/3afb4b9181a3063ddc639099bc919197.png"/>
 </p><p>By minimizing <span class="texhtml"><i>J</i>(&theta;)</span> with respect to <span class="texhtml">&theta;</span>, we will have a working implementation of softmax regression.
 </p><p><br/>
 </p>
@@ -230,7 +230,7 @@ e^{ \theta_1^T x } \\
 e^{ \theta_2^T x }
 \end{bmatrix}
 \end{align}
-" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/3/2/e32efab7bff7353e04775b030af0dae9.png"/>
+" src="/stanford-ufldl/archive/wiki/images/math/e/3/2/e32efab7bff7353e04775b030af0dae9.png"/>
 </p><p>Taking advantage of the fact that this hypothesis
 is overparameterized and setting <span class="texhtml">&psi; = &theta;<sub>1</sub></span>,
 we can subtract <span class="texhtml">&theta;<sub>1</sub></span> from each of the two parameters, giving us
@@ -257,13 +257,13 @@ e^{ (\theta_2-\theta_1)^T x }
 1 - \frac{1}{ 1  + e^{ (\theta_2-\theta_1)^T x^{(i)} } } \\
 \end{bmatrix}
 \end{align}
-" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/8/1/b81d6e553283fadddbe29fe55226fb38.png"/>
+" src="/stanford-ufldl/archive/wiki/images/math/b/8/1/b81d6e553283fadddbe29fe55226fb38.png"/>
 </p><p><br/>
 Thus, replacing <span class="texhtml">&theta;<sub>2</sub> &minus; &theta;<sub>1</sub></span> with a single parameter vector <span class="texhtml">&theta;'</span>, we find
 that softmax regression predicts the probability of one of the classes as
-<img class="tex" alt="\frac{1}{ 1  + e^{ (\theta')^T x^{(i)} } }" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/4/0/2/4020e759c483c03f53e3f62695e31314.png"/>,
+<img class="tex" alt="\frac{1}{ 1  + e^{ (\theta')^T x^{(i)} } }" src="/stanford-ufldl/archive/wiki/images/math/4/0/2/4020e759c483c03f53e3f62695e31314.png"/>,
 and that of the other class as
-<img class="tex" alt="1 - \frac{1}{ 1 + e^{ (\theta')^T x^{(i)} } }" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/4/8/4/4849be3e71ce598369b419dc0b73633e.png"/>,
+<img class="tex" alt="1 - \frac{1}{ 1 + e^{ (\theta')^T x^{(i)} } }" src="/stanford-ufldl/archive/wiki/images/math/4/8/4/4849be3e71ce598369b419dc0b73633e.png"/>,
 same as logistic regression.
 </p>
 <h2> <span class="mw-headline" id="Softmax_Regression_vs._k_Binary_Classifiers"> Softmax Regression vs. k Binary Classifiers </span></h2>
@@ -296,13 +296,13 @@ three separate logistic regression classifiers.
 </p>
 <hr/>
 <div style="text-align: center;font-size:small; background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
-<p><strong class="selflink">Softmax Regression</strong> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Softmax_Regression" title="Exercise:Softmax Regression">Exercise:Softmax Regression</a>
+<p><strong class="selflink">Softmax Regression</strong> | <a href="/stanford-ufldl/archive/wiki/Exercise_Softmax_Regression" title="Exercise:Softmax Regression">Exercise:Softmax Regression</a>
 </p>
 </div>
 <p><br/>
 </p>
 <div style="text-align: left;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
-<p>Language&nbsp;: <a href="/wayback-ufldl/stanford-ufldl/wiki/Softmax%E5%9B%9E%E5%BD%92" title="Softmax回归">中文</a>
+<p>Language&nbsp;: <a href="/stanford-ufldl/archive/wiki/Softmax%E5%9B%9E%E5%BD%92" title="Softmax回归">中文</a>
 </p>
 </div>
 
@@ -324,7 +324,7 @@ Expensive parser function count: 0/100
 		<h5>Views</h5>
 		<div class="pBody">
 			<ul>
-				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/Softmax_Regression" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-nstab-main" class="selected"><a href="/stanford-ufldl/archive/wiki/Softmax_Regression" title="View the content page [c]" accesskey="c">Page</a></li>
 				 <li id="ca-talk" class="new"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
 				 <li id="ca-viewsource"><a href="" title="This page is protected.
 You can view its source [e]" accesskey="e">View source</a></li>
@@ -340,15 +340,15 @@ You can view its source [e]" accesskey="e">View source</a></li>
 		</div>
 	</div>
 	<div class="portlet" id="p-logo">
-		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+		<a style="background-image: url(/stanford-ufldl/archive/wiki/skins/common/images/dolphin-openclipart.png);" href="/stanford-ufldl/archive/wiki/Main_Page" title="Visit the main page"></a>
 	</div>
 	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
 	<div class="generated-sidebar portlet" id="p-ufldl_resources">
 		<h5>ufldl resources</h5>
 		<div class="pBody">
 			<ul>
-				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
-				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+				<li id="n-UFLDL-Tutorial"><a href="/stanford-ufldl/archive/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/stanford-ufldl/archive/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
 			</ul>
 		</div>
 	</div>
@@ -356,7 +356,7 @@ You can view its source [e]" accesskey="e">View source</a></li>
 		<h5>wiki</h5>
 		<div class="pBody">
 			<ul>
-				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-mainpage-description"><a href="/stanford-ufldl/archive/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
 				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
 				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
 				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
@@ -389,9 +389,9 @@ You can view its source [e]" accesskey="e">View source</a></li>
 <div id="footer">
 	<ul id="f-list">
 		<li id="lastmod"> This page was last modified on 7 April 2013, at 13:24.</li>
-		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
-		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
-		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+		<li id="privacy"><a href="/stanford-ufldl/archive/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/stanford-ufldl/archive/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/stanford-ufldl/archive/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
 	</ul>
 </div>
 </div>

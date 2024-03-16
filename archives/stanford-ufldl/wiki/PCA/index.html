@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PCA - Ufldl</title>
-<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
-<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+<link rel="stylesheet" href="/stanford-ufldl/archive/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/stanford-ufldl/archive/wiki/skins/monobook/main.css" media="screen"/>
 
 </head>
 
@@ -41,46 +41,46 @@ algorithms.
 </p><p>Suppose you are training your algorithm on images.  Then the input will be
 somewhat redundant, because the values of adjacent pixels in an image are
 highly correlated.  Concretely, suppose we are training on 16x16 grayscale
-image patches.  Then <img class="tex" alt="\textstyle x \in \Re^{256}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/e/c/3ec732c534e730334fbe728ae49c8fce.png"/> are 256 dimensional vectors, with one
-feature <img class="tex" alt="\textstyle x_j" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/d/f/bdf5b20642553027712d5b5240b31cf3.png"/> corresponding to the intensity of each pixel.  Because of the
+image patches.  Then <img class="tex" alt="\textstyle x \in \Re^{256}" src="/stanford-ufldl/archive/wiki/images/math/3/e/c/3ec732c534e730334fbe728ae49c8fce.png"/> are 256 dimensional vectors, with one
+feature <img class="tex" alt="\textstyle x_j" src="/stanford-ufldl/archive/wiki/images/math/b/d/f/bdf5b20642553027712d5b5240b31cf3.png"/> corresponding to the intensity of each pixel.  Because of the
 correlation between adjacent pixels, PCA will allow us to approximate the input with
 a much lower dimensional one, while incurring very little error.
 </p>
 <h2> <span class="mw-headline" id="Example_and_Mathematical_Background"> Example and Mathematical Background </span></h2>
 <p>For our running example, we will use a dataset 
-<img class="tex" alt="\textstyle \{x^{(1)}, x^{(2)}, \ldots, x^{(m)}\}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/b/f/bbfa674fd83f37c2c66867d7e0cc264a.png"/> with 
-<img class="tex" alt="\textstyle n=2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/1/9/b1993eef97e184af6b11db01e694445f.png"/> dimensional inputs, so that 
-<img class="tex" alt="\textstyle x^{(i)} \in \Re^2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/b/a/1babb19c8b06f9a7bd624fa60f29d5fb.png"/>.
+<img class="tex" alt="\textstyle \{x^{(1)}, x^{(2)}, \ldots, x^{(m)}\}" src="/stanford-ufldl/archive/wiki/images/math/b/b/f/bbfa674fd83f37c2c66867d7e0cc264a.png"/> with 
+<img class="tex" alt="\textstyle n=2" src="/stanford-ufldl/archive/wiki/images/math/b/1/9/b1993eef97e184af6b11db01e694445f.png"/> dimensional inputs, so that 
+<img class="tex" alt="\textstyle x^{(i)} \in \Re^2" src="/stanford-ufldl/archive/wiki/images/math/1/b/a/1babb19c8b06f9a7bd624fa60f29d5fb.png"/>.
 Suppose we want to reduce the data 
 from 2 dimensions to 1.  (In practice, we might want to reduce data
 from 256 to 50 dimensions, say; but using lower dimensional data in our example
 allows us to visualize the algorithms better.)  Here is our dataset:
-</p><p><a href="" class="image"><img alt="PCA-rawdata.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/b/ba/PCA-rawdata.png/600px-PCA-rawdata.png" width="600" height="450"/></a>
-</p><p>This data has already been pre-processed so that each of the features <img class="tex" alt="\textstyle x_1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/a/7/fa7eebd32aa8c9cdae2b2aacbc324331.png"/> and <img class="tex" alt="\textstyle x_2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/6/8/76879b7da23d4991dfcb03323403c152.png"/>
+</p><p><a href="" class="image"><img alt="PCA-rawdata.png" src="/stanford-ufldl/archive/wiki/images/thumb/b/ba/PCA-rawdata.png/600px-PCA-rawdata.png" width="600" height="450"/></a>
+</p><p>This data has already been pre-processed so that each of the features <img class="tex" alt="\textstyle x_1" src="/stanford-ufldl/archive/wiki/images/math/f/a/7/fa7eebd32aa8c9cdae2b2aacbc324331.png"/> and <img class="tex" alt="\textstyle x_2" src="/stanford-ufldl/archive/wiki/images/math/7/6/8/76879b7da23d4991dfcb03323403c152.png"/>
 have about the same mean (zero) and variance.  
 </p><p>For the purpose of illustration, we have also colored each of the points one of
-three colors, depending on their <img class="tex" alt="\textstyle x_1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/a/7/fa7eebd32aa8c9cdae2b2aacbc324331.png"/> value; these colors are not used by the
+three colors, depending on their <img class="tex" alt="\textstyle x_1" src="/stanford-ufldl/archive/wiki/images/math/f/a/7/fa7eebd32aa8c9cdae2b2aacbc324331.png"/> value; these colors are not used by the
 algorithm, and are for illustration only.
 </p><p>PCA will find a lower-dimensional subspace onto which to project our data.  
-From visually examining the data, it appears that <img class="tex" alt="\textstyle u_1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/f/c/3fc01c8dc5d4c8c57cd758ec3a76283f.png"/> is the principal direction of 
-variation of the data, and <img class="tex" alt="\textstyle u_2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/d/9/ed99a7fbd444e14555ad4f8eac78b94b.png"/> the secondary direction of variation:
-</p><p><a href="" class="image"><img alt="PCA-u1.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/b/b4/PCA-u1.png/600px-PCA-u1.png" width="600" height="450"/></a>
-</p><p>I.e., the data varies much more in the direction <img class="tex" alt="\textstyle u_1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/f/c/3fc01c8dc5d4c8c57cd758ec3a76283f.png"/> than <img class="tex" alt="\textstyle u_2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/d/9/ed99a7fbd444e14555ad4f8eac78b94b.png"/>. 
-To more formally find the directions <img class="tex" alt="\textstyle u_1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/f/c/3fc01c8dc5d4c8c57cd758ec3a76283f.png"/> and <img class="tex" alt="\textstyle u_2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/d/9/ed99a7fbd444e14555ad4f8eac78b94b.png"/>, we first compute the matrix <img class="tex" alt="\textstyle \Sigma" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/6/9/669ec82a71dede49eb73e539bc3423b6.png"/>
+From visually examining the data, it appears that <img class="tex" alt="\textstyle u_1" src="/stanford-ufldl/archive/wiki/images/math/3/f/c/3fc01c8dc5d4c8c57cd758ec3a76283f.png"/> is the principal direction of 
+variation of the data, and <img class="tex" alt="\textstyle u_2" src="/stanford-ufldl/archive/wiki/images/math/e/d/9/ed99a7fbd444e14555ad4f8eac78b94b.png"/> the secondary direction of variation:
+</p><p><a href="" class="image"><img alt="PCA-u1.png" src="/stanford-ufldl/archive/wiki/images/thumb/b/b4/PCA-u1.png/600px-PCA-u1.png" width="600" height="450"/></a>
+</p><p>I.e., the data varies much more in the direction <img class="tex" alt="\textstyle u_1" src="/stanford-ufldl/archive/wiki/images/math/3/f/c/3fc01c8dc5d4c8c57cd758ec3a76283f.png"/> than <img class="tex" alt="\textstyle u_2" src="/stanford-ufldl/archive/wiki/images/math/e/d/9/ed99a7fbd444e14555ad4f8eac78b94b.png"/>. 
+To more formally find the directions <img class="tex" alt="\textstyle u_1" src="/stanford-ufldl/archive/wiki/images/math/3/f/c/3fc01c8dc5d4c8c57cd758ec3a76283f.png"/> and <img class="tex" alt="\textstyle u_2" src="/stanford-ufldl/archive/wiki/images/math/e/d/9/ed99a7fbd444e14555ad4f8eac78b94b.png"/>, we first compute the matrix <img class="tex" alt="\textstyle \Sigma" src="/stanford-ufldl/archive/wiki/images/math/6/6/9/669ec82a71dede49eb73e539bc3423b6.png"/>
 as follows:
 </p>
 <dl><dd><img class="tex" alt="\begin{align}
 \Sigma = \frac{1}{m} \sum_{i=1}^m (x^{(i)})(x^{(i)})^T. 
-\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/a/9/da9b50ec05dbe4ae513e4f52093b8342.png"/>
+\end{align}" src="/stanford-ufldl/archive/wiki/images/math/d/a/9/da9b50ec05dbe4ae513e4f52093b8342.png"/>
 </dd></dl>
-<p>If <img class="tex" alt="\textstyle x" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/> has zero mean, then <img class="tex" alt="\textstyle \Sigma" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/6/9/669ec82a71dede49eb73e539bc3423b6.png"/> is exactly the covariance matrix of <img class="tex" alt="\textstyle x" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/>.  (The symbol "<img class="tex" alt="\textstyle \Sigma" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/6/9/669ec82a71dede49eb73e539bc3423b6.png"/>", pronounced "Sigma", is the standard notation for denoting the covariance matrix.  Unfortunately it looks just like the summation symbol, as in <img class="tex" alt="\sum_{i=1}^n i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/3/b/73b577d2b026ab8f8fb733953266427e.png"/>; but these are two different things.) 
-</p><p>It can then be shown that <img class="tex" alt="\textstyle u_1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/f/c/3fc01c8dc5d4c8c57cd758ec3a76283f.png"/>---the principal direction of variation of the data---is 
-the top (principal) eigenvector of <img class="tex" alt="\textstyle \Sigma" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/6/9/669ec82a71dede49eb73e539bc3423b6.png"/>, and <img class="tex" alt="\textstyle u_2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/d/9/ed99a7fbd444e14555ad4f8eac78b94b.png"/> is
+<p>If <img class="tex" alt="\textstyle x" src="/stanford-ufldl/archive/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/> has zero mean, then <img class="tex" alt="\textstyle \Sigma" src="/stanford-ufldl/archive/wiki/images/math/6/6/9/669ec82a71dede49eb73e539bc3423b6.png"/> is exactly the covariance matrix of <img class="tex" alt="\textstyle x" src="/stanford-ufldl/archive/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/>.  (The symbol "<img class="tex" alt="\textstyle \Sigma" src="/stanford-ufldl/archive/wiki/images/math/6/6/9/669ec82a71dede49eb73e539bc3423b6.png"/>", pronounced "Sigma", is the standard notation for denoting the covariance matrix.  Unfortunately it looks just like the summation symbol, as in <img class="tex" alt="\sum_{i=1}^n i" src="/stanford-ufldl/archive/wiki/images/math/7/3/b/73b577d2b026ab8f8fb733953266427e.png"/>; but these are two different things.) 
+</p><p>It can then be shown that <img class="tex" alt="\textstyle u_1" src="/stanford-ufldl/archive/wiki/images/math/3/f/c/3fc01c8dc5d4c8c57cd758ec3a76283f.png"/>---the principal direction of variation of the data---is 
+the top (principal) eigenvector of <img class="tex" alt="\textstyle \Sigma" src="/stanford-ufldl/archive/wiki/images/math/6/6/9/669ec82a71dede49eb73e539bc3423b6.png"/>, and <img class="tex" alt="\textstyle u_2" src="/stanford-ufldl/archive/wiki/images/math/e/d/9/ed99a7fbd444e14555ad4f8eac78b94b.png"/> is
 the second eigenvector.
 </p><p>Note: If you are interested in seeing a more formal mathematical derivation/justification of this result, see the CS229 (Machine Learning) lecture notes on PCA (link at bottom of this page).  You won't need to do so to follow along this course, however.  
 </p><p>You can use standard numerical linear algebra software to find these eigenvectors (see Implementation Notes).
-Concretely, let us compute the eigenvectors of <img class="tex" alt="\textstyle \Sigma" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/6/9/669ec82a71dede49eb73e539bc3423b6.png"/>, and stack
-the eigenvectors in columns to form the matrix <img class="tex" alt="\textstyle U" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/a/5/6a55fb16b0464ccd6652a7f2a583217f.png"/>:
+Concretely, let us compute the eigenvectors of <img class="tex" alt="\textstyle \Sigma" src="/stanford-ufldl/archive/wiki/images/math/6/6/9/669ec82a71dede49eb73e539bc3423b6.png"/>, and stack
+the eigenvectors in columns to form the matrix <img class="tex" alt="\textstyle U" src="/stanford-ufldl/archive/wiki/images/math/6/a/5/6a55fb16b0464ccd6652a7f2a583217f.png"/>:
 </p>
 <dl><dd><img class="tex" alt="\begin{align}
 U = 
@@ -89,69 +89,69 @@ U =
 u_1 &amp; u_2 &amp; \cdots &amp; u_n  \\
 | &amp; | &amp; &amp; | 
 \end{bmatrix} 		
-\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/9/0/6906da1c5ac5f7f94a3b337447e69360.png"/>
+\end{align}" src="/stanford-ufldl/archive/wiki/images/math/6/9/0/6906da1c5ac5f7f94a3b337447e69360.png"/>
 </dd></dl>
-<p>Here, <img class="tex" alt="\textstyle u_1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/f/c/3fc01c8dc5d4c8c57cd758ec3a76283f.png"/> is the principal eigenvector (corresponding to the largest eigenvalue),
-<img class="tex" alt="\textstyle u_2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/d/9/ed99a7fbd444e14555ad4f8eac78b94b.png"/> is the second eigenvector, and so on. 
-Also, let <img class="tex" alt="\textstyle \lambda_1, \lambda_2, \ldots, \lambda_n" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/2/b/d2b02582947d98e3be81be3d1e684f28.png"/> be the corresponding eigenvalues. 
-</p><p>The vectors <img class="tex" alt="\textstyle u_1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/f/c/3fc01c8dc5d4c8c57cd758ec3a76283f.png"/> and <img class="tex" alt="\textstyle u_2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/d/9/ed99a7fbd444e14555ad4f8eac78b94b.png"/> in our example form a new basis in which we 
-can represent the data.  Concretely, let <img class="tex" alt="\textstyle x \in \Re^2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/2/6/b260df225bb49f3ff776b17a50cd20d3.png"/> be some training example.  Then <img class="tex" alt="\textstyle u_1^Tx" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/c/0/7c0e7fb10fb6e75bad211b2f2070c24c.png"/>
-is the length (magnitude) of the projection of <img class="tex" alt="\textstyle x" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/> onto the vector <img class="tex" alt="\textstyle u_1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/f/c/3fc01c8dc5d4c8c57cd758ec3a76283f.png"/>.  
-</p><p>Similarly, <img class="tex" alt="\textstyle u_2^Tx" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/8/9/389b689de5736f95b05c3be9c373b95a.png"/> is the magnitude of <img class="tex" alt="\textstyle x" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/> projected onto the vector <img class="tex" alt="\textstyle u_2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/d/9/ed99a7fbd444e14555ad4f8eac78b94b.png"/>.
+<p>Here, <img class="tex" alt="\textstyle u_1" src="/stanford-ufldl/archive/wiki/images/math/3/f/c/3fc01c8dc5d4c8c57cd758ec3a76283f.png"/> is the principal eigenvector (corresponding to the largest eigenvalue),
+<img class="tex" alt="\textstyle u_2" src="/stanford-ufldl/archive/wiki/images/math/e/d/9/ed99a7fbd444e14555ad4f8eac78b94b.png"/> is the second eigenvector, and so on. 
+Also, let <img class="tex" alt="\textstyle \lambda_1, \lambda_2, \ldots, \lambda_n" src="/stanford-ufldl/archive/wiki/images/math/d/2/b/d2b02582947d98e3be81be3d1e684f28.png"/> be the corresponding eigenvalues. 
+</p><p>The vectors <img class="tex" alt="\textstyle u_1" src="/stanford-ufldl/archive/wiki/images/math/3/f/c/3fc01c8dc5d4c8c57cd758ec3a76283f.png"/> and <img class="tex" alt="\textstyle u_2" src="/stanford-ufldl/archive/wiki/images/math/e/d/9/ed99a7fbd444e14555ad4f8eac78b94b.png"/> in our example form a new basis in which we 
+can represent the data.  Concretely, let <img class="tex" alt="\textstyle x \in \Re^2" src="/stanford-ufldl/archive/wiki/images/math/b/2/6/b260df225bb49f3ff776b17a50cd20d3.png"/> be some training example.  Then <img class="tex" alt="\textstyle u_1^Tx" src="/stanford-ufldl/archive/wiki/images/math/7/c/0/7c0e7fb10fb6e75bad211b2f2070c24c.png"/>
+is the length (magnitude) of the projection of <img class="tex" alt="\textstyle x" src="/stanford-ufldl/archive/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/> onto the vector <img class="tex" alt="\textstyle u_1" src="/stanford-ufldl/archive/wiki/images/math/3/f/c/3fc01c8dc5d4c8c57cd758ec3a76283f.png"/>.  
+</p><p>Similarly, <img class="tex" alt="\textstyle u_2^Tx" src="/stanford-ufldl/archive/wiki/images/math/3/8/9/389b689de5736f95b05c3be9c373b95a.png"/> is the magnitude of <img class="tex" alt="\textstyle x" src="/stanford-ufldl/archive/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/> projected onto the vector <img class="tex" alt="\textstyle u_2" src="/stanford-ufldl/archive/wiki/images/math/e/d/9/ed99a7fbd444e14555ad4f8eac78b94b.png"/>.
 </p>
 <h2> <span class="mw-headline" id="Rotating_the_Data"> Rotating the Data </span></h2>
-<p>Thus, we can represent <img class="tex" alt="\textstyle x" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/> in the <img class="tex" alt="\textstyle (u_1, u_2)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/3/2/0329a7ca7eca352beded9f24406d34fe.png"/>-basis by computing
+<p>Thus, we can represent <img class="tex" alt="\textstyle x" src="/stanford-ufldl/archive/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/> in the <img class="tex" alt="\textstyle (u_1, u_2)" src="/stanford-ufldl/archive/wiki/images/math/0/3/2/0329a7ca7eca352beded9f24406d34fe.png"/>-basis by computing
 </p>
 <dl><dd><img class="tex" alt="\begin{align}
 x_{\rm rot} = U^Tx = \begin{bmatrix} u_1^Tx \\ u_2^Tx \end{bmatrix} 
-\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/a/a/eaa1e40a68e966dd5a3d272dd6d091ed.png"/>
+\end{align}" src="/stanford-ufldl/archive/wiki/images/math/e/a/a/eaa1e40a68e966dd5a3d272dd6d091ed.png"/>
 </dd></dl>
 <p>(The subscript "rot" comes from the observation that this corresponds to
 a rotation (and possibly reflection) of the original data.)
 Lets take the entire training set, and compute 
-<img class="tex" alt="\textstyle x_{\rm rot}^{(i)} = U^Tx^{(i)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/d/0/cd047246fd68f6d52b2fd068e063c0ef.png"/> for every <img class="tex" alt="\textstyle i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/>.  Plotting this transformed data 
-<img class="tex" alt="\textstyle x_{\rm rot}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/7/0/170047e804738636731477291969d554.png"/>, we get: 
-</p><p><a href="" class="image"><img alt="PCA-rotated.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/1/12/PCA-rotated.png/600px-PCA-rotated.png" width="600" height="450"/></a>
-</p><p>This is the training set rotated into the <img class="tex" alt="\textstyle u_1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/f/c/3fc01c8dc5d4c8c57cd758ec3a76283f.png"/>,<img class="tex" alt="\textstyle u_2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/d/9/ed99a7fbd444e14555ad4f8eac78b94b.png"/> basis. In the general
-case, <img class="tex" alt="\textstyle U^Tx" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/0/a/e0aec5d033ea89dc9bd9c83bc2b4edec.png"/> will be the training set rotated into the basis 
-<img class="tex" alt="\textstyle u_1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/f/c/3fc01c8dc5d4c8c57cd758ec3a76283f.png"/>,<img class="tex" alt="\textstyle u_2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/d/9/ed99a7fbd444e14555ad4f8eac78b94b.png"/>, ...,<img class="tex" alt="\textstyle u_n" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/b/e/0be80bb4e50881840b92fb8331ef2bbd.png"/>. 
-</p><p>One of the properties of <img class="tex" alt="\textstyle U" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/a/5/6a55fb16b0464ccd6652a7f2a583217f.png"/> is that it is an "orthogonal" matrix, which means
-that it satisfies <img class="tex" alt="\textstyle U^TU = UU^T = I" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/8/2/a825fd85c23ffa9b851fb64c9c816ad6.png"/>. 
-So if you ever need to go from the rotated vectors <img class="tex" alt="\textstyle x_{\rm rot}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/7/0/170047e804738636731477291969d554.png"/> back to the 
-original data <img class="tex" alt="\textstyle x" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/>, you can compute 
+<img class="tex" alt="\textstyle x_{\rm rot}^{(i)} = U^Tx^{(i)}" src="/stanford-ufldl/archive/wiki/images/math/c/d/0/cd047246fd68f6d52b2fd068e063c0ef.png"/> for every <img class="tex" alt="\textstyle i" src="/stanford-ufldl/archive/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/>.  Plotting this transformed data 
+<img class="tex" alt="\textstyle x_{\rm rot}" src="/stanford-ufldl/archive/wiki/images/math/1/7/0/170047e804738636731477291969d554.png"/>, we get: 
+</p><p><a href="" class="image"><img alt="PCA-rotated.png" src="/stanford-ufldl/archive/wiki/images/thumb/1/12/PCA-rotated.png/600px-PCA-rotated.png" width="600" height="450"/></a>
+</p><p>This is the training set rotated into the <img class="tex" alt="\textstyle u_1" src="/stanford-ufldl/archive/wiki/images/math/3/f/c/3fc01c8dc5d4c8c57cd758ec3a76283f.png"/>,<img class="tex" alt="\textstyle u_2" src="/stanford-ufldl/archive/wiki/images/math/e/d/9/ed99a7fbd444e14555ad4f8eac78b94b.png"/> basis. In the general
+case, <img class="tex" alt="\textstyle U^Tx" src="/stanford-ufldl/archive/wiki/images/math/e/0/a/e0aec5d033ea89dc9bd9c83bc2b4edec.png"/> will be the training set rotated into the basis 
+<img class="tex" alt="\textstyle u_1" src="/stanford-ufldl/archive/wiki/images/math/3/f/c/3fc01c8dc5d4c8c57cd758ec3a76283f.png"/>,<img class="tex" alt="\textstyle u_2" src="/stanford-ufldl/archive/wiki/images/math/e/d/9/ed99a7fbd444e14555ad4f8eac78b94b.png"/>, ...,<img class="tex" alt="\textstyle u_n" src="/stanford-ufldl/archive/wiki/images/math/0/b/e/0be80bb4e50881840b92fb8331ef2bbd.png"/>. 
+</p><p>One of the properties of <img class="tex" alt="\textstyle U" src="/stanford-ufldl/archive/wiki/images/math/6/a/5/6a55fb16b0464ccd6652a7f2a583217f.png"/> is that it is an "orthogonal" matrix, which means
+that it satisfies <img class="tex" alt="\textstyle U^TU = UU^T = I" src="/stanford-ufldl/archive/wiki/images/math/a/8/2/a825fd85c23ffa9b851fb64c9c816ad6.png"/>. 
+So if you ever need to go from the rotated vectors <img class="tex" alt="\textstyle x_{\rm rot}" src="/stanford-ufldl/archive/wiki/images/math/1/7/0/170047e804738636731477291969d554.png"/> back to the 
+original data <img class="tex" alt="\textstyle x" src="/stanford-ufldl/archive/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/>, you can compute 
 </p>
 <dl><dd><img class="tex" alt="\begin{align}
 x = U x_{\rm rot}   ,
-\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/f/8/7f865e9a54f1151f48b8e6f433e50ea0.png"/>
+\end{align}" src="/stanford-ufldl/archive/wiki/images/math/7/f/8/7f865e9a54f1151f48b8e6f433e50ea0.png"/>
 </dd></dl>
-<p>because <img class="tex" alt="\textstyle U x_{\rm rot} =  UU^T x = x" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/5/f/a5fa6224542f5b2871447986260574d2.png"/>.
+<p>because <img class="tex" alt="\textstyle U x_{\rm rot} =  UU^T x = x" src="/stanford-ufldl/archive/wiki/images/math/a/5/f/a5fa6224542f5b2871447986260574d2.png"/>.
 </p>
 <h2> <span class="mw-headline" id="Reducing_the_Data_Dimension"> Reducing the Data Dimension </span></h2>
 <p>We see that the principal direction of variation of the data is the first
-dimension <img class="tex" alt="\textstyle x_{{\rm rot},1}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/0/6/0066d1e2efa2f0019a3dfd3469862934.png"/> of this rotated data.  Thus, if we want to
+dimension <img class="tex" alt="\textstyle x_{{\rm rot},1}" src="/stanford-ufldl/archive/wiki/images/math/0/0/6/0066d1e2efa2f0019a3dfd3469862934.png"/> of this rotated data.  Thus, if we want to
 reduce this data to one dimension, we can set 
 </p>
 <dl><dd><img class="tex" alt="\begin{align}
 \tilde{x}^{(i)} = x_{{\rm rot},1}^{(i)} = u_1^Tx^{(i)} \in \Re.
-\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/c/f/8cf51b2f3bf8c78ad1b03c27aa68f692.png"/>
+\end{align}" src="/stanford-ufldl/archive/wiki/images/math/8/c/f/8cf51b2f3bf8c78ad1b03c27aa68f692.png"/>
 </dd></dl>
-<p>More generally, if <img class="tex" alt="\textstyle x \in \Re^n" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/e/b/9ebd39996afb169318c1dd5fb1503b17.png"/> and we want to reduce it to 
-a <img class="tex" alt="\textstyle k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> dimensional representation <img class="tex" alt="\textstyle \tilde{x} \in \Re^k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/1/3/21337248295f42f7fe18d9a9b3da57b1.png"/> (where <img class="tex" alt="\textstyle k < n" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/7/b/87b6508de7e0487479389cff2b5fa91a.png"/>), we would
-take the first <img class="tex" alt="\textstyle k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> components of <img class="tex" alt="\textstyle x_{\rm rot}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/7/0/170047e804738636731477291969d554.png"/>, which correspond to
-the top <img class="tex" alt="\textstyle k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> directions of variation. 
-</p><p>Another way of explaining PCA is that <img class="tex" alt="\textstyle x_{\rm rot}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/7/0/170047e804738636731477291969d554.png"/> is an <img class="tex" alt="\textstyle n" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/c/5/0c59de0fa75c1baa1c024aabfa43b2e3.png"/> dimensional
+<p>More generally, if <img class="tex" alt="\textstyle x \in \Re^n" src="/stanford-ufldl/archive/wiki/images/math/9/e/b/9ebd39996afb169318c1dd5fb1503b17.png"/> and we want to reduce it to 
+a <img class="tex" alt="\textstyle k" src="/stanford-ufldl/archive/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> dimensional representation <img class="tex" alt="\textstyle \tilde{x} \in \Re^k" src="/stanford-ufldl/archive/wiki/images/math/2/1/3/21337248295f42f7fe18d9a9b3da57b1.png"/> (where <img class="tex" alt="\textstyle k < n" src="/stanford-ufldl/archive/wiki/images/math/8/7/b/87b6508de7e0487479389cff2b5fa91a.png"/>), we would
+take the first <img class="tex" alt="\textstyle k" src="/stanford-ufldl/archive/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> components of <img class="tex" alt="\textstyle x_{\rm rot}" src="/stanford-ufldl/archive/wiki/images/math/1/7/0/170047e804738636731477291969d554.png"/>, which correspond to
+the top <img class="tex" alt="\textstyle k" src="/stanford-ufldl/archive/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> directions of variation. 
+</p><p>Another way of explaining PCA is that <img class="tex" alt="\textstyle x_{\rm rot}" src="/stanford-ufldl/archive/wiki/images/math/1/7/0/170047e804738636731477291969d554.png"/> is an <img class="tex" alt="\textstyle n" src="/stanford-ufldl/archive/wiki/images/math/0/c/5/0c59de0fa75c1baa1c024aabfa43b2e3.png"/> dimensional
 vector, where the first few components are likely to 
-be large (e.g., in our example, we saw that <img class="tex" alt="\textstyle x_{{\rm rot},1}^{(i)} = u_1^Tx^{(i)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/0/e/80ebba0459d97a31a03e9de6b0957c31.png"/> takes
-reasonably large values for most examples <img class="tex" alt="\textstyle i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/>), and
+be large (e.g., in our example, we saw that <img class="tex" alt="\textstyle x_{{\rm rot},1}^{(i)} = u_1^Tx^{(i)}" src="/stanford-ufldl/archive/wiki/images/math/8/0/e/80ebba0459d97a31a03e9de6b0957c31.png"/> takes
+reasonably large values for most examples <img class="tex" alt="\textstyle i" src="/stanford-ufldl/archive/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/>), and
 the later components are likely to be small (e.g., in our example, 
-<img class="tex" alt="\textstyle x_{{\rm rot},2}^{(i)} = u_2^Tx^{(i)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/4/6/8/468a726aaaea7f4aabbeb8a2e1966aae.png"/> was more likely to be small).  What
+<img class="tex" alt="\textstyle x_{{\rm rot},2}^{(i)} = u_2^Tx^{(i)}" src="/stanford-ufldl/archive/wiki/images/math/4/6/8/468a726aaaea7f4aabbeb8a2e1966aae.png"/> was more likely to be small).  What
 PCA does it it 
-drops the the later (smaller) components of <img class="tex" alt="\textstyle x_{\rm rot}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/7/0/170047e804738636731477291969d554.png"/>, and
+drops the the later (smaller) components of <img class="tex" alt="\textstyle x_{\rm rot}" src="/stanford-ufldl/archive/wiki/images/math/1/7/0/170047e804738636731477291969d554.png"/>, and
 just approximates them with 0's.  Concretely, our definition of 
-<img class="tex" alt="\textstyle \tilde{x}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/a/6/1a62e33dcf57261829692126a4dcd02d.png"/> can also be arrived at by using an approximation to
-<img class="tex" alt="\textstyle x_{{\rm rot}}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/7/4/774d8fa9b41f58dfc57cebb419e0de60.png"/> where 
+<img class="tex" alt="\textstyle \tilde{x}" src="/stanford-ufldl/archive/wiki/images/math/1/a/6/1a62e33dcf57261829692126a4dcd02d.png"/> can also be arrived at by using an approximation to
+<img class="tex" alt="\textstyle x_{{\rm rot}}" src="/stanford-ufldl/archive/wiki/images/math/7/7/4/774d8fa9b41f58dfc57cebb419e0de60.png"/> where 
 all but the first
-<img class="tex" alt="\textstyle k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> components are zeros.  In other words, we have: 
+<img class="tex" alt="\textstyle k" src="/stanford-ufldl/archive/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> components are zeros.  In other words, we have: 
 </p>
 <dl><dd><img class="tex" alt="\begin{align}
 \tilde{x} = 
@@ -173,103 +173,103 @@ x_{{\rm rot},k+1} \\
 x_{{\rm rot},n} 
 \end{bmatrix}
 = x_{\rm rot} 
-\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/e/8/5e8f3f68a933310015faa1eb439749f8.png"/>
+\end{align}" src="/stanford-ufldl/archive/wiki/images/math/5/e/8/5e8f3f68a933310015faa1eb439749f8.png"/>
 </dd></dl>
-<p>In our example, this gives us the following plot of <img class="tex" alt="\textstyle \tilde{x}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/a/6/1a62e33dcf57261829692126a4dcd02d.png"/> (using <img class="tex" alt="\textstyle n=2, k=1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/4/b/94b3c8bb8f57addfc319217446a14d56.png"/>):
-</p><p><a href="" class="image"><img alt="PCA-xtilde.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/2/27/PCA-xtilde.png/600px-PCA-xtilde.png" width="600" height="450"/></a>
-</p><p>However, since the final <img class="tex" alt="\textstyle n-k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/4/2/742be0073915ce28ed208c2d5c83fc56.png"/> components of <img class="tex" alt="\textstyle \tilde{x}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/a/6/1a62e33dcf57261829692126a4dcd02d.png"/> as defined above would
+<p>In our example, this gives us the following plot of <img class="tex" alt="\textstyle \tilde{x}" src="/stanford-ufldl/archive/wiki/images/math/1/a/6/1a62e33dcf57261829692126a4dcd02d.png"/> (using <img class="tex" alt="\textstyle n=2, k=1" src="/stanford-ufldl/archive/wiki/images/math/9/4/b/94b3c8bb8f57addfc319217446a14d56.png"/>):
+</p><p><a href="" class="image"><img alt="PCA-xtilde.png" src="/stanford-ufldl/archive/wiki/images/thumb/2/27/PCA-xtilde.png/600px-PCA-xtilde.png" width="600" height="450"/></a>
+</p><p>However, since the final <img class="tex" alt="\textstyle n-k" src="/stanford-ufldl/archive/wiki/images/math/7/4/2/742be0073915ce28ed208c2d5c83fc56.png"/> components of <img class="tex" alt="\textstyle \tilde{x}" src="/stanford-ufldl/archive/wiki/images/math/1/a/6/1a62e33dcf57261829692126a4dcd02d.png"/> as defined above would
 always be zero, there is no need to keep these zeros around, and so we
-define <img class="tex" alt="\textstyle \tilde{x}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/a/6/1a62e33dcf57261829692126a4dcd02d.png"/> as a <img class="tex" alt="\textstyle k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/>-dimensional vector with just the first <img class="tex" alt="\textstyle k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> (non-zero) components. 
-</p><p>This also explains why we wanted to express our data in the <img class="tex" alt="\textstyle u_1, u_2, \ldots, u_n" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/5/2/d52832ed87962d3ece3043ddae3150a7.png"/> basis:
-Deciding which components to keep becomes just keeping the top <img class="tex" alt="\textstyle k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> components.  When we
-do this, we also say that we are "retaining the top <img class="tex" alt="\textstyle k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> PCA (or principal) components."
+define <img class="tex" alt="\textstyle \tilde{x}" src="/stanford-ufldl/archive/wiki/images/math/1/a/6/1a62e33dcf57261829692126a4dcd02d.png"/> as a <img class="tex" alt="\textstyle k" src="/stanford-ufldl/archive/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/>-dimensional vector with just the first <img class="tex" alt="\textstyle k" src="/stanford-ufldl/archive/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> (non-zero) components. 
+</p><p>This also explains why we wanted to express our data in the <img class="tex" alt="\textstyle u_1, u_2, \ldots, u_n" src="/stanford-ufldl/archive/wiki/images/math/d/5/2/d52832ed87962d3ece3043ddae3150a7.png"/> basis:
+Deciding which components to keep becomes just keeping the top <img class="tex" alt="\textstyle k" src="/stanford-ufldl/archive/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> components.  When we
+do this, we also say that we are "retaining the top <img class="tex" alt="\textstyle k" src="/stanford-ufldl/archive/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> PCA (or principal) components."
 </p>
 <h2> <span class="mw-headline" id="Recovering_an_Approximation_of_the_Data"> Recovering an Approximation of the Data </span></h2>
-<p>Now, <img class="tex" alt="\textstyle \tilde{x} \in \Re^k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/1/3/21337248295f42f7fe18d9a9b3da57b1.png"/> is a lower-dimensional, "compressed" representation
-of the original <img class="tex" alt="\textstyle x \in \Re^n" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/e/b/9ebd39996afb169318c1dd5fb1503b17.png"/>.  Given <img class="tex" alt="\textstyle \tilde{x}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/a/6/1a62e33dcf57261829692126a4dcd02d.png"/>, how can we recover an approximation <img class="tex" alt="\textstyle \hat{x}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/9/0/29035749c12270bcc8de7e36bc459ece.png"/> to 
-the original value of <img class="tex" alt="\textstyle x" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/>?  From an <a href="#Rotating_the_Data">earlier section</a>, we know that <img class="tex" alt="\textstyle x = U x_{\rm rot}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/a/a/faada910e82b90d1c221943616cc85ab.png"/>.  Further, 
-we can think of <img class="tex" alt="\textstyle \tilde{x}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/a/6/1a62e33dcf57261829692126a4dcd02d.png"/> as an approximation to <img class="tex" alt="\textstyle x_{\rm rot}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/7/0/170047e804738636731477291969d554.png"/>, where we have
-set the last <img class="tex" alt="\textstyle n-k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/4/2/742be0073915ce28ed208c2d5c83fc56.png"/> components to zeros.  Thus, given <img class="tex" alt="\textstyle \tilde{x} \in \Re^k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/1/3/21337248295f42f7fe18d9a9b3da57b1.png"/>, we can 
-pad it out with <img class="tex" alt="\textstyle n-k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/4/2/742be0073915ce28ed208c2d5c83fc56.png"/> zeros to get our approximation to <img class="tex" alt="\textstyle x_{\rm rot} \in \Re^n" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/c/5/fc52a57fe97de0666dc2857bde2df153.png"/>.  Finally, we pre-multiply
-by <img class="tex" alt="\textstyle U" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/a/5/6a55fb16b0464ccd6652a7f2a583217f.png"/> to get our approximation to <img class="tex" alt="\textstyle x" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/>.  Concretely, we get 
+<p>Now, <img class="tex" alt="\textstyle \tilde{x} \in \Re^k" src="/stanford-ufldl/archive/wiki/images/math/2/1/3/21337248295f42f7fe18d9a9b3da57b1.png"/> is a lower-dimensional, "compressed" representation
+of the original <img class="tex" alt="\textstyle x \in \Re^n" src="/stanford-ufldl/archive/wiki/images/math/9/e/b/9ebd39996afb169318c1dd5fb1503b17.png"/>.  Given <img class="tex" alt="\textstyle \tilde{x}" src="/stanford-ufldl/archive/wiki/images/math/1/a/6/1a62e33dcf57261829692126a4dcd02d.png"/>, how can we recover an approximation <img class="tex" alt="\textstyle \hat{x}" src="/stanford-ufldl/archive/wiki/images/math/2/9/0/29035749c12270bcc8de7e36bc459ece.png"/> to 
+the original value of <img class="tex" alt="\textstyle x" src="/stanford-ufldl/archive/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/>?  From an <a href="#Rotating_the_Data">earlier section</a>, we know that <img class="tex" alt="\textstyle x = U x_{\rm rot}" src="/stanford-ufldl/archive/wiki/images/math/f/a/a/faada910e82b90d1c221943616cc85ab.png"/>.  Further, 
+we can think of <img class="tex" alt="\textstyle \tilde{x}" src="/stanford-ufldl/archive/wiki/images/math/1/a/6/1a62e33dcf57261829692126a4dcd02d.png"/> as an approximation to <img class="tex" alt="\textstyle x_{\rm rot}" src="/stanford-ufldl/archive/wiki/images/math/1/7/0/170047e804738636731477291969d554.png"/>, where we have
+set the last <img class="tex" alt="\textstyle n-k" src="/stanford-ufldl/archive/wiki/images/math/7/4/2/742be0073915ce28ed208c2d5c83fc56.png"/> components to zeros.  Thus, given <img class="tex" alt="\textstyle \tilde{x} \in \Re^k" src="/stanford-ufldl/archive/wiki/images/math/2/1/3/21337248295f42f7fe18d9a9b3da57b1.png"/>, we can 
+pad it out with <img class="tex" alt="\textstyle n-k" src="/stanford-ufldl/archive/wiki/images/math/7/4/2/742be0073915ce28ed208c2d5c83fc56.png"/> zeros to get our approximation to <img class="tex" alt="\textstyle x_{\rm rot} \in \Re^n" src="/stanford-ufldl/archive/wiki/images/math/f/c/5/fc52a57fe97de0666dc2857bde2df153.png"/>.  Finally, we pre-multiply
+by <img class="tex" alt="\textstyle U" src="/stanford-ufldl/archive/wiki/images/math/6/a/5/6a55fb16b0464ccd6652a7f2a583217f.png"/> to get our approximation to <img class="tex" alt="\textstyle x" src="/stanford-ufldl/archive/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/>.  Concretely, we get 
 </p>
 <dl><dd><img class="tex" alt="\begin{align}
 \hat{x}  = U \begin{bmatrix} \tilde{x}_1 \\ \vdots \\ \tilde{x}_k \\ 0 \\ \vdots \\ 0 \end{bmatrix}  
 = \sum_{i=1}^k u_i \tilde{x}_i.
-\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/a/0/0a07b56293a0b63ef434551e9ccda9ea.png"/>
+\end{align}" src="/stanford-ufldl/archive/wiki/images/math/0/a/0/0a07b56293a0b63ef434551e9ccda9ea.png"/>
 </dd></dl>
-<p>The final equality above comes from the definition of <img class="tex" alt="\textstyle U" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/a/5/6a55fb16b0464ccd6652a7f2a583217f.png"/> <a href="#Example_and_Mathematical_Background">given earlier</a>.
-(In a practical implementation, we wouldn't actually zero pad <img class="tex" alt="\textstyle \tilde{x}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/a/6/1a62e33dcf57261829692126a4dcd02d.png"/> and then multiply
-by <img class="tex" alt="\textstyle U" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/a/5/6a55fb16b0464ccd6652a7f2a583217f.png"/>, since that would mean multiplying a lot of things by zeros; instead, we'd just 
-multiply <img class="tex" alt="\textstyle \tilde{x} \in \Re^k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/1/3/21337248295f42f7fe18d9a9b3da57b1.png"/> with the first <img class="tex" alt="\textstyle k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> columns of <img class="tex" alt="\textstyle U" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/a/5/6a55fb16b0464ccd6652a7f2a583217f.png"/> as in the final expression above.)
-Applying this to our dataset, we get the following plot for <img class="tex" alt="\textstyle \hat{x}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/9/0/29035749c12270bcc8de7e36bc459ece.png"/>:
-</p><p><a href="" class="image"><img alt="PCA-xhat.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/5/52/PCA-xhat.png/600px-PCA-xhat.png" width="600" height="450"/></a>
+<p>The final equality above comes from the definition of <img class="tex" alt="\textstyle U" src="/stanford-ufldl/archive/wiki/images/math/6/a/5/6a55fb16b0464ccd6652a7f2a583217f.png"/> <a href="#Example_and_Mathematical_Background">given earlier</a>.
+(In a practical implementation, we wouldn't actually zero pad <img class="tex" alt="\textstyle \tilde{x}" src="/stanford-ufldl/archive/wiki/images/math/1/a/6/1a62e33dcf57261829692126a4dcd02d.png"/> and then multiply
+by <img class="tex" alt="\textstyle U" src="/stanford-ufldl/archive/wiki/images/math/6/a/5/6a55fb16b0464ccd6652a7f2a583217f.png"/>, since that would mean multiplying a lot of things by zeros; instead, we'd just 
+multiply <img class="tex" alt="\textstyle \tilde{x} \in \Re^k" src="/stanford-ufldl/archive/wiki/images/math/2/1/3/21337248295f42f7fe18d9a9b3da57b1.png"/> with the first <img class="tex" alt="\textstyle k" src="/stanford-ufldl/archive/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> columns of <img class="tex" alt="\textstyle U" src="/stanford-ufldl/archive/wiki/images/math/6/a/5/6a55fb16b0464ccd6652a7f2a583217f.png"/> as in the final expression above.)
+Applying this to our dataset, we get the following plot for <img class="tex" alt="\textstyle \hat{x}" src="/stanford-ufldl/archive/wiki/images/math/2/9/0/29035749c12270bcc8de7e36bc459ece.png"/>:
+</p><p><a href="" class="image"><img alt="PCA-xhat.png" src="/stanford-ufldl/archive/wiki/images/thumb/5/52/PCA-xhat.png/600px-PCA-xhat.png" width="600" height="450"/></a>
 </p><p>We are thus using a 1 dimensional approximation to the original dataset. 
 </p><p>If you are training an autoencoder or other unsupervised feature learning algorithm,
-the running time of your algorithm will depend on the dimension of the input.  If you feed <img class="tex" alt="\textstyle \tilde{x} \in \Re^k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/1/3/21337248295f42f7fe18d9a9b3da57b1.png"/>
-into your learning algorithm instead of <img class="tex" alt="\textstyle x" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/>, then you'll be training on a lower-dimensional
+the running time of your algorithm will depend on the dimension of the input.  If you feed <img class="tex" alt="\textstyle \tilde{x} \in \Re^k" src="/stanford-ufldl/archive/wiki/images/math/2/1/3/21337248295f42f7fe18d9a9b3da57b1.png"/>
+into your learning algorithm instead of <img class="tex" alt="\textstyle x" src="/stanford-ufldl/archive/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/>, then you'll be training on a lower-dimensional
 input, and thus your algorithm might run significantly faster.  For many datasets,
-the lower dimensional <img class="tex" alt="\textstyle \tilde{x}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/a/6/1a62e33dcf57261829692126a4dcd02d.png"/> representation can be an extremely good approximation 
+the lower dimensional <img class="tex" alt="\textstyle \tilde{x}" src="/stanford-ufldl/archive/wiki/images/math/1/a/6/1a62e33dcf57261829692126a4dcd02d.png"/> representation can be an extremely good approximation 
 to the original, and using PCA this way can significantly speed up your algorithm while
 introducing very little approximation error.
 </p>
 <h2> <span class="mw-headline" id="Number_of_components_to_retain"> Number of components to retain </span></h2>
-<p>How do we set <img class="tex" alt="\textstyle k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/>; i.e., how many PCA components should we retain?  In our
+<p>How do we set <img class="tex" alt="\textstyle k" src="/stanford-ufldl/archive/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/>; i.e., how many PCA components should we retain?  In our
 simple 2 dimensional example, it seemed natural to retain 1 out of the 2
-components, but for higher dimensional data, this decision is less trivial.  If <img class="tex" alt="\textstyle k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> is
-too large, then we won't be compressing the data much; in the limit of <img class="tex" alt="\textstyle k=n" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/3/6/e36b85de9c58866d875f20cbf6fc5f5b.png"/>,
+components, but for higher dimensional data, this decision is less trivial.  If <img class="tex" alt="\textstyle k" src="/stanford-ufldl/archive/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> is
+too large, then we won't be compressing the data much; in the limit of <img class="tex" alt="\textstyle k=n" src="/stanford-ufldl/archive/wiki/images/math/e/3/6/e36b85de9c58866d875f20cbf6fc5f5b.png"/>,
 then we're just using the original data (but rotated into a different basis).
-Conversely, if <img class="tex" alt="\textstyle k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> is too small, then we might be using a very bad
+Conversely, if <img class="tex" alt="\textstyle k" src="/stanford-ufldl/archive/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> is too small, then we might be using a very bad
 approximation to the data. 
-</p><p>To decide how to set <img class="tex" alt="\textstyle k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/>, we will usually look at the <b>percentage of variance retained</b> 
-for different values of <img class="tex" alt="\textstyle k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/>.  Concretely, if <img class="tex" alt="\textstyle k=n" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/3/6/e36b85de9c58866d875f20cbf6fc5f5b.png"/>, then we have
+</p><p>To decide how to set <img class="tex" alt="\textstyle k" src="/stanford-ufldl/archive/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/>, we will usually look at the <b>percentage of variance retained</b> 
+for different values of <img class="tex" alt="\textstyle k" src="/stanford-ufldl/archive/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/>.  Concretely, if <img class="tex" alt="\textstyle k=n" src="/stanford-ufldl/archive/wiki/images/math/e/3/6/e36b85de9c58866d875f20cbf6fc5f5b.png"/>, then we have
 an exact approximation to the data, and we say that 100% of the variance is
 retained.  I.e., all of the variation of the original data is retained.  
-Conversely, if <img class="tex" alt="\textstyle k=0" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/a/2/2a27a4874f5739de5d2947d12ac81d4b.png"/>, then we are approximating all the data with the zero vector,
+Conversely, if <img class="tex" alt="\textstyle k=0" src="/stanford-ufldl/archive/wiki/images/math/2/a/2/2a27a4874f5739de5d2947d12ac81d4b.png"/>, then we are approximating all the data with the zero vector,
 and thus 0% of the variance is retained. 
-</p><p>More generally, let <img class="tex" alt="\textstyle \lambda_1, \lambda_2, \ldots, \lambda_n" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/2/b/d2b02582947d98e3be81be3d1e684f28.png"/> be the eigenvalues 
-of <img class="tex" alt="\textstyle \Sigma" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/6/9/669ec82a71dede49eb73e539bc3423b6.png"/> (sorted in decreasing order), so that <img class="tex" alt="\textstyle \lambda_j" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/8/5/c851ef66a35ee95db0b63a592963ca77.png"/> is the eigenvalue
-corresponding to the eigenvector <img class="tex" alt="\textstyle u_j" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/1/7/d175faaca44b996970abf70b700a94f1.png"/>.  Then if we retain <img class="tex" alt="\textstyle k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> principal components, 
+</p><p>More generally, let <img class="tex" alt="\textstyle \lambda_1, \lambda_2, \ldots, \lambda_n" src="/stanford-ufldl/archive/wiki/images/math/d/2/b/d2b02582947d98e3be81be3d1e684f28.png"/> be the eigenvalues 
+of <img class="tex" alt="\textstyle \Sigma" src="/stanford-ufldl/archive/wiki/images/math/6/6/9/669ec82a71dede49eb73e539bc3423b6.png"/> (sorted in decreasing order), so that <img class="tex" alt="\textstyle \lambda_j" src="/stanford-ufldl/archive/wiki/images/math/c/8/5/c851ef66a35ee95db0b63a592963ca77.png"/> is the eigenvalue
+corresponding to the eigenvector <img class="tex" alt="\textstyle u_j" src="/stanford-ufldl/archive/wiki/images/math/d/1/7/d175faaca44b996970abf70b700a94f1.png"/>.  Then if we retain <img class="tex" alt="\textstyle k" src="/stanford-ufldl/archive/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> principal components, 
 the percentage of variance retained is given by:
 </p>
 <dl><dd><img class="tex" alt="\begin{align}
 \frac{\sum_{j=1}^k \lambda_j}{\sum_{j=1}^n \lambda_j}.
-\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/0/b/60ba13aa4527ce9cc11772deaa1d5027.png"/>
+\end{align}" src="/stanford-ufldl/archive/wiki/images/math/6/0/b/60ba13aa4527ce9cc11772deaa1d5027.png"/>
 </dd></dl>
-<p>In our simple 2D example above, <img class="tex" alt="\textstyle \lambda_1 = 7.29" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/b/f/6bf8708608604abff35895bb0ecf17f3.png"/>, and <img class="tex" alt="\textstyle \lambda_2 = 0.69" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/7/9/5793e844fa46435301414cb62e5d7641.png"/>.  Thus,
-by keeping only <img class="tex" alt="\textstyle k=1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/7/7/97724a53ab7a652f75e945d2188850d9.png"/> principal components, we retained <img class="tex" alt="\textstyle 7.29/(7.29+0.69) = 0.913" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/5/9/859dd2ebffe06849e75ce9297f25d325.png"/>,
+<p>In our simple 2D example above, <img class="tex" alt="\textstyle \lambda_1 = 7.29" src="/stanford-ufldl/archive/wiki/images/math/6/b/f/6bf8708608604abff35895bb0ecf17f3.png"/>, and <img class="tex" alt="\textstyle \lambda_2 = 0.69" src="/stanford-ufldl/archive/wiki/images/math/5/7/9/5793e844fa46435301414cb62e5d7641.png"/>.  Thus,
+by keeping only <img class="tex" alt="\textstyle k=1" src="/stanford-ufldl/archive/wiki/images/math/9/7/7/97724a53ab7a652f75e945d2188850d9.png"/> principal components, we retained <img class="tex" alt="\textstyle 7.29/(7.29+0.69) = 0.913" src="/stanford-ufldl/archive/wiki/images/math/8/5/9/859dd2ebffe06849e75ce9297f25d325.png"/>,
 or 91.3% of the variance.
 </p><p>A more formal definition of percentage of variance retained is beyond the scope
 of these notes.  However, it is possible to show that <img class="tex" alt="\textstyle \lambda_j =
-\sum_{i=1}^m x_{{\rm rot},j}^2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/7/e/97ecfffd8596d26deed9542b64cd6712.png"/>.  Thus, if <img class="tex" alt="\textstyle \lambda_j \approx 0" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/7/1/6716d88c3c1a368824d188c8b9b6b589.png"/>, that shows that
-<img class="tex" alt="\textstyle x_{{\rm rot},j}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/8/4/e84f84acac7b07e18a42a8e91b4433bc.png"/> is usually near 0 anyway, and we lose relatively little by
+\sum_{i=1}^m x_{{\rm rot},j}^2" src="/stanford-ufldl/archive/wiki/images/math/9/7/e/97ecfffd8596d26deed9542b64cd6712.png"/>.  Thus, if <img class="tex" alt="\textstyle \lambda_j \approx 0" src="/stanford-ufldl/archive/wiki/images/math/6/7/1/6716d88c3c1a368824d188c8b9b6b589.png"/>, that shows that
+<img class="tex" alt="\textstyle x_{{\rm rot},j}" src="/stanford-ufldl/archive/wiki/images/math/e/8/4/e84f84acac7b07e18a42a8e91b4433bc.png"/> is usually near 0 anyway, and we lose relatively little by
 approximating it with a constant 0.  This also explains why we retain the top principal
-components (corresponding to the larger values of <img class="tex" alt="\textstyle \lambda_j" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/8/5/c851ef66a35ee95db0b63a592963ca77.png"/>) instead of the bottom
+components (corresponding to the larger values of <img class="tex" alt="\textstyle \lambda_j" src="/stanford-ufldl/archive/wiki/images/math/c/8/5/c851ef66a35ee95db0b63a592963ca77.png"/>) instead of the bottom
 ones.  The top principal components 
-<img class="tex" alt="\textstyle x_{{\rm rot},j}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/8/4/e84f84acac7b07e18a42a8e91b4433bc.png"/> are the ones that're more variable and that take on larger values, 
+<img class="tex" alt="\textstyle x_{{\rm rot},j}" src="/stanford-ufldl/archive/wiki/images/math/e/8/4/e84f84acac7b07e18a42a8e91b4433bc.png"/> are the ones that're more variable and that take on larger values, 
 and for which we would incur a greater approximation error if we were to set them to zero. 
-</p><p>In the case of images, one common heuristic is to choose <img class="tex" alt="\textstyle k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> so as to retain 99% of
-the variance.  In other words, we pick the smallest value of <img class="tex" alt="\textstyle k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> that satisfies 
+</p><p>In the case of images, one common heuristic is to choose <img class="tex" alt="\textstyle k" src="/stanford-ufldl/archive/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> so as to retain 99% of
+the variance.  In other words, we pick the smallest value of <img class="tex" alt="\textstyle k" src="/stanford-ufldl/archive/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> that satisfies 
 </p>
 <dl><dd><img class="tex" alt="\begin{align}
 \frac{\sum_{j=1}^k \lambda_j}{\sum_{j=1}^n \lambda_j} \geq 0.99. 
-\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/d/5/7d5f701649af052a671b7d195dccdd8f.png"/>
+\end{align}" src="/stanford-ufldl/archive/wiki/images/math/7/d/5/7d5f701649af052a671b7d195dccdd8f.png"/>
 </dd></dl>
 <p>Depending on the application, if you are willing to incur some 
 additional error, values in the 90-98% range are also sometimes used.  When you
-describe to others how you applied PCA, saying that you chose <img class="tex" alt="\textstyle k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> to retain 95% of
+describe to others how you applied PCA, saying that you chose <img class="tex" alt="\textstyle k" src="/stanford-ufldl/archive/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> to retain 95% of
 the variance will also be a much more easily interpretable description than saying
 that you retained 120 (or whatever other number of) components.
 </p>
 <h2> <span class="mw-headline" id="PCA_on_Images"> PCA on Images </span></h2>
-<p>For PCA to work, usually we want each of the features <img class="tex" alt="\textstyle x_1, x_2, \ldots, x_n" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/2/5/f25d5eb460ed8f894d9be2865a286908.png"/>
+<p>For PCA to work, usually we want each of the features <img class="tex" alt="\textstyle x_1, x_2, \ldots, x_n" src="/stanford-ufldl/archive/wiki/images/math/f/2/5/f25d5eb460ed8f894d9be2865a286908.png"/>
 to have a similar range of values to the others (and to have a mean close to
 zero).  If you've used PCA on other applications before, you may therefore have
 separately pre-processed each feature to have zero mean and unit variance, by
-separately estimating the mean and variance of each feature <img class="tex" alt="\textstyle x_j" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/d/f/bdf5b20642553027712d5b5240b31cf3.png"/>.  However,
+separately estimating the mean and variance of each feature <img class="tex" alt="\textstyle x_j" src="/stanford-ufldl/archive/wiki/images/math/b/d/f/bdf5b20642553027712d5b5240b31cf3.png"/>.  However,
 this isn't the pre-processing that we will apply to most types of images.  Specifically,
-suppose we are training our algorithm on <b>natural images</b>, so that <img class="tex" alt="\textstyle x_j" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/d/f/bdf5b20642553027712d5b5240b31cf3.png"/> is
-the value of pixel <img class="tex" alt="\textstyle j" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/3/5/235c5146ab110558897640c34dad7d97.png"/>.  By "natural images," we informally mean the type of image that
+suppose we are training our algorithm on <b>natural images</b>, so that <img class="tex" alt="\textstyle x_j" src="/stanford-ufldl/archive/wiki/images/math/b/d/f/bdf5b20642553027712d5b5240b31cf3.png"/> is
+the value of pixel <img class="tex" alt="\textstyle j" src="/stanford-ufldl/archive/wiki/images/math/2/3/5/235c5146ab110558897640c34dad7d97.png"/>.  By "natural images," we informally mean the type of image that
 a typical animal or person might see over their lifetime.
 </p><p>Note: Usually we use images of outdoor scenes with grass, trees, etc., and cut out small (say 16x16) image patches randomly from these to train the algorithm.  But in practice most feature learning algorithms are extremely robust to the exact type of image  it is trained on, so most images taken with a normal camera, so long as they aren't excessively blurry or have strange artifacts, should work.  
 </p><p>When training on natural images, it makes little sense to estimate a separate mean and
@@ -286,7 +286,7 @@ spectrograms---or on text data---say, bag-of-word vectors---we will usually not 
 variance normalization either.)  
 In fact, PCA is invariant to the scaling of
 the data, and will return the same eigenvectors regardless of the scaling of
-the input.  More formally, if you multiply each feature vector <img class="tex" alt="\textstyle x" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/> by some
+the input.  More formally, if you multiply each feature vector <img class="tex" alt="\textstyle x" src="/stanford-ufldl/archive/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/> by some
 positive number (thus scaling every feature in every training example by the
 same number), PCA's output eigenvectors will not change.  
 </p><p>So, we won't use variance normalization.  The only normalization we need to
@@ -297,14 +297,14 @@ tasks, the overall brightness of the image doesn't affect what objects
 there are in the image.  More formally, we are not interested in the
 mean intensity value of an image patch; thus, we can subtract out this value,
 as a form of mean normalization.  
-</p><p>Concretely, if <img class="tex" alt="\textstyle x^{(i)} \in \Re^{n}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/a/5/ca57b44909d158c3fdfaa849465dd4a2.png"/> are the (grayscale) intensity values of
-a 16x16 image patch (<img class="tex" alt="\textstyle n=256" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/c/0/6c07d223cfb098a75db66924dfcb7210.png"/>), we might normalize the intensity of each image
-<img class="tex" alt="\textstyle x^{(i)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/b/e/ebe8632b7c91a3dbbf9b590bea887a47.png"/> as follows: 
-</p><p><img class="tex" alt="\mu^{(i)} := \frac{1}{n} \sum_{j=1}^n x^{(i)}_j" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/1/0/a104802ef43230cf0d364f378abd2c08.png"/>
-</p><p><img class="tex" alt="x^{(i)}_j := x^{(i)}_j - \mu^{(i)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/3/b/63bf04b76d7fffd53d851573573f5f7f.png"/>, for all <img class="tex" alt="\textstyle j" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/3/5/235c5146ab110558897640c34dad7d97.png"/>
-</p><p>Note that the two steps above are done separately for each image <img class="tex" alt="\textstyle x^{(i)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/b/e/ebe8632b7c91a3dbbf9b590bea887a47.png"/>,
-and that <img class="tex" alt="\textstyle \mu^{(i)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/8/6/c862daa56646826c788aeb8ef0a5e4df.png"/> here is the mean intensity of the image <img class="tex" alt="\textstyle x^{(i)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/b/e/ebe8632b7c91a3dbbf9b590bea887a47.png"/>.  In particular,
-this is not the same thing as estimating a mean value separately for each pixel <img class="tex" alt="\textstyle x_j" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/d/f/bdf5b20642553027712d5b5240b31cf3.png"/>.
+</p><p>Concretely, if <img class="tex" alt="\textstyle x^{(i)} \in \Re^{n}" src="/stanford-ufldl/archive/wiki/images/math/c/a/5/ca57b44909d158c3fdfaa849465dd4a2.png"/> are the (grayscale) intensity values of
+a 16x16 image patch (<img class="tex" alt="\textstyle n=256" src="/stanford-ufldl/archive/wiki/images/math/6/c/0/6c07d223cfb098a75db66924dfcb7210.png"/>), we might normalize the intensity of each image
+<img class="tex" alt="\textstyle x^{(i)}" src="/stanford-ufldl/archive/wiki/images/math/e/b/e/ebe8632b7c91a3dbbf9b590bea887a47.png"/> as follows: 
+</p><p><img class="tex" alt="\mu^{(i)} := \frac{1}{n} \sum_{j=1}^n x^{(i)}_j" src="/stanford-ufldl/archive/wiki/images/math/a/1/0/a104802ef43230cf0d364f378abd2c08.png"/>
+</p><p><img class="tex" alt="x^{(i)}_j := x^{(i)}_j - \mu^{(i)}" src="/stanford-ufldl/archive/wiki/images/math/6/3/b/63bf04b76d7fffd53d851573573f5f7f.png"/>, for all <img class="tex" alt="\textstyle j" src="/stanford-ufldl/archive/wiki/images/math/2/3/5/235c5146ab110558897640c34dad7d97.png"/>
+</p><p>Note that the two steps above are done separately for each image <img class="tex" alt="\textstyle x^{(i)}" src="/stanford-ufldl/archive/wiki/images/math/e/b/e/ebe8632b7c91a3dbbf9b590bea887a47.png"/>,
+and that <img class="tex" alt="\textstyle \mu^{(i)}" src="/stanford-ufldl/archive/wiki/images/math/c/8/6/c862daa56646826c788aeb8ef0a5e4df.png"/> here is the mean intensity of the image <img class="tex" alt="\textstyle x^{(i)}" src="/stanford-ufldl/archive/wiki/images/math/e/b/e/ebe8632b7c91a3dbbf9b590bea887a47.png"/>.  In particular,
+this is not the same thing as estimating a mean value separately for each pixel <img class="tex" alt="\textstyle x_j" src="/stanford-ufldl/archive/wiki/images/math/b/d/f/bdf5b20642553027712d5b5240b31cf3.png"/>.
 </p><p>If you are training your algorithm on images other than natural images (for example, images of handwritten characters, or images of single isolated objects centered against a white background), other types of normalization might be worth considering, and the best choice may be application dependent. But when training on natural images, using the per-image mean normalization method as given in the equations above would be a reasonable default.
 </p>
 <h2> <span class="mw-headline" id="References"> References </span></h2>
@@ -312,13 +312,13 @@ this is not the same thing as estimating a mean value separately for each pixel 
 </p><p><br/>
 </p>
 <div style="text-align: center;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
-<p><strong class="selflink">PCA</strong> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Whitening" title="Whitening">Whitening</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Implementing_PCA/Whitening" title="Implementing PCA/Whitening">Implementing PCA/Whitening</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_PCA_in_2D" title="Exercise:PCA in 2D">Exercise:PCA in 2D</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_PCA_and_Whitening" title="Exercise:PCA and Whitening">Exercise:PCA and Whitening</a>
+<p><strong class="selflink">PCA</strong> | <a href="/stanford-ufldl/archive/wiki/Whitening" title="Whitening">Whitening</a> | <a href="/stanford-ufldl/archive/wiki/Implementing_PCA/Whitening" title="Implementing PCA/Whitening">Implementing PCA/Whitening</a> | <a href="/stanford-ufldl/archive/wiki/Exercise_PCA_in_2D" title="Exercise:PCA in 2D">Exercise:PCA in 2D</a> | <a href="/stanford-ufldl/archive/wiki/Exercise_PCA_and_Whitening" title="Exercise:PCA and Whitening">Exercise:PCA and Whitening</a>
 </p>
 </div>
 <p><br/>
 </p>
 <div style="text-align: left;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
-<p>Language&nbsp;: <a href="/wayback-ufldl/stanford-ufldl/wiki/%E4%B8%BB%E6%88%90%E5%88%86%E5%88%86%E6%9E%90" title="主成分分析">中文</a>
+<p>Language&nbsp;: <a href="/stanford-ufldl/archive/wiki/%E4%B8%BB%E6%88%90%E5%88%86%E5%88%86%E6%9E%90" title="主成分分析">中文</a>
 </p>
 </div>
 
@@ -340,7 +340,7 @@ Expensive parser function count: 0/100
 		<h5>Views</h5>
 		<div class="pBody">
 			<ul>
-				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/PCA" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-nstab-main" class="selected"><a href="/stanford-ufldl/archive/wiki/PCA" title="View the content page [c]" accesskey="c">Page</a></li>
 				 <li id="ca-talk" class="new"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
 				 <li id="ca-viewsource"><a href="" title="This page is protected.
 You can view its source [e]" accesskey="e">View source</a></li>
@@ -356,15 +356,15 @@ You can view its source [e]" accesskey="e">View source</a></li>
 		</div>
 	</div>
 	<div class="portlet" id="p-logo">
-		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+		<a style="background-image: url(/stanford-ufldl/archive/wiki/skins/common/images/dolphin-openclipart.png);" href="/stanford-ufldl/archive/wiki/Main_Page" title="Visit the main page"></a>
 	</div>
 	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
 	<div class="generated-sidebar portlet" id="p-ufldl_resources">
 		<h5>ufldl resources</h5>
 		<div class="pBody">
 			<ul>
-				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
-				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+				<li id="n-UFLDL-Tutorial"><a href="/stanford-ufldl/archive/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/stanford-ufldl/archive/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
 			</ul>
 		</div>
 	</div>
@@ -372,7 +372,7 @@ You can view its source [e]" accesskey="e">View source</a></li>
 		<h5>wiki</h5>
 		<div class="pBody">
 			<ul>
-				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-mainpage-description"><a href="/stanford-ufldl/archive/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
 				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
 				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
 				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
@@ -405,9 +405,9 @@ You can view its source [e]" accesskey="e">View source</a></li>
 <div id="footer">
 	<ul id="f-list">
 		<li id="lastmod"> This page was last modified on 7 April 2013, at 13:18.</li>
-		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
-		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
-		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+		<li id="privacy"><a href="/stanford-ufldl/archive/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/stanford-ufldl/archive/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/stanford-ufldl/archive/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
 	</ul>
 </div>
 </div>

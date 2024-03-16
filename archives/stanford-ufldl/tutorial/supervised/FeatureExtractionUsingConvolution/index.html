@@ -5,9 +5,9 @@
     <title>Unsupervised Feature Learning and Deep Learning Tutorial</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
-    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/bootstrap_readable.min.css" rel="stylesheet">
-    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/pygments/default.css" rel="stylesheet">
-    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/custom.css" rel="stylesheet">
+    <link href="/stanford-ufldl/archive/tutorial/css/bootstrap_readable.min.css" rel="stylesheet">
+    <link href="/stanford-ufldl/archive/tutorial/css/pygments/default.css" rel="stylesheet">
+    <link href="/stanford-ufldl/archive/tutorial/css/custom.css" rel="stylesheet">
     <script type="text/javascript"
           src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
     </script>
@@ -27,7 +27,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/wayback-ufldl/stanford-ufldl/tutorial/">UFLDL Tutorial</a>
+          <a class="navbar-brand" href="/stanford-ufldl/archive/tutorial/">UFLDL Tutorial</a>
         </div>
         <!---
         <div class="collapse navbar-collapse">
@@ -77,7 +77,7 @@ While in principle one can learn feature convolutionally over the entire image, 
 <!--
 These convolved features can later be '''[[#pooling | pooled]]''' together to produce a smaller set of pooled features, which can then be used for classification. 
 !--><center>
-<img src='/wayback-ufldl/stanford-ufldl/tutorial/images/Convolution_schematic.gif' />
+<img src='/stanford-ufldl/archive/tutorial/images/Convolution_schematic.gif' />
 </center>
 <p>Formally, given some large <m>r \times c</m> images <m>x_{large}</m>, we first train a sparse autoencoder on small <m>a \times b</m> patches <m>x_{small}</m> sampled from these images, learning <m>k</m> features <m>f = \sigma(W^{(1)}x_{small} + b^{(1)})</m> (where <m>\sigma</m> is the sigmoid function), given by the weights <m>W^{(1)}</m> and biases <m>b^{(1)}</m> from the visible units to the hidden units. For every <m>a \times b</m> patch <m>x_s</m> in the large image, we compute <m>f_s = \sigma(W^{(1)}x_s + b^{(1)})</m>, giving us <m>f_{convolved}</m>, a <m>k \times (r - a + 1) \times (c - b + 1)</m> array of convolved features.</p>
 
@@ -93,13 +93,13 @@ These convolved features can later be '''[[#pooling | pooled]]''' together to pr
     </div>
 
     <!-- Generate sidebar --->
-    <script src='/wayback-ufldl/stanford-ufldl/tutorial/sidebar/sidebar.js'></script>
+    <script src='/stanford-ufldl/archive/tutorial/sidebar/sidebar.js'></script>
     <script>
       function renderHeading(name) {
         return '<div class = "panel-heading">' + name + '</div>';
       };
       function renderItem(name, link) { 
-        return '<a href="/wayback-ufldl/stanford-ufldl/tutorial/' + link + '" class="list-group-item nav">' + name +
+        return '<a href="/stanford-ufldl/archive/tutorial/' + link + '" class="list-group-item nav">' + name +
           '</a>';
       };
       renderedHtml = '<div class = "panel panel-default">';
@@ -117,7 +117,7 @@ These convolved features can later be '''[[#pooling | pooled]]''' together to pr
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="//code.jquery.com/jquery.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="/wayback-ufldl/stanford-ufldl/tutorial/js/bootstrap.min.js"></script>
+    <script src="/stanford-ufldl/archive/tutorial/js/bootstrap.min.js"></script>
     <script>
       var inputs = document.getElementsByTagName("m");
       for (var i = 0; i < inputs.length; i++) { 

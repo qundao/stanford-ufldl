@@ -5,9 +5,9 @@
     <title>Unsupervised Feature Learning and Deep Learning Tutorial</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
-    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/bootstrap_readable.min.css" rel="stylesheet">
-    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/pygments/default.css" rel="stylesheet">
-    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/custom.css" rel="stylesheet">
+    <link href="/stanford-ufldl/archive/tutorial/css/bootstrap_readable.min.css" rel="stylesheet">
+    <link href="/stanford-ufldl/archive/tutorial/css/pygments/default.css" rel="stylesheet">
+    <link href="/stanford-ufldl/archive/tutorial/css/custom.css" rel="stylesheet">
     <script type="text/javascript"
           src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
     </script>
@@ -27,7 +27,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/wayback-ufldl/stanford-ufldl/tutorial/">UFLDL Tutorial</a>
+          <a class="navbar-brand" href="/stanford-ufldl/archive/tutorial/">UFLDL Tutorial</a>
         </div>
         <!---
         <div class="collapse navbar-collapse">
@@ -60,7 +60,7 @@
 
 <h3 id="step_0b_implement_zca2m">Step 0b: Implement zca2.m</h3>
 
-<p>Implement the ZCA transform in <code>zca2.m</code>. You should be able to copy and paste your code from <a href="/wayback-ufldl/stanford-ufldl/tutorial/unsupervised/ExercisePCAWhitening">Exercise: PCA Whitening</a> if you have successfully completed that exercise.</p>
+<p>Implement the ZCA transform in <code>zca2.m</code>. You should be able to copy and paste your code from <a href="/stanford-ufldl/archive/tutorial/unsupervised/ExercisePCAWhitening">Exercise: PCA Whitening</a> if you have successfully completed that exercise.</p>
 
 <h3 id="step_1_rica_cost_and_gradient">Step 1: RICA cost and gradient</h3>
 
@@ -68,13 +68,13 @@
 
 <h4 id="step_1a_deriving_gradient_using_backpropagation">Step 1a: Deriving gradient using Backpropagation</h4>
 
-<p>Recall the <a href="/wayback-ufldl/stanford-ufldl/tutorial/unsupervised/RICA">RICA</a> reconstruction cost term:</p>
+<p>Recall the <a href="/stanford-ufldl/archive/tutorial/unsupervised/RICA">RICA</a> reconstruction cost term:</p>
 <m>\lVert W^TWx - x \rVert_2^2</m>
 <p>where <m>W</m> is the weight matrix and <m>x</m> is the input.</p>
 
 <p>We would like to find <m>\nabla_W \lVert W^TWx - x \rVert_2^2</m> - the derivative of the term with respect to the ”‘weight matrix”’, rather than the ”‘input”’ as in the earlier two examples. We will still proceed similarly though, seeing this term as an instantiation of a neural network:</p>
 
-<p><img src='/wayback-ufldl/stanford-ufldl/tutorial/images/Backpropagation_Method_Example_3.png' width='100%' /></p>
+<p><img src='/stanford-ufldl/archive/tutorial/images/Backpropagation_Method_Example_3.png' width='100%' /></p>
 
 <p>The weights and activation functions of this network are as follows:</p>
 <table align='center'>
@@ -185,13 +185,13 @@
     </div>
 
     <!-- Generate sidebar --->
-    <script src='/wayback-ufldl/stanford-ufldl/tutorial/sidebar/sidebar.js'></script>
+    <script src='/stanford-ufldl/archive/tutorial/sidebar/sidebar.js'></script>
     <script>
       function renderHeading(name) {
         return '<div class = "panel-heading">' + name + '</div>';
       };
       function renderItem(name, link) { 
-        return '<a href="/wayback-ufldl/stanford-ufldl/tutorial/' + link + '" class="list-group-item nav">' + name +
+        return '<a href="/stanford-ufldl/archive/tutorial/' + link + '" class="list-group-item nav">' + name +
           '</a>';
       };
       renderedHtml = '<div class = "panel panel-default">';
@@ -209,7 +209,7 @@
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="//code.jquery.com/jquery.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="/wayback-ufldl/stanford-ufldl/tutorial/js/bootstrap.min.js"></script>
+    <script src="/stanford-ufldl/archive/tutorial/js/bootstrap.min.js"></script>
     <script>
       var inputs = document.getElementsByTagName("m");
       for (var i = 0; i < inputs.length; i++) { 

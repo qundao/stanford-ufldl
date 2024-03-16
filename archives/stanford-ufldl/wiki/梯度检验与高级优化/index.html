@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>梯度检验与高级优化 - Ufldl</title>
-<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
-<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+<link rel="stylesheet" href="/stanford-ufldl/archive/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/stanford-ufldl/archive/wiki/skins/monobook/main.css" media="screen"/>
 
 </head>
 
@@ -22,58 +22,58 @@
 		<div id="jump-to-nav">Jump to: <a href="#column-one">navigation</a>, <a href="#searchInput">search</a></div>
 <p>众所周知，反向传播算法很难调试得到正确结果，尤其是当实现程序存在很多难于发现的bug时。举例来说，索引的缺位错误（off-by-one error）会导致只有部分层的权重得到训练，再比如忘记计算偏置项。这些错误会使你得到一个看似十分合理的结果（但实际上比正确代码的结果要差）。因此，但从计算结果上来看，我们很难发现代码中有什么东西遗漏了。本节中，我们将介绍一种对求导结果进行数值检验的方法，该方法可以验证求导代码是否正确。另外，使用本节所述求导检验方法，可以帮助你提升写正确代码的信心。
 </p><p><br/>
-缺位错误（Off-by-one error）举例说明：比如 <img class="tex" alt="\textstyle for " src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/3/2/932703b979afe66dd5bf1a755fc5f330.png"/>循环中循环 <img class="tex" alt="\textstyle m" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/5/e/25e97e8a905fc2cb05d76cd4872a8567.png"/>次，正确应该是 <img class="tex" alt="\textstyle for (i=1;~i<=m;~i++)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/c/e/3ce0fba5012b906bb45c5ed3fccb427d.png"/>，但有时程序员疏忽，会写成 <img class="tex" alt="\textstyle for (i=1;~i<m;~i++)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/2/0/82041af97286a9f4bc20e7e378efa53c.png"/>，这就是缺位错误。
+缺位错误（Off-by-one error）举例说明：比如 <img class="tex" alt="\textstyle for " src="/stanford-ufldl/archive/wiki/images/math/9/3/2/932703b979afe66dd5bf1a755fc5f330.png"/>循环中循环 <img class="tex" alt="\textstyle m" src="/stanford-ufldl/archive/wiki/images/math/2/5/e/25e97e8a905fc2cb05d76cd4872a8567.png"/>次，正确应该是 <img class="tex" alt="\textstyle for (i=1;~i<=m;~i++)" src="/stanford-ufldl/archive/wiki/images/math/3/c/e/3ce0fba5012b906bb45c5ed3fccb427d.png"/>，但有时程序员疏忽，会写成 <img class="tex" alt="\textstyle for (i=1;~i<m;~i++)" src="/stanford-ufldl/archive/wiki/images/math/8/2/0/82041af97286a9f4bc20e7e378efa53c.png"/>，这就是缺位错误。
 </p><p><br/>
-假设我们想要最小化以 <img class="tex" alt="\textstyle \theta" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/9/d/69d920fe8e1da0543eb63d1097f21754.png"/> 为自变量的目标函数<img class="tex" alt="\textstyle J(\theta)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/e/0/ce027336c1cb3c0cd461406c81369ebf.png"/>。假设 <img class="tex" alt="\textstyle J : \Re \mapsto \Re" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/d/a/cda5857b15a23c03abfb2e42eb51b70c.png"/>，则 <img class="tex" alt="\textstyle \theta \in \Re" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/c/7/dc7c1205b7193f92a71d1f4e7cb4e707.png"/>。在一维的情况下，一次迭代的梯度下降公式是
+假设我们想要最小化以 <img class="tex" alt="\textstyle \theta" src="/stanford-ufldl/archive/wiki/images/math/6/9/d/69d920fe8e1da0543eb63d1097f21754.png"/> 为自变量的目标函数<img class="tex" alt="\textstyle J(\theta)" src="/stanford-ufldl/archive/wiki/images/math/c/e/0/ce027336c1cb3c0cd461406c81369ebf.png"/>。假设 <img class="tex" alt="\textstyle J : \Re \mapsto \Re" src="/stanford-ufldl/archive/wiki/images/math/c/d/a/cda5857b15a23c03abfb2e42eb51b70c.png"/>，则 <img class="tex" alt="\textstyle \theta \in \Re" src="/stanford-ufldl/archive/wiki/images/math/d/c/7/dc7c1205b7193f92a71d1f4e7cb4e707.png"/>。在一维的情况下，一次迭代的梯度下降公式是
 </p>
 <dl><dd><img class="tex" alt="\begin{align}
 \theta := \theta - \alpha \frac{d}{d\theta}J(\theta).
-\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/8/c/a8c1af31e58f9f9f2c55c90b33deace1.png"/>
+\end{align}" src="/stanford-ufldl/archive/wiki/images/math/a/8/c/a8c1af31e58f9f9f2c55c90b33deace1.png"/>
 </dd></dl>
 <p><br/>
-再假设我们已经用代码实现了计算 <img class="tex" alt="\textstyle \frac{d}{d\theta}J(\theta)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/9/6/09643c7c4bb96e039caf25737d835201.png"/> 的函数 <img class="tex" alt="\textstyle g(\theta)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/9/f/e9fed70b38b2cfac3b42d1d21d46e449.png"/>，接着我们使用 <img class="tex" alt="\textstyle \theta := \theta - \alpha g(\theta)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/0/1/a01cdafbf71127043a4a5d2d097dfd80.png"/> 来实现梯度下降算法。那么我们如何检验 <img class="tex" alt="\textstyle g" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/1/7/c172541f77a147fcf545237fefa03643.png"/> 的实现是否正确呢？
+再假设我们已经用代码实现了计算 <img class="tex" alt="\textstyle \frac{d}{d\theta}J(\theta)" src="/stanford-ufldl/archive/wiki/images/math/0/9/6/09643c7c4bb96e039caf25737d835201.png"/> 的函数 <img class="tex" alt="\textstyle g(\theta)" src="/stanford-ufldl/archive/wiki/images/math/e/9/f/e9fed70b38b2cfac3b42d1d21d46e449.png"/>，接着我们使用 <img class="tex" alt="\textstyle \theta := \theta - \alpha g(\theta)" src="/stanford-ufldl/archive/wiki/images/math/a/0/1/a01cdafbf71127043a4a5d2d097dfd80.png"/> 来实现梯度下降算法。那么我们如何检验 <img class="tex" alt="\textstyle g" src="/stanford-ufldl/archive/wiki/images/math/c/1/7/c172541f77a147fcf545237fefa03643.png"/> 的实现是否正确呢？
 </p><p>回忆导数的数学定义：
 </p>
 <dl><dd><img class="tex" alt="\begin{align}
 \frac{d}{d\theta}J(\theta) = \lim_{\epsilon \rightarrow 0}
 \frac{J(\theta+ \epsilon) - J(\theta-\epsilon)}{2 \epsilon}.
-\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/2/3/a23bea0ab48ded7b9a979b68f6356613.png"/>
+\end{align}" src="/stanford-ufldl/archive/wiki/images/math/a/2/3/a23bea0ab48ded7b9a979b68f6356613.png"/>
 </dd></dl>
-<p>那么对于任意 <img class="tex" alt="\textstyle \theta" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/9/d/69d920fe8e1da0543eb63d1097f21754.png"/> 值，我们都可以对等式左边的导数用：
+<p>那么对于任意 <img class="tex" alt="\textstyle \theta" src="/stanford-ufldl/archive/wiki/images/math/6/9/d/69d920fe8e1da0543eb63d1097f21754.png"/> 值，我们都可以对等式左边的导数用：
 </p>
 <dl><dd><img class="tex" alt="\begin{align}
 \frac{J(\theta+{\rm EPSILON}) - J(\theta-{\rm EPSILON})}{2 \times {\rm EPSILON}}
-\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/4/8/a/48a000aed96c8595fcca2a45f48343ce.png"/>
+\end{align}" src="/stanford-ufldl/archive/wiki/images/math/4/8/a/48a000aed96c8595fcca2a45f48343ce.png"/>
 </dd></dl>
 <p>来近似。
 </p><p><br/>
-实际应用中，我们常将 <img class="tex" alt="\textstyle EPSILON" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/5/c/85c12e90fcb870ff439cb037d805e09c.png"/> 设为一个很小的常量，比如在<img class="tex" alt="\textstyle 10^{-4}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/f/d/cfd7bf1257600c6c7706c5597af1b94d.png"/> 数量级（虽然 <img class="tex" alt="\textstyle EPSILON" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/5/c/85c12e90fcb870ff439cb037d805e09c.png"/> 的取值范围可以很大，但是我们不会将它设得太小，比如 <img class="tex" alt="\textstyle 10^{-20}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/a/b/fab2be95b827b3db4ea4d2e27a3d5f99.png"/>，因为那将导致数值舍入误差。）
+实际应用中，我们常将 <img class="tex" alt="\textstyle EPSILON" src="/stanford-ufldl/archive/wiki/images/math/8/5/c/85c12e90fcb870ff439cb037d805e09c.png"/> 设为一个很小的常量，比如在<img class="tex" alt="\textstyle 10^{-4}" src="/stanford-ufldl/archive/wiki/images/math/c/f/d/cfd7bf1257600c6c7706c5597af1b94d.png"/> 数量级（虽然 <img class="tex" alt="\textstyle EPSILON" src="/stanford-ufldl/archive/wiki/images/math/8/5/c/85c12e90fcb870ff439cb037d805e09c.png"/> 的取值范围可以很大，但是我们不会将它设得太小，比如 <img class="tex" alt="\textstyle 10^{-20}" src="/stanford-ufldl/archive/wiki/images/math/f/a/b/fab2be95b827b3db4ea4d2e27a3d5f99.png"/>，因为那将导致数值舍入误差。）
 </p><p><br/>
-给定一个被认为能计算 <img class="tex" alt="\textstyle \frac{d}{d\theta}J(\theta)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/9/6/09643c7c4bb96e039caf25737d835201.png"/> 的函数<img class="tex" alt="\textstyle g(\theta)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/9/f/e9fed70b38b2cfac3b42d1d21d46e449.png"/>，我们可以用下面的数值检验公式
+给定一个被认为能计算 <img class="tex" alt="\textstyle \frac{d}{d\theta}J(\theta)" src="/stanford-ufldl/archive/wiki/images/math/0/9/6/09643c7c4bb96e039caf25737d835201.png"/> 的函数<img class="tex" alt="\textstyle g(\theta)" src="/stanford-ufldl/archive/wiki/images/math/e/9/f/e9fed70b38b2cfac3b42d1d21d46e449.png"/>，我们可以用下面的数值检验公式
 </p>
 <dl><dd><img class="tex" alt="\begin{align}
 g(\theta) \approx
 \frac{J(\theta+{\rm EPSILON}) - J(\theta-{\rm EPSILON})}{2 \times {\rm EPSILON}}.
-\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/6/d/c6d06b4a25dab5ef468c72900872eda0.png"/>
+\end{align}" src="/stanford-ufldl/archive/wiki/images/math/c/6/d/c6d06b4a25dab5ef468c72900872eda0.png"/>
 </dd></dl>
 <p>计算两端是否一样来检验函数是否正确。
 </p><p><br/>
-上式两端值的接近程度取决于 <img class="tex" alt="\textstyle J" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/4/f/4/4f465a48d84668feb1081c49388cf9b4.png"/> 的具体形式。但是在假定<img class="tex" alt="\textstyle {\rm EPSILON} = 10^{-4}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/7/5/875b9648ce24d3e6ed45c5fb1aef3833.png"/> 的情况下，你通常会发现上式左右两端至少有4位有效数字是一样的（通常会更多）。
+上式两端值的接近程度取决于 <img class="tex" alt="\textstyle J" src="/stanford-ufldl/archive/wiki/images/math/4/f/4/4f465a48d84668feb1081c49388cf9b4.png"/> 的具体形式。但是在假定<img class="tex" alt="\textstyle {\rm EPSILON} = 10^{-4}" src="/stanford-ufldl/archive/wiki/images/math/8/7/5/875b9648ce24d3e6ed45c5fb1aef3833.png"/> 的情况下，你通常会发现上式左右两端至少有4位有效数字是一样的（通常会更多）。
 </p><p><br/>
-现在，考虑 <img class="tex" alt="\textstyle \theta \in \Re^n" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/8/e/a8e658b091c361cc9f85ea67d7689332.png"/> 是一个向量而非一个实数（那么就有<img class="tex" alt="\textstyle n" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/c/5/0c59de0fa75c1baa1c024aabfa43b2e3.png"/>个参数要学习得到），并且 <img class="tex" alt="\textstyle J: \Re^n \mapsto \Re" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/9/f/39f1a609f6140108fb4f0ba2626e5d6a.png"/>。在神经网络的例子里我们使用 <img class="tex" alt="\textstyle J(W,b)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/e/9/8e94ae776ae14b36b3af183726ababb9.png"/>，可以想象为把参数 <img class="tex" alt="\textstyle W,b" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/c/9/7c9aa03f5258ecf79556ba374d7eb2cd.png"/> 组合扩展成一个长向量 <img class="tex" alt="\textstyle \theta" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/9/d/69d920fe8e1da0543eb63d1097f21754.png"/>。现在我们将求导检验方法推广到一般化，即 <img class="tex" alt="\textstyle \theta" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/9/d/69d920fe8e1da0543eb63d1097f21754.png"/> 是一个向量的情况。
-</p><p>假设我们有一个用于计算 <img class="tex" alt="\textstyle \frac{\partial}{\partial \theta_i} J(\theta)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/e/2/3e2d8c5d93954b93d064c96a93f0a6d8.png"/>的函数 <img class="tex" alt="\textstyle g_i(\theta)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/f/4/3f479459ba2e5ba889a1c2e36995ecc8.png"/>；我们想要检验 <img class="tex" alt="\textstyle g_i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/c/9/9c9d4fc87d716b87e446297d0ebb94f8.png"/> 是否输出正确的求导结果。我们定义 <img class="tex" alt="\textstyle \theta^{(i+)} = \theta +
-{\rm EPSILON} \times \vec{e}_i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/9/b/09b406ad4b7aa1c6933b9f26e957c1fb.png"/>，其中
+现在，考虑 <img class="tex" alt="\textstyle \theta \in \Re^n" src="/stanford-ufldl/archive/wiki/images/math/a/8/e/a8e658b091c361cc9f85ea67d7689332.png"/> 是一个向量而非一个实数（那么就有<img class="tex" alt="\textstyle n" src="/stanford-ufldl/archive/wiki/images/math/0/c/5/0c59de0fa75c1baa1c024aabfa43b2e3.png"/>个参数要学习得到），并且 <img class="tex" alt="\textstyle J: \Re^n \mapsto \Re" src="/stanford-ufldl/archive/wiki/images/math/3/9/f/39f1a609f6140108fb4f0ba2626e5d6a.png"/>。在神经网络的例子里我们使用 <img class="tex" alt="\textstyle J(W,b)" src="/stanford-ufldl/archive/wiki/images/math/8/e/9/8e94ae776ae14b36b3af183726ababb9.png"/>，可以想象为把参数 <img class="tex" alt="\textstyle W,b" src="/stanford-ufldl/archive/wiki/images/math/7/c/9/7c9aa03f5258ecf79556ba374d7eb2cd.png"/> 组合扩展成一个长向量 <img class="tex" alt="\textstyle \theta" src="/stanford-ufldl/archive/wiki/images/math/6/9/d/69d920fe8e1da0543eb63d1097f21754.png"/>。现在我们将求导检验方法推广到一般化，即 <img class="tex" alt="\textstyle \theta" src="/stanford-ufldl/archive/wiki/images/math/6/9/d/69d920fe8e1da0543eb63d1097f21754.png"/> 是一个向量的情况。
+</p><p>假设我们有一个用于计算 <img class="tex" alt="\textstyle \frac{\partial}{\partial \theta_i} J(\theta)" src="/stanford-ufldl/archive/wiki/images/math/3/e/2/3e2d8c5d93954b93d064c96a93f0a6d8.png"/>的函数 <img class="tex" alt="\textstyle g_i(\theta)" src="/stanford-ufldl/archive/wiki/images/math/3/f/4/3f479459ba2e5ba889a1c2e36995ecc8.png"/>；我们想要检验 <img class="tex" alt="\textstyle g_i" src="/stanford-ufldl/archive/wiki/images/math/9/c/9/9c9d4fc87d716b87e446297d0ebb94f8.png"/> 是否输出正确的求导结果。我们定义 <img class="tex" alt="\textstyle \theta^{(i+)} = \theta +
+{\rm EPSILON} \times \vec{e}_i" src="/stanford-ufldl/archive/wiki/images/math/0/9/b/09b406ad4b7aa1c6933b9f26e957c1fb.png"/>，其中
 </p>
 <dl><dd><img class="tex" alt="\begin{align}
 \vec{e}_i = \begin{bmatrix}0 \\ 0 \\ \vdots \\ 1 \\ \vdots \\ 0\end{bmatrix}
-\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/d/7/7d7c568be5dc22311d9c60c7fa11457f.png"/>
+\end{align}" src="/stanford-ufldl/archive/wiki/images/math/7/d/7/7d7c568be5dc22311d9c60c7fa11457f.png"/>
 </dd></dl>
-<p>是第 <img class="tex" alt="\textstyle i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/> 个基向量（维度和 <img class="tex" alt="\textstyle \theta" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/9/d/69d920fe8e1da0543eb63d1097f21754.png"/> 相同，在第 <img class="tex" alt="\textstyle i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/> 行是“<img class="tex" alt="\textstyle 1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/e/9/6e924e04b5c9d4c5be131609a038b821.png"/>”而其他行是“<img class="tex" alt="\textstyle 0" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/6/f/96f7362eaaa825744141afe4d5c2d340.png"/>”）。所以，<img class="tex" alt="\textstyle \theta^{(i+)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/e/5/ae5326f17ec53546152dd9f3cd06fe8a.png"/> 和 <img class="tex" alt="\textstyle \theta" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/9/d/69d920fe8e1da0543eb63d1097f21754.png"/> 几乎相同，除了第 <img class="tex" alt="\textstyle i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/> 行元素增加了 <img class="tex" alt="\textstyle EPSILON" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/5/c/85c12e90fcb870ff439cb037d805e09c.png"/>。类似地，<img class="tex" alt="\textstyle \theta^{(i-)} = \theta - {\rm EPSILON} \times \vec{e}_i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/a/0/aa0225fbe0ff42d79a568cfb2b10ecd7.png"/> 得到的第 <img class="tex" alt="\textstyle i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/> 行减小了 <img class="tex" alt="\textstyle EPSILON" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/5/c/85c12e90fcb870ff439cb037d805e09c.png"/>。然后我们可以对每个 <img class="tex" alt="\textstyle i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/> 检查下式是否成立，进而验证 <img class="tex" alt="\textstyle g_i(\theta)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/f/4/3f479459ba2e5ba889a1c2e36995ecc8.png"/> 的正确性：
+<p>是第 <img class="tex" alt="\textstyle i" src="/stanford-ufldl/archive/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/> 个基向量（维度和 <img class="tex" alt="\textstyle \theta" src="/stanford-ufldl/archive/wiki/images/math/6/9/d/69d920fe8e1da0543eb63d1097f21754.png"/> 相同，在第 <img class="tex" alt="\textstyle i" src="/stanford-ufldl/archive/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/> 行是“<img class="tex" alt="\textstyle 1" src="/stanford-ufldl/archive/wiki/images/math/6/e/9/6e924e04b5c9d4c5be131609a038b821.png"/>”而其他行是“<img class="tex" alt="\textstyle 0" src="/stanford-ufldl/archive/wiki/images/math/9/6/f/96f7362eaaa825744141afe4d5c2d340.png"/>”）。所以，<img class="tex" alt="\textstyle \theta^{(i+)}" src="/stanford-ufldl/archive/wiki/images/math/a/e/5/ae5326f17ec53546152dd9f3cd06fe8a.png"/> 和 <img class="tex" alt="\textstyle \theta" src="/stanford-ufldl/archive/wiki/images/math/6/9/d/69d920fe8e1da0543eb63d1097f21754.png"/> 几乎相同，除了第 <img class="tex" alt="\textstyle i" src="/stanford-ufldl/archive/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/> 行元素增加了 <img class="tex" alt="\textstyle EPSILON" src="/stanford-ufldl/archive/wiki/images/math/8/5/c/85c12e90fcb870ff439cb037d805e09c.png"/>。类似地，<img class="tex" alt="\textstyle \theta^{(i-)} = \theta - {\rm EPSILON} \times \vec{e}_i" src="/stanford-ufldl/archive/wiki/images/math/a/a/0/aa0225fbe0ff42d79a568cfb2b10ecd7.png"/> 得到的第 <img class="tex" alt="\textstyle i" src="/stanford-ufldl/archive/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/> 行减小了 <img class="tex" alt="\textstyle EPSILON" src="/stanford-ufldl/archive/wiki/images/math/8/5/c/85c12e90fcb870ff439cb037d805e09c.png"/>。然后我们可以对每个 <img class="tex" alt="\textstyle i" src="/stanford-ufldl/archive/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/> 检查下式是否成立，进而验证 <img class="tex" alt="\textstyle g_i(\theta)" src="/stanford-ufldl/archive/wiki/images/math/3/f/4/3f479459ba2e5ba889a1c2e36995ecc8.png"/> 的正确性：
 </p>
 <dl><dd><img class="tex" alt="\begin{align}
 g_i(\theta) \approx
 \frac{J(\theta^{(i+)}) - J(\theta^{(i-)})}{2 \times {\rm EPSILON}}.
-\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/e/1/1e153c5e6de67d97bfaf25c7fe396495.png"/>
+\end{align}" src="/stanford-ufldl/archive/wiki/images/math/1/e/1/1e153c5e6de67d97bfaf25c7fe396495.png"/>
 </dd></dl>
 <p><br/>
 当用反射传播算法求解神经网络时，正确算法实现会得到：
@@ -81,12 +81,12 @@ g_i(\theta) \approx
 <dl><dd><img class="tex" alt="\begin{align}
 \nabla_{W^{(l)}} J(W,b) &amp;= \left( \frac{1}{m} \Delta W^{(l)} \right) + \lambda W^{(l)} \\
 \nabla_{b^{(l)}} J(W,b) &amp;= \frac{1}{m} \Delta b^{(l)}.
-\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/2/9/1297d5746b1a274d8ab855bb6e638bdb.png"/>
+\end{align}" src="/stanford-ufldl/archive/wiki/images/math/1/2/9/1297d5746b1a274d8ab855bb6e638bdb.png"/>
 </dd></dl>
 <p><br/>
-以上结果与<a href="" class="new" title="反向传播算法 (page does not exist)">反向传播算法</a>中的最后一段伪代码一致，都是计算梯度下降。为了验证梯度下降代码的正确性，使用上述数值检验方法计算 <img class="tex" alt="\textstyle J(W,b)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/e/9/8e94ae776ae14b36b3af183726ababb9.png"/> 的导数，然后验证 <img class="tex" alt="\textstyle \left(\frac{1}{m}\Delta W^{(l)} \right) + \lambda W" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/1/a/51abfba362dde73804e9d8dd913ceb00.png"/> 与 <img class="tex" alt="\textstyle \frac{1}{m}\Delta b^{(l)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/8/3/c83a6b2fce9939316356a4aa0c7e773b.png"/> 是否能够给出正确的求导结果。
+以上结果与<a href="" class="new" title="反向传播算法 (page does not exist)">反向传播算法</a>中的最后一段伪代码一致，都是计算梯度下降。为了验证梯度下降代码的正确性，使用上述数值检验方法计算 <img class="tex" alt="\textstyle J(W,b)" src="/stanford-ufldl/archive/wiki/images/math/8/e/9/8e94ae776ae14b36b3af183726ababb9.png"/> 的导数，然后验证 <img class="tex" alt="\textstyle \left(\frac{1}{m}\Delta W^{(l)} \right) + \lambda W" src="/stanford-ufldl/archive/wiki/images/math/5/1/a/51abfba362dde73804e9d8dd913ceb00.png"/> 与 <img class="tex" alt="\textstyle \frac{1}{m}\Delta b^{(l)}" src="/stanford-ufldl/archive/wiki/images/math/c/8/3/c83a6b2fce9939316356a4aa0c7e773b.png"/> 是否能够给出正确的求导结果。
 </p><p><br/>
-迄今为止，我们的讨论都集中在使用梯度下降法来最小化 <img class="tex" alt="\textstyle J(\theta)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/e/0/ce027336c1cb3c0cd461406c81369ebf.png"/>。如果你已经实现了一个计算 <img class="tex" alt="\textstyle J(\theta)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/e/0/ce027336c1cb3c0cd461406c81369ebf.png"/> 和 <img class="tex" alt="\textstyle \nabla_\theta J(\theta)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/a/e/9ae0378bbaa18d11cdfbf3c76a612708.png"/> 的函数，那么其实还有更精妙的算法来最小化 <img class="tex" alt="\textstyle J(\theta)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/e/0/ce027336c1cb3c0cd461406c81369ebf.png"/>。举例来说，可以想象这样一个算法：它使用梯度下降，并能够自动调整学习速率 <img class="tex" alt="\textstyle \alpha" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/e/a/7eaa466003e48c1c96824a2edf3de038.png"/>，以得到合适的步长值，最终使 <img class="tex" alt="\textstyle \theta" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/9/d/69d920fe8e1da0543eb63d1097f21754.png"/> 能够快速收敛到一个局部最优解。还有更妙的算法：比如可以寻找一个Hessian矩阵的近似，得到最佳步长值，使用该步长值能够更快地收敛到局部最优（和牛顿法类似）。此类算法的详细讨论已超出了这份讲义的范围，但是L-BFGS算法我们以后会有论述（另一个例子是共轭梯度算法）。你将在编程练习里使用这些算法中的一个。使用这些高级优化算法时，你需要提供关键的函数：即对于任一个 <img class="tex" alt="\textstyle \theta" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/9/d/69d920fe8e1da0543eb63d1097f21754.png"/>，需要你计算出 <img class="tex" alt="\textstyle J(\theta)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/e/0/ce027336c1cb3c0cd461406c81369ebf.png"/> 和 <img class="tex" alt="\textstyle \nabla_\theta J(\theta)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/a/e/9ae0378bbaa18d11cdfbf3c76a612708.png"/>。之后，这些优化算法会自动调整学习速率/步长值  <img class="tex" alt="\textstyle \alpha" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/e/a/7eaa466003e48c1c96824a2edf3de038.png"/> 的大小（并计算Hessian近似矩阵等等）来自动寻找 <img class="tex" alt="\textstyle J(\theta)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/e/0/ce027336c1cb3c0cd461406c81369ebf.png"/> 最小化时<img class="tex" alt="\textstyle \theta" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/9/d/69d920fe8e1da0543eb63d1097f21754.png"/> 的值。诸如L-BFGS和共轭梯度算法通常比梯度下降法快很多。
+迄今为止，我们的讨论都集中在使用梯度下降法来最小化 <img class="tex" alt="\textstyle J(\theta)" src="/stanford-ufldl/archive/wiki/images/math/c/e/0/ce027336c1cb3c0cd461406c81369ebf.png"/>。如果你已经实现了一个计算 <img class="tex" alt="\textstyle J(\theta)" src="/stanford-ufldl/archive/wiki/images/math/c/e/0/ce027336c1cb3c0cd461406c81369ebf.png"/> 和 <img class="tex" alt="\textstyle \nabla_\theta J(\theta)" src="/stanford-ufldl/archive/wiki/images/math/9/a/e/9ae0378bbaa18d11cdfbf3c76a612708.png"/> 的函数，那么其实还有更精妙的算法来最小化 <img class="tex" alt="\textstyle J(\theta)" src="/stanford-ufldl/archive/wiki/images/math/c/e/0/ce027336c1cb3c0cd461406c81369ebf.png"/>。举例来说，可以想象这样一个算法：它使用梯度下降，并能够自动调整学习速率 <img class="tex" alt="\textstyle \alpha" src="/stanford-ufldl/archive/wiki/images/math/7/e/a/7eaa466003e48c1c96824a2edf3de038.png"/>，以得到合适的步长值，最终使 <img class="tex" alt="\textstyle \theta" src="/stanford-ufldl/archive/wiki/images/math/6/9/d/69d920fe8e1da0543eb63d1097f21754.png"/> 能够快速收敛到一个局部最优解。还有更妙的算法：比如可以寻找一个Hessian矩阵的近似，得到最佳步长值，使用该步长值能够更快地收敛到局部最优（和牛顿法类似）。此类算法的详细讨论已超出了这份讲义的范围，但是L-BFGS算法我们以后会有论述（另一个例子是共轭梯度算法）。你将在编程练习里使用这些算法中的一个。使用这些高级优化算法时，你需要提供关键的函数：即对于任一个 <img class="tex" alt="\textstyle \theta" src="/stanford-ufldl/archive/wiki/images/math/6/9/d/69d920fe8e1da0543eb63d1097f21754.png"/>，需要你计算出 <img class="tex" alt="\textstyle J(\theta)" src="/stanford-ufldl/archive/wiki/images/math/c/e/0/ce027336c1cb3c0cd461406c81369ebf.png"/> 和 <img class="tex" alt="\textstyle \nabla_\theta J(\theta)" src="/stanford-ufldl/archive/wiki/images/math/9/a/e/9ae0378bbaa18d11cdfbf3c76a612708.png"/>。之后，这些优化算法会自动调整学习速率/步长值  <img class="tex" alt="\textstyle \alpha" src="/stanford-ufldl/archive/wiki/images/math/7/e/a/7eaa466003e48c1c96824a2edf3de038.png"/> 的大小（并计算Hessian近似矩阵等等）来自动寻找 <img class="tex" alt="\textstyle J(\theta)" src="/stanford-ufldl/archive/wiki/images/math/c/e/0/ce027336c1cb3c0cd461406c81369ebf.png"/> 最小化时<img class="tex" alt="\textstyle \theta" src="/stanford-ufldl/archive/wiki/images/math/6/9/d/69d920fe8e1da0543eb63d1097f21754.png"/> 的值。诸如L-BFGS和共轭梯度算法通常比梯度下降法快很多。
 </p><p><br/>
 </p>
 <h2> <span class="mw-headline" id=".E4.B8.AD.E8.8B.B1.E6.96.87.E5.AF.B9.E7.85.A7">中英文对照</span></h2>
@@ -108,13 +108,13 @@ g_i(\theta) \approx
 </p><p><br/>
 </p>
 <div style="text-align: center;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
-<p><a href="/wayback-ufldl/stanford-ufldl/wiki/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C" title="神经网络">神经网络</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/%E5%8F%8D%E5%90%91%E4%BC%A0%E5%AF%BC%E7%AE%97%E6%B3%95" title="反向传导算法">反向传导算法</a> | <strong class="selflink">梯度检验与高级优化</strong> | <a href="/wayback-ufldl/stanford-ufldl/wiki/%E8%87%AA%E7%BC%96%E7%A0%81%E7%AE%97%E6%B3%95%E4%B8%8E%E7%A8%80%E7%96%8F%E6%80%A7" title="自编码算法与稀疏性">自编码算法与稀疏性</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/%E5%8F%AF%E8%A7%86%E5%8C%96%E8%87%AA%E7%BC%96%E7%A0%81%E5%99%A8%E8%AE%AD%E7%BB%83%E7%BB%93%E6%9E%9C" title="可视化自编码器训练结果">可视化自编码器训练结果</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/%E7%A8%80%E7%96%8F%E8%87%AA%E7%BC%96%E7%A0%81%E5%99%A8%E7%AC%A6%E5%8F%B7%E4%B8%80%E8%A7%88%E8%A1%A8" title="稀疏自编码器符号一览表">稀疏自编码器符号一览表</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Sparse_Autoencoder" title="Exercise:Sparse Autoencoder">Exercise:Sparse_Autoencoder</a>
+<p><a href="/stanford-ufldl/archive/wiki/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C" title="神经网络">神经网络</a> | <a href="/stanford-ufldl/archive/wiki/%E5%8F%8D%E5%90%91%E4%BC%A0%E5%AF%BC%E7%AE%97%E6%B3%95" title="反向传导算法">反向传导算法</a> | <strong class="selflink">梯度检验与高级优化</strong> | <a href="/stanford-ufldl/archive/wiki/%E8%87%AA%E7%BC%96%E7%A0%81%E7%AE%97%E6%B3%95%E4%B8%8E%E7%A8%80%E7%96%8F%E6%80%A7" title="自编码算法与稀疏性">自编码算法与稀疏性</a> | <a href="/stanford-ufldl/archive/wiki/%E5%8F%AF%E8%A7%86%E5%8C%96%E8%87%AA%E7%BC%96%E7%A0%81%E5%99%A8%E8%AE%AD%E7%BB%83%E7%BB%93%E6%9E%9C" title="可视化自编码器训练结果">可视化自编码器训练结果</a> | <a href="/stanford-ufldl/archive/wiki/%E7%A8%80%E7%96%8F%E8%87%AA%E7%BC%96%E7%A0%81%E5%99%A8%E7%AC%A6%E5%8F%B7%E4%B8%80%E8%A7%88%E8%A1%A8" title="稀疏自编码器符号一览表">稀疏自编码器符号一览表</a> | <a href="/stanford-ufldl/archive/wiki/Exercise_Sparse_Autoencoder" title="Exercise:Sparse Autoencoder">Exercise:Sparse_Autoencoder</a>
 </p>
 </div>
 <p><br/>
 </p>
 <div style="text-align: left;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
-<p>Language&nbsp;: <a href="/wayback-ufldl/stanford-ufldl/wiki/Gradient_checking_and_advanced_optimization" title="Gradient checking and advanced optimization">English</a>
+<p>Language&nbsp;: <a href="/stanford-ufldl/archive/wiki/Gradient_checking_and_advanced_optimization" title="Gradient checking and advanced optimization">English</a>
 </p>
 </div>
 
@@ -136,7 +136,7 @@ Expensive parser function count: 0/100
 		<h5>Views</h5>
 		<div class="pBody">
 			<ul>
-				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/%E6%A2%AF%E5%BA%A6%E6%A3%80%E9%AA%8C%E4%B8%8E%E9%AB%98%E7%BA%A7%E4%BC%98%E5%8C%96" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-nstab-main" class="selected"><a href="/stanford-ufldl/archive/wiki/%E6%A2%AF%E5%BA%A6%E6%A3%80%E9%AA%8C%E4%B8%8E%E9%AB%98%E7%BA%A7%E4%BC%98%E5%8C%96" title="View the content page [c]" accesskey="c">Page</a></li>
 				 <li id="ca-talk" class="new"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
 				 <li id="ca-viewsource"><a href="" title="This page is protected.
 You can view its source [e]" accesskey="e">View source</a></li>
@@ -152,15 +152,15 @@ You can view its source [e]" accesskey="e">View source</a></li>
 		</div>
 	</div>
 	<div class="portlet" id="p-logo">
-		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+		<a style="background-image: url(/stanford-ufldl/archive/wiki/skins/common/images/dolphin-openclipart.png);" href="/stanford-ufldl/archive/wiki/Main_Page" title="Visit the main page"></a>
 	</div>
 	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
 	<div class="generated-sidebar portlet" id="p-ufldl_resources">
 		<h5>ufldl resources</h5>
 		<div class="pBody">
 			<ul>
-				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
-				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+				<li id="n-UFLDL-Tutorial"><a href="/stanford-ufldl/archive/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/stanford-ufldl/archive/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
 			</ul>
 		</div>
 	</div>
@@ -168,7 +168,7 @@ You can view its source [e]" accesskey="e">View source</a></li>
 		<h5>wiki</h5>
 		<div class="pBody">
 			<ul>
-				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-mainpage-description"><a href="/stanford-ufldl/archive/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
 				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
 				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
 				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
@@ -201,9 +201,9 @@ You can view its source [e]" accesskey="e">View source</a></li>
 <div id="footer">
 	<ul id="f-list">
 		<li id="lastmod"> This page was last modified on 8 April 2013, at 05:33.</li>
-		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
-		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
-		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+		<li id="privacy"><a href="/stanford-ufldl/archive/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/stanford-ufldl/archive/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/stanford-ufldl/archive/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
 	</ul>
 </div>
 </div>

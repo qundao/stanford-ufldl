@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>自我学习 - Ufldl</title>
-<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
-<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+<link rel="stylesheet" href="/stanford-ufldl/archive/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/stanford-ufldl/archive/wiki/skins/monobook/main.css" media="screen"/>
 
 </head>
 
@@ -41,31 +41,31 @@
 </p><p><br/>
 </p>
 <h2> <span class="mw-headline" id=".E7.89.B9.E5.BE.81.E5.AD.A6.E4.B9.A0">特征学习</span></h2>
-<p>我们已经了解到如何使用一个自编码器（autoencoder）从无标注数据中学习特征。具体来说，假定有一个无标注的训练数据集 <img class="tex" alt="\textstyle \{ x_u^{(1)}, x_u^{(2)}, \ldots, x_u^{(m_u)}\}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/a/3/3a330b29fcaa7c4fd1df8fcd4d19df92.png"/>（下标 <img class="tex" alt="\textstyle u" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/e/8/2e8a112c69b983aac00f93eee6a989a1.png"/> 代表“不带类标”）。现在用它们训练一个稀疏自编码器（可能需要首先对这些数据做白化或其它适当的预处理）。
-</p><p><a href="" class="image"><img alt="STL SparseAE.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/f/ff/STL_SparseAE.png/350px-STL_SparseAE.png" width="350" height="479"/></a>
+<p>我们已经了解到如何使用一个自编码器（autoencoder）从无标注数据中学习特征。具体来说，假定有一个无标注的训练数据集 <img class="tex" alt="\textstyle \{ x_u^{(1)}, x_u^{(2)}, \ldots, x_u^{(m_u)}\}" src="/stanford-ufldl/archive/wiki/images/math/3/a/3/3a330b29fcaa7c4fd1df8fcd4d19df92.png"/>（下标 <img class="tex" alt="\textstyle u" src="/stanford-ufldl/archive/wiki/images/math/2/e/8/2e8a112c69b983aac00f93eee6a989a1.png"/> 代表“不带类标”）。现在用它们训练一个稀疏自编码器（可能需要首先对这些数据做白化或其它适当的预处理）。
+</p><p><a href="" class="image"><img alt="STL SparseAE.png" src="/stanford-ufldl/archive/wiki/images/thumb/f/ff/STL_SparseAE.png/350px-STL_SparseAE.png" width="350" height="479"/></a>
 </p><p><br/>
-利用训练得到的模型参数 <img class="tex" alt="\textstyle W^{(1)}, b^{(1)}, W^{(2)}, b^{(2)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/e/f/1efd10775b8d8b8dc59b9590661f3a2f.png"/>，给定任意的输入数据 <img class="tex" alt="\textstyle x" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/>，可以计算隐藏单元的激活量（activations） <img class="tex" alt="\textstyle a" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/4/6/c469e9ab9efb42a55f860d809731dc77.png"/>。如前所述，相比原始输入 <img class="tex" alt="\textstyle x" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/> 来说，<img class="tex" alt="\textstyle a" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/4/6/c469e9ab9efb42a55f860d809731dc77.png"/> 可能是一个更好的特征描述。下图的神经网络描述了特征（激活量 <img class="tex" alt="\textstyle a" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/4/6/c469e9ab9efb42a55f860d809731dc77.png"/>）的计算。
-</p><p><a href="" class="image"><img alt="STL SparseAE Features.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/7/73/STL_SparseAE_Features.png/300px-STL_SparseAE_Features.png" width="300" height="497"/></a>
+利用训练得到的模型参数 <img class="tex" alt="\textstyle W^{(1)}, b^{(1)}, W^{(2)}, b^{(2)}" src="/stanford-ufldl/archive/wiki/images/math/1/e/f/1efd10775b8d8b8dc59b9590661f3a2f.png"/>，给定任意的输入数据 <img class="tex" alt="\textstyle x" src="/stanford-ufldl/archive/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/>，可以计算隐藏单元的激活量（activations） <img class="tex" alt="\textstyle a" src="/stanford-ufldl/archive/wiki/images/math/c/4/6/c469e9ab9efb42a55f860d809731dc77.png"/>。如前所述，相比原始输入 <img class="tex" alt="\textstyle x" src="/stanford-ufldl/archive/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/> 来说，<img class="tex" alt="\textstyle a" src="/stanford-ufldl/archive/wiki/images/math/c/4/6/c469e9ab9efb42a55f860d809731dc77.png"/> 可能是一个更好的特征描述。下图的神经网络描述了特征（激活量 <img class="tex" alt="\textstyle a" src="/stanford-ufldl/archive/wiki/images/math/c/4/6/c469e9ab9efb42a55f860d809731dc77.png"/>）的计算。
+</p><p><a href="" class="image"><img alt="STL SparseAE Features.png" src="/stanford-ufldl/archive/wiki/images/thumb/7/73/STL_SparseAE_Features.png/300px-STL_SparseAE_Features.png" width="300" height="497"/></a>
 </p><p><br/>
 这实际上就是之前得到的稀疏自编码器，在这里去掉了最后一层。
 </p><p><br/>
-假定有大小为 <img class="tex" alt="\textstyle m_l" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/c/2/6c270d29d4e7e24f2c756df33d564646.png"/> 的已标注训练集 <img class="tex" alt="\textstyle \{ (x_l^{(1)}, y^{(1)}),
-(x_l^{(2)}, y^{(2)}), \ldots (x_l^{(m_l)}, y^{(m_l)}) \}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/3/c/23cfc7b001a6a6b7a8df45a39d7ce812.png"/>（下标 <img class="tex" alt="\textstyle l" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/a/0/ba0593b3db2fa8535b077516f4b0d70b.png"/> 表示“带类标”），我们可以为输入数据找到更好的特征描述。例如，可以将 <img class="tex" alt="\textstyle x_l^{(1)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/b/2/cb267edf5cbce3c54f09c7b975173d17.png"/> 输入到稀疏自编码器，得到隐藏单元激活量 <img class="tex" alt="\textstyle a_l^{(1)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/6/c/76c427b1075092b5b1f52f7681b6da30.png"/>。接下来，可以直接使用 <img class="tex" alt="\textstyle a_l^{(1)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/6/c/76c427b1075092b5b1f52f7681b6da30.png"/> 来代替原始数据 <img class="tex" alt="\textstyle x_l^{(1)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/b/2/cb267edf5cbce3c54f09c7b975173d17.png"/> （“替代表示”,Replacement Representation）。也可以合二为一，使用新的向量 <img class="tex" alt="\textstyle (x_l^{(1)}, a_l^{(1)})" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/2/5/62504902238e3007d8271a8def501a09.png"/> 来代替原始数据 <img class="tex" alt="\textstyle x_l^{(1)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/b/2/cb267edf5cbce3c54f09c7b975173d17.png"/> （“级联表示”,Concatenation Representation）。
+假定有大小为 <img class="tex" alt="\textstyle m_l" src="/stanford-ufldl/archive/wiki/images/math/6/c/2/6c270d29d4e7e24f2c756df33d564646.png"/> 的已标注训练集 <img class="tex" alt="\textstyle \{ (x_l^{(1)}, y^{(1)}),
+(x_l^{(2)}, y^{(2)}), \ldots (x_l^{(m_l)}, y^{(m_l)}) \}" src="/stanford-ufldl/archive/wiki/images/math/2/3/c/23cfc7b001a6a6b7a8df45a39d7ce812.png"/>（下标 <img class="tex" alt="\textstyle l" src="/stanford-ufldl/archive/wiki/images/math/b/a/0/ba0593b3db2fa8535b077516f4b0d70b.png"/> 表示“带类标”），我们可以为输入数据找到更好的特征描述。例如，可以将 <img class="tex" alt="\textstyle x_l^{(1)}" src="/stanford-ufldl/archive/wiki/images/math/c/b/2/cb267edf5cbce3c54f09c7b975173d17.png"/> 输入到稀疏自编码器，得到隐藏单元激活量 <img class="tex" alt="\textstyle a_l^{(1)}" src="/stanford-ufldl/archive/wiki/images/math/7/6/c/76c427b1075092b5b1f52f7681b6da30.png"/>。接下来，可以直接使用 <img class="tex" alt="\textstyle a_l^{(1)}" src="/stanford-ufldl/archive/wiki/images/math/7/6/c/76c427b1075092b5b1f52f7681b6da30.png"/> 来代替原始数据 <img class="tex" alt="\textstyle x_l^{(1)}" src="/stanford-ufldl/archive/wiki/images/math/c/b/2/cb267edf5cbce3c54f09c7b975173d17.png"/> （“替代表示”,Replacement Representation）。也可以合二为一，使用新的向量 <img class="tex" alt="\textstyle (x_l^{(1)}, a_l^{(1)})" src="/stanford-ufldl/archive/wiki/images/math/6/2/5/62504902238e3007d8271a8def501a09.png"/> 来代替原始数据 <img class="tex" alt="\textstyle x_l^{(1)}" src="/stanford-ufldl/archive/wiki/images/math/c/b/2/cb267edf5cbce3c54f09c7b975173d17.png"/> （“级联表示”,Concatenation Representation）。
 </p><p><br/>
 经过变换后，训练集就变成 <img class="tex" alt="\textstyle \{ (a_l^{(1)}, y^{(1)}), (a_l^{(2)}, y^{(2)}), \ldots (a_l^{(m_l)}, y^{(m_l)})
-\}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/d/2/0d2ccc3cd881f5dbb524aa3ed19e99be.png"/>或者是<img class="tex" alt="\textstyle \{
+\}" src="/stanford-ufldl/archive/wiki/images/math/0/d/2/0d2ccc3cd881f5dbb524aa3ed19e99be.png"/>或者是<img class="tex" alt="\textstyle \{
 ((x_l^{(1)}, a_l^{(1)}), y^{(1)}), ((x_l^{(2)}, a_l^{(1)}), y^{(2)}), \ldots, 
-((x_l^{(m_l)}, a_l^{(1)}), y^{(m_l)}) \}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/c/2/8c2f57fc671d4d7369a27db0b13eec14.png"/>（取决于使用 <img class="tex" alt="\textstyle a_l^{(1)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/6/c/76c427b1075092b5b1f52f7681b6da30.png"/> 替换 <img class="tex" alt="\textstyle x_l^{(1)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/b/2/cb267edf5cbce3c54f09c7b975173d17.png"/> 还是将二者合并）。在实践中，将 <img class="tex" alt="\textstyle a_l^{(1)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/6/c/76c427b1075092b5b1f52f7681b6da30.png"/> 和 <img class="tex" alt="\textstyle x_l^{(1)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/b/2/cb267edf5cbce3c54f09c7b975173d17.png"/> 合并通常表现的更好。但是考虑到内存和计算的成本，也可以使用替换操作。
+((x_l^{(m_l)}, a_l^{(1)}), y^{(m_l)}) \}" src="/stanford-ufldl/archive/wiki/images/math/8/c/2/8c2f57fc671d4d7369a27db0b13eec14.png"/>（取决于使用 <img class="tex" alt="\textstyle a_l^{(1)}" src="/stanford-ufldl/archive/wiki/images/math/7/6/c/76c427b1075092b5b1f52f7681b6da30.png"/> 替换 <img class="tex" alt="\textstyle x_l^{(1)}" src="/stanford-ufldl/archive/wiki/images/math/c/b/2/cb267edf5cbce3c54f09c7b975173d17.png"/> 还是将二者合并）。在实践中，将 <img class="tex" alt="\textstyle a_l^{(1)}" src="/stanford-ufldl/archive/wiki/images/math/7/6/c/76c427b1075092b5b1f52f7681b6da30.png"/> 和 <img class="tex" alt="\textstyle x_l^{(1)}" src="/stanford-ufldl/archive/wiki/images/math/c/b/2/cb267edf5cbce3c54f09c7b975173d17.png"/> 合并通常表现的更好。但是考虑到内存和计算的成本，也可以使用替换操作。
 </p><p><br/>
-最终，可以训练出一个有监督学习算法（例如 svm, logistic regression 等），得到一个判别函数对 <img class="tex" alt="\textstyle y" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/8/1/c81e76c28ed991b22b8c1bb8fa392701.png"/> 值进行预测。预测过程如下：给定一个测试样本 <img class="tex" alt="\textstyle x_{\rm test}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/f/7/df77f6f969ea9a1e99da9c100fe95a08.png"/>，重复之前的过程，将其送入稀疏自编码器，得到 <img class="tex" alt="\textstyle a_{\rm test}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/f/a/dfa2797c22eb5c9e484c59f051d7ae68.png"/>。然后将 <img class="tex" alt="\textstyle a_{\rm test}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/f/a/dfa2797c22eb5c9e484c59f051d7ae68.png"/> （或者 <img class="tex" alt="\textstyle (x_{\rm test}, a_{\rm test})" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/9/b/99b977ec4f2de28e15d9fa90fd60227f.png"/> ）送入分类器中，得到预测值。
+最终，可以训练出一个有监督学习算法（例如 svm, logistic regression 等），得到一个判别函数对 <img class="tex" alt="\textstyle y" src="/stanford-ufldl/archive/wiki/images/math/c/8/1/c81e76c28ed991b22b8c1bb8fa392701.png"/> 值进行预测。预测过程如下：给定一个测试样本 <img class="tex" alt="\textstyle x_{\rm test}" src="/stanford-ufldl/archive/wiki/images/math/d/f/7/df77f6f969ea9a1e99da9c100fe95a08.png"/>，重复之前的过程，将其送入稀疏自编码器，得到 <img class="tex" alt="\textstyle a_{\rm test}" src="/stanford-ufldl/archive/wiki/images/math/d/f/a/dfa2797c22eb5c9e484c59f051d7ae68.png"/>。然后将 <img class="tex" alt="\textstyle a_{\rm test}" src="/stanford-ufldl/archive/wiki/images/math/d/f/a/dfa2797c22eb5c9e484c59f051d7ae68.png"/> （或者 <img class="tex" alt="\textstyle (x_{\rm test}, a_{\rm test})" src="/stanford-ufldl/archive/wiki/images/math/9/9/b/99b977ec4f2de28e15d9fa90fd60227f.png"/> ）送入分类器中，得到预测值。
 </p><p><br/>
 </p>
 <h2> <span class="mw-headline" id=".E6.95.B0.E6.8D.AE.E9.A2.84.E5.A4.84.E7.90.86">数据预处理</span></h2>
-<p>在特征学习阶段，我们从未标注训练集 <img class="tex" alt="\textstyle \{ x_u^{(1)}, x_u^{(2)}, \ldots, x_u^{(m_u)}\}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/a/3/3a330b29fcaa7c4fd1df8fcd4d19df92.png"/> 中学习，这一过程中可能计算了各种数据预处理参数。例如计算数据均值并且对数据做均值标准化（mean normalization）；或者对原始数据做主成分分析（PCA），然后将原始数据表示为 <img class="tex" alt="\textstyle U^Tx" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/0/a/e0aec5d033ea89dc9bd9c83bc2b4edec.png"/> (又或者使用 PCA 白化或 ZCA 白化)。这样的话，有必要将这些参数保存起来，并且在后面的训练和测试阶段使用同样的参数，以保证数据进入稀疏自编码神经网络之前经过了同样的变换。例如，如果对未标注数据集进行PCA预处理，就必须将得到的矩阵 <img class="tex" alt="\textstyle U" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/a/5/6a55fb16b0464ccd6652a7f2a583217f.png"/> 保存起来，并且应用到有标注训练集和测试集上；而不能使用有标注训练集重新估计出一个不同的矩阵 <img class="tex" alt="\textstyle U" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/a/5/6a55fb16b0464ccd6652a7f2a583217f.png"/> （也不能重新计算均值并做均值标准化），否则的话可能得到一个完全不一致的数据预处理操作，导致进入自编码器的数据分布迥异于训练自编码器时的数据分布。
+<p>在特征学习阶段，我们从未标注训练集 <img class="tex" alt="\textstyle \{ x_u^{(1)}, x_u^{(2)}, \ldots, x_u^{(m_u)}\}" src="/stanford-ufldl/archive/wiki/images/math/3/a/3/3a330b29fcaa7c4fd1df8fcd4d19df92.png"/> 中学习，这一过程中可能计算了各种数据预处理参数。例如计算数据均值并且对数据做均值标准化（mean normalization）；或者对原始数据做主成分分析（PCA），然后将原始数据表示为 <img class="tex" alt="\textstyle U^Tx" src="/stanford-ufldl/archive/wiki/images/math/e/0/a/e0aec5d033ea89dc9bd9c83bc2b4edec.png"/> (又或者使用 PCA 白化或 ZCA 白化)。这样的话，有必要将这些参数保存起来，并且在后面的训练和测试阶段使用同样的参数，以保证数据进入稀疏自编码神经网络之前经过了同样的变换。例如，如果对未标注数据集进行PCA预处理，就必须将得到的矩阵 <img class="tex" alt="\textstyle U" src="/stanford-ufldl/archive/wiki/images/math/6/a/5/6a55fb16b0464ccd6652a7f2a583217f.png"/> 保存起来，并且应用到有标注训练集和测试集上；而不能使用有标注训练集重新估计出一个不同的矩阵 <img class="tex" alt="\textstyle U" src="/stanford-ufldl/archive/wiki/images/math/6/a/5/6a55fb16b0464ccd6652a7f2a583217f.png"/> （也不能重新计算均值并做均值标准化），否则的话可能得到一个完全不一致的数据预处理操作，导致进入自编码器的数据分布迥异于训练自编码器时的数据分布。
 </p><p><br/>
 </p>
 <h2> <span class="mw-headline" id=".E6.97.A0.E7.9B.91.E7.9D.A3.E7.89.B9.E5.BE.81.E5.AD.A6.E4.B9.A0.E7.9A.84.E6.9C.AF.E8.AF.AD">无监督特征学习的术语</span></h2>
-<p>有两种常见的无监督特征学习方式，区别在于你有什么样的未标注数据。自学习(self-taught learning) 是其中更为一般的、更强大的学习方式，它不要求未标注数据 <img class="tex" alt=" \textstyle x_u" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/7/b/17b209922d20bf7b261283799f84c1fe.png"/> 和已标注数据 <img class="tex" alt=" \textstyle x_l" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/c/7/7c723db4a829ae13f2f923f5ec79b74a.png"/> 来自同样的分布。另外一种带限制性的方式也被称为半监督学习，它要求 <img class="tex" alt=" \textstyle x_u" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/7/b/17b209922d20bf7b261283799f84c1fe.png"/>和<img class="tex" alt=" \textstyle x_l" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/c/7/7c723db4a829ae13f2f923f5ec79b74a.png"/> 服从同样的分布。下面通过例子解释二者的区别。
+<p>有两种常见的无监督特征学习方式，区别在于你有什么样的未标注数据。自学习(self-taught learning) 是其中更为一般的、更强大的学习方式，它不要求未标注数据 <img class="tex" alt=" \textstyle x_u" src="/stanford-ufldl/archive/wiki/images/math/1/7/b/17b209922d20bf7b261283799f84c1fe.png"/> 和已标注数据 <img class="tex" alt=" \textstyle x_l" src="/stanford-ufldl/archive/wiki/images/math/7/c/7/7c723db4a829ae13f2f923f5ec79b74a.png"/> 来自同样的分布。另外一种带限制性的方式也被称为半监督学习，它要求 <img class="tex" alt=" \textstyle x_u" src="/stanford-ufldl/archive/wiki/images/math/1/7/b/17b209922d20bf7b261283799f84c1fe.png"/>和<img class="tex" alt=" \textstyle x_l" src="/stanford-ufldl/archive/wiki/images/math/7/c/7/7c723db4a829ae13f2f923f5ec79b74a.png"/> 服从同样的分布。下面通过例子解释二者的区别。
 </p><p><br/>
 假定有一个计算机视觉方面的任务，目标是区分汽车和摩托车图像；也即训练样本里面要么是汽车的图像，要么是摩托车的图像。哪里可以获取大量的未标注数据呢？最简单的方式可能是从互联网上下载一些随机的图像数据集，在这些数据上训练出一个稀疏自编码器，从中得到有用的特征。这个例子里，未标注数据完全来自于一个和已标注数据不同的分布（未标注数据集中，或许其中一些图像包含汽车或者摩托车，但是不是所有的图像都如此）。这种情形被称为自学习。
 </p><p><br/>
@@ -95,13 +95,13 @@
 </p><p><br/>
 </p>
 <div style="text-align: center;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
-<p><strong class="selflink">自我学习</strong> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Self-Taught_Learning" title="Exercise:Self-Taught Learning">Exercise:Self-Taught Learning</a>
+<p><strong class="selflink">自我学习</strong> | <a href="/stanford-ufldl/archive/wiki/Exercise_Self-Taught_Learning" title="Exercise:Self-Taught Learning">Exercise:Self-Taught Learning</a>
 </p>
 </div>
 <p><br/>
 </p>
 <div style="text-align: left;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
-<p>Language&nbsp;: <a href="/wayback-ufldl/stanford-ufldl/wiki/Self-Taught_Learning" title="Self-Taught Learning">English</a>
+<p>Language&nbsp;: <a href="/stanford-ufldl/archive/wiki/Self-Taught_Learning" title="Self-Taught Learning">English</a>
 </p>
 </div>
 
@@ -123,7 +123,7 @@ Expensive parser function count: 0/100
 		<h5>Views</h5>
 		<div class="pBody">
 			<ul>
-				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/%E8%87%AA%E6%88%91%E5%AD%A6%E4%B9%A0" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-nstab-main" class="selected"><a href="/stanford-ufldl/archive/wiki/%E8%87%AA%E6%88%91%E5%AD%A6%E4%B9%A0" title="View the content page [c]" accesskey="c">Page</a></li>
 				 <li id="ca-talk" class="new"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
 				 <li id="ca-viewsource"><a href="" title="This page is protected.
 You can view its source [e]" accesskey="e">View source</a></li>
@@ -139,15 +139,15 @@ You can view its source [e]" accesskey="e">View source</a></li>
 		</div>
 	</div>
 	<div class="portlet" id="p-logo">
-		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+		<a style="background-image: url(/stanford-ufldl/archive/wiki/skins/common/images/dolphin-openclipart.png);" href="/stanford-ufldl/archive/wiki/Main_Page" title="Visit the main page"></a>
 	</div>
 	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
 	<div class="generated-sidebar portlet" id="p-ufldl_resources">
 		<h5>ufldl resources</h5>
 		<div class="pBody">
 			<ul>
-				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
-				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+				<li id="n-UFLDL-Tutorial"><a href="/stanford-ufldl/archive/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/stanford-ufldl/archive/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
 			</ul>
 		</div>
 	</div>
@@ -155,7 +155,7 @@ You can view its source [e]" accesskey="e">View source</a></li>
 		<h5>wiki</h5>
 		<div class="pBody">
 			<ul>
-				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-mainpage-description"><a href="/stanford-ufldl/archive/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
 				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
 				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
 				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
@@ -188,9 +188,9 @@ You can view its source [e]" accesskey="e">View source</a></li>
 <div id="footer">
 	<ul id="f-list">
 		<li id="lastmod"> This page was last modified on 8 April 2013, at 05:35.</li>
-		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
-		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
-		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+		<li id="privacy"><a href="/stanford-ufldl/archive/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/stanford-ufldl/archive/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/stanford-ufldl/archive/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
 	</ul>
 </div>
 </div>

@@ -5,9 +5,9 @@
     <title>Unsupervised Feature Learning and Deep Learning Tutorial</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
-    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/bootstrap_readable.min.css" rel="stylesheet">
-    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/pygments/default.css" rel="stylesheet">
-    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/custom.css" rel="stylesheet">
+    <link href="/stanford-ufldl/archive/tutorial/css/bootstrap_readable.min.css" rel="stylesheet">
+    <link href="/stanford-ufldl/archive/tutorial/css/pygments/default.css" rel="stylesheet">
+    <link href="/stanford-ufldl/archive/tutorial/css/custom.css" rel="stylesheet">
     <script type="text/javascript"
           src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
     </script>
@@ -27,7 +27,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/wayback-ufldl/stanford-ufldl/tutorial/">UFLDL Tutorial</a>
+          <a class="navbar-brand" href="/stanford-ufldl/archive/tutorial/">UFLDL Tutorial</a>
         </div>
         <!---
         <div class="collapse navbar-collapse">
@@ -52,7 +52,7 @@
 
 <p>To describe neural networks, we will begin by describing the simplest possible neural network, one which comprises a single “neuron.” We will use the following diagram to denote a single neuron:</p>
 <center>
-<img src='/wayback-ufldl/stanford-ufldl/tutorial/images/SingleNeuron.png' width='300' />
+<img src='/stanford-ufldl/archive/tutorial/images/SingleNeuron.png' width='300' />
 </center>
 <p>This “neuron” is a computational unit that takes as input <m>x_1, x_2, x_3</m> (and a +1 intercept term), and outputs <m>\textstyle h_{W,b}(x) = f(W^Tx) = f(\sum_{i=1}^3 W_{i}x_i +b)</m>, where <m>f : \Re \mapsto \Re</m> is called the <strong>activation function</strong>. In these notes, we will choose <m>f(\cdot)</m> to be the sigmoid function:</p>
 <m>
@@ -70,7 +70,7 @@ f(z) = \max(0,x).
 </m>
 <p>Here are plots of the sigmoid, <m>\tanh</m> and rectified linear functions:</p>
 <center>
-<img src='/wayback-ufldl/stanford-ufldl/tutorial/images/Activation_functions.png' width='450' />
+<img src='/stanford-ufldl/archive/tutorial/images/Activation_functions.png' width='450' />
 </center>
 <p>The <m>\tanh(z)</m> function is a rescaled version of the sigmoid, and its output range is <m>[-1,1]</m> instead of <m>[0,1]</m>. The rectified linear function is piece-wise linear and saturates at exactly 0 whenever the input <m>z</m> is less than 0.</p>
 
@@ -82,7 +82,7 @@ f(z) = \max(0,x).
 
 <p>A neural network is put together by hooking together many of our simple “neurons,” so that the output of a neuron can be the input of another. For example, here is a small neural network:</p>
 <center>
-<img src='/wayback-ufldl/stanford-ufldl/tutorial/images/Network331.png' width='400' />
+<img src='/stanford-ufldl/archive/tutorial/images/Network331.png' width='400' />
 </center>
 <p>In this figure, we have used circles to also denote the inputs to the network. The circles labeled “+1” are called <strong>bias units</strong>, and correspond to the intercept term. The leftmost layer of the network is called the <strong>input layer</strong>, and the rightmost layer the <strong>output layer</strong> (which, in this example, has only one node). The middle layer of nodes is called the <strong>hidden layer</strong>, because its values are not observed in the training set. We also say that our example neural network has 3 <strong>input units</strong> (not counting the bias unit), 3 <strong>hidden units</strong>, and 1 <strong>output unit</strong>.</p>
 
@@ -120,7 +120,7 @@ a^{(l+1)} &amp;= f(z^{(l+1)})
 
 <p>Neural networks can also have multiple output units. For example, here is a network with two hidden layers layers <m>L_2</m> and <m>L_3</m> and two output units in layer <m>L_4</m>:</p>
 <center>
-<img src='/wayback-ufldl/stanford-ufldl/tutorial/images/Network3322.png' width='500' />
+<img src='/stanford-ufldl/archive/tutorial/images/Network3322.png' width='500' />
 </center>
 <p>To train this network, we would need training examples <m>(x^{(i)}, y^{(i)})</m> where <m>y^{(i)} \in \Re^2</m>. This sort of network is useful if there’re multiple outputs that you’re interested in predicting. (For example, in a medical diagnosis application, the vector <m>x</m> might give the input features of a patient, and the different outputs <m>y_i</m>’s might indicate presence or absence of different diseases.)</p>
 
@@ -276,13 +276,13 @@ b^{(l)} &amp;= b^{(l)} - \alpha \left[\frac{1}{m} \Delta b^{(l)}\right]
     </div>
 
     <!-- Generate sidebar --->
-    <script src='/wayback-ufldl/stanford-ufldl/tutorial/sidebar/sidebar.js'></script>
+    <script src='/stanford-ufldl/archive/tutorial/sidebar/sidebar.js'></script>
     <script>
       function renderHeading(name) {
         return '<div class = "panel-heading">' + name + '</div>';
       };
       function renderItem(name, link) { 
-        return '<a href="/wayback-ufldl/stanford-ufldl/tutorial/' + link + '" class="list-group-item nav">' + name +
+        return '<a href="/stanford-ufldl/archive/tutorial/' + link + '" class="list-group-item nav">' + name +
           '</a>';
       };
       renderedHtml = '<div class = "panel panel-default">';
@@ -300,7 +300,7 @@ b^{(l)} &amp;= b^{(l)} - \alpha \left[\frac{1}{m} \Delta b^{(l)}\right]
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="//code.jquery.com/jquery.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="/wayback-ufldl/stanford-ufldl/tutorial/js/bootstrap.min.js"></script>
+    <script src="/stanford-ufldl/archive/tutorial/js/bootstrap.min.js"></script>
     <script>
       var inputs = document.getElementsByTagName("m");
       for (var i = 0; i < inputs.length; i++) { 

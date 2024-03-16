@@ -5,9 +5,9 @@
     <title>Unsupervised Feature Learning and Deep Learning Tutorial</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
-    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/bootstrap_readable.min.css" rel="stylesheet">
-    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/pygments/default.css" rel="stylesheet">
-    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/custom.css" rel="stylesheet">
+    <link href="/stanford-ufldl/archive/tutorial/css/bootstrap_readable.min.css" rel="stylesheet">
+    <link href="/stanford-ufldl/archive/tutorial/css/pygments/default.css" rel="stylesheet">
+    <link href="/stanford-ufldl/archive/tutorial/css/custom.css" rel="stylesheet">
     <script type="text/javascript"
           src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
     </script>
@@ -27,7 +27,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/wayback-ufldl/stanford-ufldl/tutorial/">UFLDL Tutorial</a>
+          <a class="navbar-brand" href="/stanford-ufldl/archive/tutorial/">UFLDL Tutorial</a>
         </div>
         <!---
         <div class="collapse navbar-collapse">
@@ -75,11 +75,11 @@
 <p>You will also need your code from the following exercises:</p>
 
 <ul>
-<li><a href="/wayback-ufldl/stanford-ufldl/tutorial/unsupervised/ExerciseRICA">RICA</a></li>
+<li><a href="/stanford-ufldl/archive/tutorial/unsupervised/ExerciseRICA">RICA</a></li>
 
-<li><a href="/wayback-ufldl/stanford-ufldl/tutorial/supervised/SoftmaxRegression">Softmax Regression</a></li>
+<li><a href="/stanford-ufldl/archive/tutorial/supervised/SoftmaxRegression">Softmax Regression</a></li>
 
-<li><a href="/wayback-ufldl/stanford-ufldl/tutorial/supervised/ExerciseConvolutionalNeuralNetwork">Convolutional Neural Network</a></li>
+<li><a href="/stanford-ufldl/archive/tutorial/supervised/ExerciseConvolutionalNeuralNetwork">Convolutional Neural Network</a></li>
 </ul>
 
 <p><strong>If you have not completed the exercises listed above, we strongly suggest you complete them first.</strong></p>
@@ -92,7 +92,7 @@
 
 <p>In the starter code, we have provided code to split the MNIST dataset into 50000 “unlabelled” images and 10000 “labelled” images. We also provide code to randomly extract 200000 8-by-8 patches from the unlabelled dataset. You will need to whiten the patches using the <code>zca2.m</code> function seen in the RICA exercise. Then you will train an RICA on the 200000 patches, using the same <code>softICACost.m</code> function as you had written in the previous exercise. (From the earlier exercise, you should have a working and vectorized implementation of the RICA.) For us, the training step took less than 25 minutes on a fast desktop. When training is complete, you should get a visualization of pen strokes like the image shown below:</p>
 
-<p><img src='/wayback-ufldl/stanford-ufldl/tutorial/images/SelfTaughtFeatures.png' width='400px' /></p>
+<p><img src='/stanford-ufldl/archive/tutorial/images/SelfTaughtFeatures.png' width='400px' /></p>
 
 <p>Informally, the features learned by the RICA should correspond to edge detectors.</p>
 
@@ -120,13 +120,13 @@
     </div>
 
     <!-- Generate sidebar --->
-    <script src='/wayback-ufldl/stanford-ufldl/tutorial/sidebar/sidebar.js'></script>
+    <script src='/stanford-ufldl/archive/tutorial/sidebar/sidebar.js'></script>
     <script>
       function renderHeading(name) {
         return '<div class = "panel-heading">' + name + '</div>';
       };
       function renderItem(name, link) { 
-        return '<a href="/wayback-ufldl/stanford-ufldl/tutorial/' + link + '" class="list-group-item nav">' + name +
+        return '<a href="/stanford-ufldl/archive/tutorial/' + link + '" class="list-group-item nav">' + name +
           '</a>';
       };
       renderedHtml = '<div class = "panel panel-default">';
@@ -144,7 +144,7 @@
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="//code.jquery.com/jquery.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="/wayback-ufldl/stanford-ufldl/tutorial/js/bootstrap.min.js"></script>
+    <script src="/stanford-ufldl/archive/tutorial/js/bootstrap.min.js"></script>
     <script>
       var inputs = document.getElementsByTagName("m");
       for (var i = 0; i < inputs.length; i++) { 

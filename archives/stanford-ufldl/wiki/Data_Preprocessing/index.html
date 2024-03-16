@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data Preprocessing - Ufldl</title>
-<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
-<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+<link rel="stylesheet" href="/stanford-ufldl/archive/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/stanford-ufldl/archive/wiki/skins/monobook/main.css" media="screen"/>
 
 </head>
 
@@ -80,12 +80,12 @@
 </p>
 <h2> <span class="mw-headline" id="PCA.2FZCA_Whitening"> PCA/ZCA Whitening </span></h2>
 <p>After doing the simple normalizations, whitening is often the next preprocessing step employed that helps make our algorithms work better. In practice, many deep learning algorithms rely on whitening to learn good features.
-</p><p>In performing PCA/ZCA whitening, it is pertinent to first zero-mean the features (across the dataset) to ensure that <img class="tex" alt=" \frac{1}{m} \sum_i x^{(i)} = 0 " src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/3/8/e38353138423fe3c99226921e02ee649.png"/>. Specifically, this should be done before computing the covariance matrix. (The only exception is when per-example mean subtraction is performed and the data is stationary across dimensions/pixels.)
-</p><p>Next, one needs to select the value of <tt>epsilon</tt> to use when performing <a href="/wayback-ufldl/stanford-ufldl/wiki/Whitening" title="Whitening"> PCA/ZCA whitening</a> (recall that this was the regularization term that has an effect of <i>low-pass filtering</i> the data). It turns out that selecting this value can also play an important role for feature learning, we discuss two cases for selecting <tt>epsilon</tt>:
+</p><p>In performing PCA/ZCA whitening, it is pertinent to first zero-mean the features (across the dataset) to ensure that <img class="tex" alt=" \frac{1}{m} \sum_i x^{(i)} = 0 " src="/stanford-ufldl/archive/wiki/images/math/e/3/8/e38353138423fe3c99226921e02ee649.png"/>. Specifically, this should be done before computing the covariance matrix. (The only exception is when per-example mean subtraction is performed and the data is stationary across dimensions/pixels.)
+</p><p>Next, one needs to select the value of <tt>epsilon</tt> to use when performing <a href="/stanford-ufldl/archive/wiki/Whitening" title="Whitening"> PCA/ZCA whitening</a> (recall that this was the regularization term that has an effect of <i>low-pass filtering</i> the data). It turns out that selecting this value can also play an important role for feature learning, we discuss two cases for selecting <tt>epsilon</tt>:
 </p>
 <h3> <span class="mw-headline" id="Reconstruction_Based_Models"> Reconstruction Based Models </span></h3>
 <p>In models based on reconstruction (including Autoencoders, Sparse Coding, RBMs, k-Means), it is often preferable to set <tt>epsilon</tt> to a value such that low-pass filtering is achieved. One way to check this is to set a value for <tt>epsilon</tt>, run ZCA whitening, and thereafter visualize the data before and after whitening. If the value of epsilon is set too low, the data will look very noisy; conversely, if <tt>epsilon</tt> is set too high, you will see a "blurred" version of the original data. A good way to get a feel for the magnitude of <tt>epsilon</tt> to try is to plot the eigenvalues on a graph. As visible in the example graph below, you may get a "long tail" corresponding to the high frequency noise components. You will want to choose <tt>epsilon</tt> such that most of the "long tail" is filtered out, i.e. choose <tt>epsilon</tt> such that it is greater than most of the small eigenvalues corresponding to the noise.
-</p><p><a href="" class="image"><img alt="ZCA Eigenvalues Plot.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/9/91/ZCA_Eigenvalues_Plot.png" width="482" height="392"/></a>
+</p><p><a href="" class="image"><img alt="ZCA Eigenvalues Plot.png" src="/stanford-ufldl/archive/wiki/images/9/91/ZCA_Eigenvalues_Plot.png" width="482" height="392"/></a>
 </p><p>In reconstruction based models, the loss function includes a term that penalizes reconstructions that are far from the original inputs. Then, if <tt>epsilon</tt> is set too <i>low</i>, the data will contain a lot of noise which the model will need to reconstruct well. As a result, it is very important for reconstruction based models to have data that has been low-pass filtered.
 </p>
 <div style="background-color: #eeeeee; border-style: dotted; padding: 5px">
@@ -93,11 +93,11 @@
 </p>
 </div>
 <h3> <span class="mw-headline" id="ICA-based_Models_.28with_orthogonalization.29"> ICA-based Models (with orthogonalization) </span></h3>
-<p>For ICA-based models with orthogonalization, it is <i>very</i> important for the data to be as close to white (identity covariance) as possible. This is a side-effect of using orthogonalization to decorrelate the features learned (more details in <a href="/wayback-ufldl/stanford-ufldl/wiki/Independent_Component_Analysis" title="Independent Component Analysis"> ICA</a>). Hence, in this case, you will want to use an <tt>epsilon</tt> that is as small as possible (e.g., <span class="texhtml"><i>e</i><i>p</i><i>s</i><i>i</i><i>l</i><i>o</i><i>n</i> = 1<i>e</i> &minus; 6</span>).
+<p>For ICA-based models with orthogonalization, it is <i>very</i> important for the data to be as close to white (identity covariance) as possible. This is a side-effect of using orthogonalization to decorrelate the features learned (more details in <a href="/stanford-ufldl/archive/wiki/Independent_Component_Analysis" title="Independent Component Analysis"> ICA</a>). Hence, in this case, you will want to use an <tt>epsilon</tt> that is as small as possible (e.g., <span class="texhtml"><i>e</i><i>p</i><i>s</i><i>i</i><i>l</i><i>o</i><i>n</i> = 1<i>e</i> &minus; 6</span>).
 </p><p><br/>
 </p>
 <div style="background-color: #eeeeee; border-style: dotted; padding: 5px">
-<p>Tip: In PCA whitening, one also has the option of performing dimension reduction while whitening the data. This is usually an excellent idea since it can greatly speed up the algorithms (less computation and less parameters). A simple rule of thumb to choose how many principle components to retain is to keep enough components to have 99% of the variance retained (more details at <a href="/wayback-ufldl/stanford-ufldl/wiki/PCA#Number_of_components_to_retain" title="PCA"> PCA</a>)
+<p>Tip: In PCA whitening, one also has the option of performing dimension reduction while whitening the data. This is usually an excellent idea since it can greatly speed up the algorithms (less computation and less parameters). A simple rule of thumb to choose how many principle components to retain is to keep enough components to have 99% of the variance retained (more details at <a href="/stanford-ufldl/archive/wiki/PCA#Number_of_components_to_retain" title="PCA"> PCA</a>)
 </p>
 </div>
 <p><br/>
@@ -127,7 +127,7 @@
 </p><p><br/>
 </p>
 <div style="text-align: left;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
-<p>Language&nbsp;: <a href="/wayback-ufldl/stanford-ufldl/wiki/%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86" title="数据预处理">中文</a>
+<p>Language&nbsp;: <a href="/stanford-ufldl/archive/wiki/%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86" title="数据预处理">中文</a>
 </p>
 </div>
 
@@ -149,7 +149,7 @@ Expensive parser function count: 0/100
 		<h5>Views</h5>
 		<div class="pBody">
 			<ul>
-				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/Data_Preprocessing" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-nstab-main" class="selected"><a href="/stanford-ufldl/archive/wiki/Data_Preprocessing" title="View the content page [c]" accesskey="c">Page</a></li>
 				 <li id="ca-talk" class="new"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
 				 <li id="ca-viewsource"><a href="" title="This page is protected.
 You can view its source [e]" accesskey="e">View source</a></li>
@@ -165,15 +165,15 @@ You can view its source [e]" accesskey="e">View source</a></li>
 		</div>
 	</div>
 	<div class="portlet" id="p-logo">
-		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+		<a style="background-image: url(/stanford-ufldl/archive/wiki/skins/common/images/dolphin-openclipart.png);" href="/stanford-ufldl/archive/wiki/Main_Page" title="Visit the main page"></a>
 	</div>
 	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
 	<div class="generated-sidebar portlet" id="p-ufldl_resources">
 		<h5>ufldl resources</h5>
 		<div class="pBody">
 			<ul>
-				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
-				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+				<li id="n-UFLDL-Tutorial"><a href="/stanford-ufldl/archive/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/stanford-ufldl/archive/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
 			</ul>
 		</div>
 	</div>
@@ -181,7 +181,7 @@ You can view its source [e]" accesskey="e">View source</a></li>
 		<h5>wiki</h5>
 		<div class="pBody">
 			<ul>
-				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-mainpage-description"><a href="/stanford-ufldl/archive/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
 				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
 				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
 				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
@@ -214,9 +214,9 @@ You can view its source [e]" accesskey="e">View source</a></li>
 <div id="footer">
 	<ul id="f-list">
 		<li id="lastmod"> This page was last modified on 8 April 2013, at 04:22.</li>
-		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
-		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
-		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+		<li id="privacy"><a href="/stanford-ufldl/archive/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/stanford-ufldl/archive/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/stanford-ufldl/archive/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
 	</ul>
 </div>
 </div>

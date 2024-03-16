@@ -5,9 +5,9 @@
     <title>Unsupervised Feature Learning and Deep Learning Tutorial</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
-    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/bootstrap_readable.min.css" rel="stylesheet">
-    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/pygments/default.css" rel="stylesheet">
-    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/custom.css" rel="stylesheet">
+    <link href="/stanford-ufldl/archive/tutorial/css/bootstrap_readable.min.css" rel="stylesheet">
+    <link href="/stanford-ufldl/archive/tutorial/css/pygments/default.css" rel="stylesheet">
+    <link href="/stanford-ufldl/archive/tutorial/css/custom.css" rel="stylesheet">
     <script type="text/javascript"
           src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
     </script>
@@ -27,7 +27,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/wayback-ufldl/stanford-ufldl/tutorial/">UFLDL Tutorial</a>
+          <a class="navbar-brand" href="/stanford-ufldl/archive/tutorial/">UFLDL Tutorial</a>
         </div>
         <!---
         <div class="collapse navbar-collapse">
@@ -52,7 +52,7 @@
 
 <p>Here is an autoencoder:</p>
 
-<p><img src='/wayback-ufldl/stanford-ufldl/tutorial/images/Autoencoder636.png' width='100%' /></p>
+<p><img src='/stanford-ufldl/archive/tutorial/images/Autoencoder636.png' width='100%' /></p>
 
 <p>The autoencoder tries to learn a function <m>\textstyle h_{W,b}(x) \approx x</m>. In other words, it is trying to learn an approximation to the identity function, so as to output <m>\textstyle \hat{x}</m> that is similar to <m>\textstyle x</m>. The identity function seems a particularly trivial function to be trying to learn; but by placing constraints on the network, such as by limiting the number of hidden units, we can discover interesting structure about the data. As a concrete example, suppose the inputs <m>\textstyle x</m> are the pixel intensity values from a <m>\textstyle 10 \times 10</m> image (100 pixels) so <m>\textstyle n=100</m>, and there are <m>\textstyle s_2=50</m> hidden units in layer <m>\textstyle L_2</m>. Note that we also have <m>\textstyle y \in \Re^{100}</m>. Since there are only 50 hidden units, the network is forced to learn a ”compressed” representation of the input. I.e., given only the vector of hidden unit activations <m>\textstyle a^{(2)} \in \Re^{50}</m>, it must try to ”‘reconstruct”’ the 100-pixel input <m>\textstyle x</m>. If the input were completely random—say, each <m>\textstyle x_i</m> comes from an IID Gaussian independent of the other features—then this compression task would be very difficult. But if there is structure in the data, for example, if some of the input features are correlated, then this algorithm will be able to discover some of those correlations. In fact, this simple autoencoder often ends up learning a low-dimensional representation very similar to PCAs.</p>
 
@@ -85,7 +85,7 @@
 
 <p>This penalty function has the property that <m>\textstyle {\rm KL}(\rho || \hat\rho_j) = 0</m> if <m>\textstyle \hat\rho_j = \rho</m>, and otherwise it increases monotonically as <m>\textstyle \hat\rho_j</m> diverges from <m>\textstyle \rho</m>. For example, in the figure below, we have set <m>\textstyle \rho = 0.2</m>, and plotted <m>\textstyle {\rm KL}(\rho || \hat\rho_j)</m> for a range of values of <m>\textstyle \hat\rho_j</m>:</p>
 
-<p><img src='/wayback-ufldl/stanford-ufldl/tutorial/images/KLPenaltyExample.png' width='100%' /></p>
+<p><img src='/stanford-ufldl/archive/tutorial/images/KLPenaltyExample.png' width='100%' /></p>
 
 <p>We see that the KL-divergence reaches its minimum of 0 at</p>
 <m>\textstyle \hat\rho_j = \rho</m>
@@ -130,7 +130,7 @@ x_j = \frac{W^{(1)}_{ij}}{\sqrt{\sum_{j=1}^{100} (W^{(1)}_{ij})^2}}.
 
 <p>When we do this for a sparse autoencoder (trained with 100 hidden units on 10x10 pixel inputs<sup>1</sup> we get the following result:</p>
 
-<p><img src='/wayback-ufldl/stanford-ufldl/tutorial/images/ExampleSparseAutoencoderWeights.png' width='400px' /></p>
+<p><img src='/stanford-ufldl/archive/tutorial/images/ExampleSparseAutoencoderWeights.png' width='400px' /></p>
 
 <p>Each square in the figure above shows the (norm bounded) input image <m>\textstyle x</m> that maximally actives one of 100 hidden units. We see that the different hidden units have learned to detect edges at different positions and orientations in the image.</p>
 
@@ -148,13 +148,13 @@ x_j = \frac{W^{(1)}_{ij}}{\sqrt{\sum_{j=1}^{100} (W^{(1)}_{ij})^2}}.
     </div>
 
     <!-- Generate sidebar --->
-    <script src='/wayback-ufldl/stanford-ufldl/tutorial/sidebar/sidebar.js'></script>
+    <script src='/stanford-ufldl/archive/tutorial/sidebar/sidebar.js'></script>
     <script>
       function renderHeading(name) {
         return '<div class = "panel-heading">' + name + '</div>';
       };
       function renderItem(name, link) { 
-        return '<a href="/wayback-ufldl/stanford-ufldl/tutorial/' + link + '" class="list-group-item nav">' + name +
+        return '<a href="/stanford-ufldl/archive/tutorial/' + link + '" class="list-group-item nav">' + name +
           '</a>';
       };
       renderedHtml = '<div class = "panel panel-default">';
@@ -172,7 +172,7 @@ x_j = \frac{W^{(1)}_{ij}}{\sqrt{\sum_{j=1}^{100} (W^{(1)}_{ij})^2}}.
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="//code.jquery.com/jquery.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="/wayback-ufldl/stanford-ufldl/tutorial/js/bootstrap.min.js"></script>
+    <script src="/stanford-ufldl/archive/tutorial/js/bootstrap.min.js"></script>
     <script>
       var inputs = document.getElementsByTagName("m");
       for (var i = 0; i < inputs.length; i++) { 

@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Exercise:Independent Component Analysis - Ufldl</title>
-<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
-<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+<link rel="stylesheet" href="/stanford-ufldl/archive/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/stanford-ufldl/archive/wiki/skins/monobook/main.css" media="screen"/>
 
 </head>
 
@@ -43,15 +43,15 @@
 </ul>
 </td></tr></table><script>if (window.showTocToggle) { var tocShowText = "show"; var tocHideText = "hide"; showTocToggle(); } </script>
 <h2> <span class="mw-headline" id="Independent_Component_Analysis"> Independent Component Analysis </span></h2>
-<p>In this exercise, you will implement <a href="/wayback-ufldl/stanford-ufldl/wiki/Independent_Component_Analysis" title="Independent Component Analysis">Independent Component Analysis</a> on color images from the STL-10 dataset.
+<p>In this exercise, you will implement <a href="/stanford-ufldl/archive/wiki/Independent_Component_Analysis" title="Independent Component Analysis">Independent Component Analysis</a> on color images from the STL-10 dataset.
 </p><p>In the file <tt><a href="http://ufldl.stanford.edu/wiki/resources/independent_component_analysis_exercise.zip" class="external text" rel="nofollow">independent_component_analysis_exercise.zip</a></tt> we have provided some starter code. You should write your code at the places indicated "YOUR CODE HERE" in the files.
 </p><p>For this exercise, you will need to modify <b><tt>OrthonormalICACost.m</tt></b> and <b><tt>ICAExercise.m</tt></b>.
 </p>
 <h3> <span class="mw-headline" id="Dependencies"> Dependencies </span></h3>
 <p>You will need:
 </p>
-<ul><li> <tt>computeNumericalGradient.m</tt> from <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Sparse_Autoencoder" title="Exercise:Sparse Autoencoder">Exercise:Sparse Autoencoder</a>
-</li><li> <tt>displayColorNetwork.m</tt> from <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Learning_color_features_with_Sparse_Autoencoders" title="Exercise:Learning color features with Sparse Autoencoders">Exercise:Learning color features with Sparse Autoencoders</a>
+<ul><li> <tt>computeNumericalGradient.m</tt> from <a href="/stanford-ufldl/archive/wiki/Exercise_Sparse_Autoencoder" title="Exercise:Sparse Autoencoder">Exercise:Sparse Autoencoder</a>
+</li><li> <tt>displayColorNetwork.m</tt> from <a href="/stanford-ufldl/archive/wiki/Exercise_Learning_color_features_with_Sparse_Autoencoders" title="Exercise:Learning color features with Sparse Autoencoders">Exercise:Learning color features with Sparse Autoencoders</a>
 </li></ul>
 <p>The following additional file is also required for this exercise:
 </p>
@@ -63,7 +63,7 @@
 <p>In this step, we initialize some parameters used for the exercise.
 </p>
 <h3> <span class="mw-headline" id="Step_1:_Sample_patches"> Step 1: Sample patches </span></h3>
-<p>In this step, we load and use a portion of the 8x8 patches from the STL-10 dataset (which you first saw in the exercise on <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Learning_color_features_with_Sparse_Autoencoders" title="Exercise:Learning color features with Sparse Autoencoders"> linear decoders</a>).
+<p>In this step, we load and use a portion of the 8x8 patches from the STL-10 dataset (which you first saw in the exercise on <a href="/stanford-ufldl/archive/wiki/Exercise_Learning_color_features_with_Sparse_Autoencoders" title="Exercise:Learning color features with Sparse Autoencoders"> linear decoders</a>).
 </p>
 <h3> <span class="mw-headline" id="Step_2:_ZCA_whiten_patches"> Step 2: ZCA whiten patches </span></h3>
 <p>In this step, we ZCA whiten the patches as required by orthonormal ICA.
@@ -72,17 +72,17 @@
 <p>In this step, you should implement the ICA cost function:
 <tt>orthonormalICACost</tt> in <tt>orthonormalICACost.m</tt>, which computes the cost and gradient for the orthonormal ICA objective. Note that the orthonormality constraint is <b>not</b> enforced in the cost function. It will be enforced by a projection in the gradient descent step, which you will have to complete in step 4.
 </p><p>When you have implemented the cost function, you should check the gradients numerically.
-</p><p><b>Hint</b> - if you are having difficulties deriving the gradients, you may wish to consult the page on <a href="/wayback-ufldl/stanford-ufldl/wiki/Deriving_gradients_using_the_backpropagation_idea" title="Deriving gradients using the backpropagation idea">deriving gradients using the backpropagation idea</a>.
+</p><p><b>Hint</b> - if you are having difficulties deriving the gradients, you may wish to consult the page on <a href="/stanford-ufldl/archive/wiki/Deriving_gradients_using_the_backpropagation_idea" title="Deriving gradients using the backpropagation idea">deriving gradients using the backpropagation idea</a>.
 </p>
 <h4> <span class="mw-headline" id="Step_4:_Optimization"> Step 4: Optimization </span></h4>
-<p>In step 4, you will optimize for the orthonormal ICA objective using gradient descent with backtracking line search (the code for which has already been provided for you. For more details on the backtracking line search, you may wish to consult the <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Independent_Component_Analysis#Appendix" title="Exercise:Independent Component Analysis"> appendix </a> of this exercise). The orthonormality constraint should be enforced with a projection, which you should fill in.
+<p>In step 4, you will optimize for the orthonormal ICA objective using gradient descent with backtracking line search (the code for which has already been provided for you. For more details on the backtracking line search, you may wish to consult the <a href="/stanford-ufldl/archive/wiki/Exercise_Independent_Component_Analysis#Appendix" title="Exercise:Independent Component Analysis"> appendix </a> of this exercise). The orthonormality constraint should be enforced with a projection, which you should fill in.
 </p><p>Once you have filled in the code for the projection, check that it is correct by using the verification code provided. Once you have verified that your projection is correct, comment out the verification code and run the optimization. 1000 iterations of gradient descent should take less than 15 minutes, and produce a basis which looks like the following:
-</p><p><a href="" class="image"><img alt="OrthonormalICAFeatures.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/e/e3/OrthonormalICAFeatures.png" width="350" height="350"/></a>
-</p><p>It is comparatively difficult to optimize for the objective while enforcing the orthonormality constraint using gradient descent, and convergence can be slow. Hence, in situations where an orthonormal basis is not required, other faster methods of learning bases (such as <a href="/wayback-ufldl/stanford-ufldl/wiki/Sparse_Coding__Autoencoder_Interpretation" title="Sparse Coding: Autoencoder Interpretation"> sparse coding</a>) may be preferable.
+</p><p><a href="" class="image"><img alt="OrthonormalICAFeatures.png" src="/stanford-ufldl/archive/wiki/images/e/e3/OrthonormalICAFeatures.png" width="350" height="350"/></a>
+</p><p>It is comparatively difficult to optimize for the objective while enforcing the orthonormality constraint using gradient descent, and convergence can be slow. Hence, in situations where an orthonormal basis is not required, other faster methods of learning bases (such as <a href="/stanford-ufldl/archive/wiki/Sparse_Coding__Autoencoder_Interpretation" title="Sparse Coding: Autoencoder Interpretation"> sparse coding</a>) may be preferable.
 </p>
 <h3> <span class="mw-headline" id="Appendix"> Appendix </span></h3>
 <h4> <span class="mw-headline" id="Backtracking_line_search"> Backtracking line search </span></h4>
-<p>The backtracking line search used in the exercise is based off that in <a href="http://www.stanford.edu/~boyd/cvxbook/" class="external text" rel="nofollow">Convex Optimization by Boyd and Vandenbergh</a>. In the backtracking line search, given a descent direction <img class="tex" alt="\vec{u}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/2/9/12985550162370d06a5bca85fb8ba392.png"/> (in this exercise we use <img class="tex" alt="\vec{u} = -\nabla f(\vec{x})" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/8/b/a8bdd88a0cb592ece813614739ab6932.png"/>), we want to find a good step size <span class="texhtml"><i>t</i></span> that gives us a steep descent. The general idea is to use a linear approximation (the first order Taylor approximation) to the function <span class="texhtml"><i>f</i></span> at the current point <img class="tex" alt="\vec{x}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/b/4/fb4766506bcea9e6256be140a411651d.png"/>, and to search for a step size <span class="texhtml"><i>t</i></span> such that we can decrease the function's value by more than <span class="texhtml">&alpha;</span> times the decrease predicted by the linear approximation (<img class="tex" alt="\alpha \in (0, 0.5)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/2/0/720605674c2ff0a5b4e0c4f1d512e0c1.png"/>. For more details, you may wish to consult <a href="http://www.stanford.edu/~boyd/cvxbook/" class="external text" rel="nofollow">the book</a>.
+<p>The backtracking line search used in the exercise is based off that in <a href="http://www.stanford.edu/~boyd/cvxbook/" class="external text" rel="nofollow">Convex Optimization by Boyd and Vandenbergh</a>. In the backtracking line search, given a descent direction <img class="tex" alt="\vec{u}" src="/stanford-ufldl/archive/wiki/images/math/1/2/9/12985550162370d06a5bca85fb8ba392.png"/> (in this exercise we use <img class="tex" alt="\vec{u} = -\nabla f(\vec{x})" src="/stanford-ufldl/archive/wiki/images/math/a/8/b/a8bdd88a0cb592ece813614739ab6932.png"/>), we want to find a good step size <span class="texhtml"><i>t</i></span> that gives us a steep descent. The general idea is to use a linear approximation (the first order Taylor approximation) to the function <span class="texhtml"><i>f</i></span> at the current point <img class="tex" alt="\vec{x}" src="/stanford-ufldl/archive/wiki/images/math/f/b/4/fb4766506bcea9e6256be140a411651d.png"/>, and to search for a step size <span class="texhtml"><i>t</i></span> such that we can decrease the function's value by more than <span class="texhtml">&alpha;</span> times the decrease predicted by the linear approximation (<img class="tex" alt="\alpha \in (0, 0.5)" src="/stanford-ufldl/archive/wiki/images/math/7/2/0/720605674c2ff0a5b4e0c4f1d512e0c1.png"/>. For more details, you may wish to consult <a href="http://www.stanford.edu/~boyd/cvxbook/" class="external text" rel="nofollow">the book</a>.
 </p><p>However, it is not necessary to use the backtracking line search here. Gradient descent with a small step size, or backtracking to a step size so that the objective decreases is sufficient for this exercise.
 </p>
 <!-- 
@@ -103,7 +103,7 @@ Expensive parser function count: 0/100
 		<h5>Views</h5>
 		<div class="pBody">
 			<ul>
-				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Independent_Component_Analysis" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-nstab-main" class="selected"><a href="/stanford-ufldl/archive/wiki/Exercise_Independent_Component_Analysis" title="View the content page [c]" accesskey="c">Page</a></li>
 				 <li id="ca-talk"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
 				 <li id="ca-viewsource"><a href="" title="This page is protected.
 You can view its source [e]" accesskey="e">View source</a></li>
@@ -119,15 +119,15 @@ You can view its source [e]" accesskey="e">View source</a></li>
 		</div>
 	</div>
 	<div class="portlet" id="p-logo">
-		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+		<a style="background-image: url(/stanford-ufldl/archive/wiki/skins/common/images/dolphin-openclipart.png);" href="/stanford-ufldl/archive/wiki/Main_Page" title="Visit the main page"></a>
 	</div>
 	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
 	<div class="generated-sidebar portlet" id="p-ufldl_resources">
 		<h5>ufldl resources</h5>
 		<div class="pBody">
 			<ul>
-				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
-				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+				<li id="n-UFLDL-Tutorial"><a href="/stanford-ufldl/archive/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/stanford-ufldl/archive/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
 			</ul>
 		</div>
 	</div>
@@ -135,7 +135,7 @@ You can view its source [e]" accesskey="e">View source</a></li>
 		<h5>wiki</h5>
 		<div class="pBody">
 			<ul>
-				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-mainpage-description"><a href="/stanford-ufldl/archive/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
 				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
 				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
 				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
@@ -168,9 +168,9 @@ You can view its source [e]" accesskey="e">View source</a></li>
 <div id="footer">
 	<ul id="f-list">
 		<li id="lastmod"> This page was last modified on 4 October 2011, at 04:31.</li>
-		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
-		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
-		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+		<li id="privacy"><a href="/stanford-ufldl/archive/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/stanford-ufldl/archive/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/stanford-ufldl/archive/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
 	</ul>
 </div>
 </div>

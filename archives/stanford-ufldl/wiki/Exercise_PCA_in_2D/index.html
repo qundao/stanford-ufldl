@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Exercise:PCA in 2D - Ufldl</title>
-<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
-<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+<link rel="stylesheet" href="/stanford-ufldl/archive/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/stanford-ufldl/archive/wiki/skins/monobook/main.css" media="screen"/>
 
 </head>
 
@@ -43,37 +43,37 @@
 </p>
 <h3> <span class="mw-headline" id="Step_0:_Load_data"> Step 0: Load data </span></h3>
 <p>The starter code contains code to load 45 2D data points. When plotted using the <tt>scatter</tt> function, the results should look like the following:
-</p><p><a href="" class="image" title="Raw images"><img alt="Raw images" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/f/f5/Raw_images_2d.png/400px-Raw_images_2d.png" width="400" height="299"/></a>
+</p><p><a href="" class="image" title="Raw images"><img alt="Raw images" src="/stanford-ufldl/archive/wiki/images/thumb/f/f5/Raw_images_2d.png/400px-Raw_images_2d.png" width="400" height="299"/></a>
 </p>
 <h3> <span class="mw-headline" id="Step_1:_Implement_PCA"> Step 1: Implement PCA </span></h3>
-<p>In this step, you will implement PCA to obtain <span class="texhtml"><i>x</i><sub><i>r</i><i>o</i><i>t</i></sub></span>, the matrix in which the data is "rotated" to the basis comprising <img class="tex" alt="\textstyle u_1, \ldots, u_n" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/0/2/5028e168451f819195c63d9572f0233f.png"/> made up of the principal components. As mentioned in the implementation notes, you should make use of MATLAB's <tt>svd</tt> function here.
+<p>In this step, you will implement PCA to obtain <span class="texhtml"><i>x</i><sub><i>r</i><i>o</i><i>t</i></sub></span>, the matrix in which the data is "rotated" to the basis comprising <img class="tex" alt="\textstyle u_1, \ldots, u_n" src="/stanford-ufldl/archive/wiki/images/math/5/0/2/5028e168451f819195c63d9572f0233f.png"/> made up of the principal components. As mentioned in the implementation notes, you should make use of MATLAB's <tt>svd</tt> function here.
 </p>
 <h4> <span class="mw-headline" id="Step_1a:_Finding_the_PCA_basis"> Step 1a: Finding the PCA basis </span></h4>
-<p>Find <img class="tex" alt="\textstyle u_1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/f/c/3fc01c8dc5d4c8c57cd758ec3a76283f.png"/> and <img class="tex" alt="\textstyle u_2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/d/9/ed99a7fbd444e14555ad4f8eac78b94b.png"/>, and draw two lines in your figure to show the resulting basis on top of the given data points. You may find it useful to use MATLAB's <tt>hold on</tt> and <tt>hold off</tt> functions.  (After calling <tt>hold on</tt>, plotting functions such as <tt>plot</tt> will draw the new data on top of the previously existing figure rather than erasing and replacing it; and <tt>hold off</tt> turns this off.)  You can use <tt>plot([x1,x2], [y1,y2], '-')</tt> to draw a line between <tt>(x1,y1)</tt> and <tt>(x2,y2)</tt>. Your figure should look like this: 
+<p>Find <img class="tex" alt="\textstyle u_1" src="/stanford-ufldl/archive/wiki/images/math/3/f/c/3fc01c8dc5d4c8c57cd758ec3a76283f.png"/> and <img class="tex" alt="\textstyle u_2" src="/stanford-ufldl/archive/wiki/images/math/e/d/9/ed99a7fbd444e14555ad4f8eac78b94b.png"/>, and draw two lines in your figure to show the resulting basis on top of the given data points. You may find it useful to use MATLAB's <tt>hold on</tt> and <tt>hold off</tt> functions.  (After calling <tt>hold on</tt>, plotting functions such as <tt>plot</tt> will draw the new data on top of the previously existing figure rather than erasing and replacing it; and <tt>hold off</tt> turns this off.)  You can use <tt>plot([x1,x2], [y1,y2], '-')</tt> to draw a line between <tt>(x1,y1)</tt> and <tt>(x2,y2)</tt>. Your figure should look like this: 
 </p><p><br/>
-<a href="" class="image"><img alt="Pca 2d basis.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/5/5b/Pca_2d_basis.png/400px-Pca_2d_basis.png" width="400" height="299"/></a>
-</p><p>If you are doing this in Matlab, you will probably get a plot that's identical to ours.  However, eigenvectors are defined only up to a sign.  I.e., instead of returning <img class="tex" alt="\textstyle u_1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/f/c/3fc01c8dc5d4c8c57cd758ec3a76283f.png"/> as the first eigenvector, Matlab/Octave could just as easily have returned <img class="tex" alt="\textstyle -u_1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/1/0/b10929071429909f3d52ebe5cd18a664.png"/>, and similarly instead of <img class="tex" alt="\textstyle u_2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/d/9/ed99a7fbd444e14555ad4f8eac78b94b.png"/> Matlab/Octave could have returned <img class="tex" alt="\textstyle -u_2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/b/0/fb04e59ea0095b98f06d254747837398.png"/>.  So if you wound up with one or both of the eigenvectors pointing in a direction opposite (180 degrees difference) from what's shown above, that's okay too. 
+<a href="" class="image"><img alt="Pca 2d basis.png" src="/stanford-ufldl/archive/wiki/images/thumb/5/5b/Pca_2d_basis.png/400px-Pca_2d_basis.png" width="400" height="299"/></a>
+</p><p>If you are doing this in Matlab, you will probably get a plot that's identical to ours.  However, eigenvectors are defined only up to a sign.  I.e., instead of returning <img class="tex" alt="\textstyle u_1" src="/stanford-ufldl/archive/wiki/images/math/3/f/c/3fc01c8dc5d4c8c57cd758ec3a76283f.png"/> as the first eigenvector, Matlab/Octave could just as easily have returned <img class="tex" alt="\textstyle -u_1" src="/stanford-ufldl/archive/wiki/images/math/b/1/0/b10929071429909f3d52ebe5cd18a664.png"/>, and similarly instead of <img class="tex" alt="\textstyle u_2" src="/stanford-ufldl/archive/wiki/images/math/e/d/9/ed99a7fbd444e14555ad4f8eac78b94b.png"/> Matlab/Octave could have returned <img class="tex" alt="\textstyle -u_2" src="/stanford-ufldl/archive/wiki/images/math/f/b/0/fb04e59ea0095b98f06d254747837398.png"/>.  So if you wound up with one or both of the eigenvectors pointing in a direction opposite (180 degrees difference) from what's shown above, that's okay too. 
 </p>
 <h4> <span class="mw-headline" id="Step_1b:_Check_xRot"> Step 1b: Check xRot </span></h4>
 <p>Compute <tt>xRot</tt>, and use the <tt>scatter</tt> function to check that <tt>xRot</tt> looks as it should, which should be something like the following:
-</p><p><a href="" class="image"><img alt="Pca xrot 2d.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/0/0b/Pca_xrot_2d.png/360px-Pca_xrot_2d.png" width="360" height="270"/></a>
-</p><p>Because Matlab/Octave could have returned <img class="tex" alt="\textstyle -u_1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/1/0/b10929071429909f3d52ebe5cd18a664.png"/> and/or <img class="tex" alt="\textstyle -u_2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/b/0/fb04e59ea0095b98f06d254747837398.png"/> instead of <img class="tex" alt="\textstyle u_1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/f/c/3fc01c8dc5d4c8c57cd758ec3a76283f.png"/> and <img class="tex" alt="\textstyle u_2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/d/9/ed99a7fbd444e14555ad4f8eac78b94b.png"/>, it's also possible that you might have gotten a figure which is "flipped" or "reflected" along the <img class="tex" alt="\textstyle x" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/>- and/or <img class="tex" alt="\textstyle y" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/8/1/c81e76c28ed991b22b8c1bb8fa392701.png"/>-axis; a flipped/reflected version of this figure is also a completely correct result.
+</p><p><a href="" class="image"><img alt="Pca xrot 2d.png" src="/stanford-ufldl/archive/wiki/images/thumb/0/0b/Pca_xrot_2d.png/360px-Pca_xrot_2d.png" width="360" height="270"/></a>
+</p><p>Because Matlab/Octave could have returned <img class="tex" alt="\textstyle -u_1" src="/stanford-ufldl/archive/wiki/images/math/b/1/0/b10929071429909f3d52ebe5cd18a664.png"/> and/or <img class="tex" alt="\textstyle -u_2" src="/stanford-ufldl/archive/wiki/images/math/f/b/0/fb04e59ea0095b98f06d254747837398.png"/> instead of <img class="tex" alt="\textstyle u_1" src="/stanford-ufldl/archive/wiki/images/math/3/f/c/3fc01c8dc5d4c8c57cd758ec3a76283f.png"/> and <img class="tex" alt="\textstyle u_2" src="/stanford-ufldl/archive/wiki/images/math/e/d/9/ed99a7fbd444e14555ad4f8eac78b94b.png"/>, it's also possible that you might have gotten a figure which is "flipped" or "reflected" along the <img class="tex" alt="\textstyle x" src="/stanford-ufldl/archive/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/>- and/or <img class="tex" alt="\textstyle y" src="/stanford-ufldl/archive/wiki/images/math/c/8/1/c81e76c28ed991b22b8c1bb8fa392701.png"/>-axis; a flipped/reflected version of this figure is also a completely correct result.
 </p>
 <h3> <span class="mw-headline" id="Step_2:_Dimension_reduce_and_replot"> Step 2: Dimension reduce and replot </span></h3>
-<p>In the next step, set <span class="texhtml"><i>k</i></span>, the number of components to retain, to be 1 (we have already done this for you). Compute the resulting <tt>xHat</tt> and plot the results.  You should get the following (this figure should <b>not</b> be flipped along the <img class="tex" alt="\textstyle x" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/>- or <img class="tex" alt="\textstyle y" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/8/1/c81e76c28ed991b22b8c1bb8fa392701.png"/>-axis): 
-</p><p><a href="" class="image"><img alt="Pca xhat 2d.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/b/bb/Pca_xhat_2d.png/400px-Pca_xhat_2d.png" width="400" height="299"/></a>
+<p>In the next step, set <span class="texhtml"><i>k</i></span>, the number of components to retain, to be 1 (we have already done this for you). Compute the resulting <tt>xHat</tt> and plot the results.  You should get the following (this figure should <b>not</b> be flipped along the <img class="tex" alt="\textstyle x" src="/stanford-ufldl/archive/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/>- or <img class="tex" alt="\textstyle y" src="/stanford-ufldl/archive/wiki/images/math/c/8/1/c81e76c28ed991b22b8c1bb8fa392701.png"/>-axis): 
+</p><p><a href="" class="image"><img alt="Pca xhat 2d.png" src="/stanford-ufldl/archive/wiki/images/thumb/b/bb/Pca_xhat_2d.png/400px-Pca_xhat_2d.png" width="400" height="299"/></a>
 </p>
 <h3> <span class="mw-headline" id="Step_3:_PCA_Whitening"> Step 3: PCA Whitening </span></h3>
 <p>Implement PCA whitening using the formula from the notes.  Plot <tt>xPCAWhite</tt>, and verify that it looks like the following (a figure that is flipped/reflected on either/both axes is also correct):  
-</p><p><a href="" class="image"><img alt="Pca white 2d.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/c/c9/Pca_white_2d.png/400px-Pca_white_2d.png" width="400" height="299"/></a>
+</p><p><a href="" class="image"><img alt="Pca white 2d.png" src="/stanford-ufldl/archive/wiki/images/thumb/c/c9/Pca_white_2d.png/400px-Pca_white_2d.png" width="400" height="299"/></a>
 </p>
 <h3> <span class="mw-headline" id="Step_4:_ZCA_Whitening"> Step 4: ZCA Whitening </span></h3>
-<p>Implement ZCA whitening and plot the results. The results should look like the following (this should not be flipped/reflected along the <img class="tex" alt="\textstyle x" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/>- or <img class="tex" alt="\textstyle y" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/8/1/c81e76c28ed991b22b8c1bb8fa392701.png"/>-axis):
-</p><p><a href="" class="image"><img alt="Zca white 2d.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/9/9b/Zca_white_2d.png/400px-Zca_white_2d.png" width="400" height="299"/></a>
+<p>Implement ZCA whitening and plot the results. The results should look like the following (this should not be flipped/reflected along the <img class="tex" alt="\textstyle x" src="/stanford-ufldl/archive/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/>- or <img class="tex" alt="\textstyle y" src="/stanford-ufldl/archive/wiki/images/math/c/8/1/c81e76c28ed991b22b8c1bb8fa392701.png"/>-axis):
+</p><p><a href="" class="image"><img alt="Zca white 2d.png" src="/stanford-ufldl/archive/wiki/images/thumb/9/9b/Zca_white_2d.png/400px-Zca_white_2d.png" width="400" height="299"/></a>
 </p><p><br/>
 </p>
 <div style="text-align: center;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
-<p><a href="/wayback-ufldl/stanford-ufldl/wiki/PCA" title="PCA">PCA</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Whitening" title="Whitening">Whitening</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Implementing_PCA/Whitening" title="Implementing PCA/Whitening">Implementing PCA/Whitening</a> | <strong class="selflink">Exercise:PCA in 2D</strong> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_PCA_and_Whitening" title="Exercise:PCA and Whitening">Exercise:PCA and Whitening</a>
+<p><a href="/stanford-ufldl/archive/wiki/PCA" title="PCA">PCA</a> | <a href="/stanford-ufldl/archive/wiki/Whitening" title="Whitening">Whitening</a> | <a href="/stanford-ufldl/archive/wiki/Implementing_PCA/Whitening" title="Implementing PCA/Whitening">Implementing PCA/Whitening</a> | <strong class="selflink">Exercise:PCA in 2D</strong> | <a href="/stanford-ufldl/archive/wiki/Exercise_PCA_and_Whitening" title="Exercise:PCA and Whitening">Exercise:PCA and Whitening</a>
 </p>
 </div>
 
@@ -95,7 +95,7 @@ Expensive parser function count: 0/100
 		<h5>Views</h5>
 		<div class="pBody">
 			<ul>
-				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_PCA_in_2D" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-nstab-main" class="selected"><a href="/stanford-ufldl/archive/wiki/Exercise_PCA_in_2D" title="View the content page [c]" accesskey="c">Page</a></li>
 				 <li id="ca-talk" class="new"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
 				 <li id="ca-viewsource"><a href="" title="This page is protected.
 You can view its source [e]" accesskey="e">View source</a></li>
@@ -111,15 +111,15 @@ You can view its source [e]" accesskey="e">View source</a></li>
 		</div>
 	</div>
 	<div class="portlet" id="p-logo">
-		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+		<a style="background-image: url(/stanford-ufldl/archive/wiki/skins/common/images/dolphin-openclipart.png);" href="/stanford-ufldl/archive/wiki/Main_Page" title="Visit the main page"></a>
 	</div>
 	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
 	<div class="generated-sidebar portlet" id="p-ufldl_resources">
 		<h5>ufldl resources</h5>
 		<div class="pBody">
 			<ul>
-				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
-				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+				<li id="n-UFLDL-Tutorial"><a href="/stanford-ufldl/archive/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/stanford-ufldl/archive/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
 			</ul>
 		</div>
 	</div>
@@ -127,7 +127,7 @@ You can view its source [e]" accesskey="e">View source</a></li>
 		<h5>wiki</h5>
 		<div class="pBody">
 			<ul>
-				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-mainpage-description"><a href="/stanford-ufldl/archive/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
 				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
 				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
 				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
@@ -160,9 +160,9 @@ You can view its source [e]" accesskey="e">View source</a></li>
 <div id="footer">
 	<ul id="f-list">
 		<li id="lastmod"> This page was last modified on 26 May 2011, at 11:01.</li>
-		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
-		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
-		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+		<li id="privacy"><a href="/stanford-ufldl/archive/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/stanford-ufldl/archive/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/stanford-ufldl/archive/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
 	</ul>
 </div>
 </div>

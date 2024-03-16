@@ -5,9 +5,9 @@
     <title>Unsupervised Feature Learning and Deep Learning Tutorial</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
-    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/bootstrap_readable.min.css" rel="stylesheet">
-    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/pygments/default.css" rel="stylesheet">
-    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/custom.css" rel="stylesheet">
+    <link href="/stanford-ufldl/archive/tutorial/css/bootstrap_readable.min.css" rel="stylesheet">
+    <link href="/stanford-ufldl/archive/tutorial/css/pygments/default.css" rel="stylesheet">
+    <link href="/stanford-ufldl/archive/tutorial/css/custom.css" rel="stylesheet">
     <script type="text/javascript"
           src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
     </script>
@@ -27,7 +27,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/wayback-ufldl/stanford-ufldl/tutorial/">UFLDL Tutorial</a>
+          <a class="navbar-brand" href="/stanford-ufldl/archive/tutorial/">UFLDL Tutorial</a>
         </div>
         <!---
         <div class="collapse navbar-collapse">
@@ -60,7 +60,7 @@
 
 <p>The starter code contains code to load a set of MNIST images. The raw patches will look something like this:</p>
 
-<p><img src='/wayback-ufldl/stanford-ufldl/tutorial/images/Raw_images.png' width='100%' /></p>
+<p><img src='/stanford-ufldl/archive/tutorial/images/Raw_images.png' width='100%' /></p>
 
 <p>These patches are stored as column vectors <m>x^{(i)} \in \mathbb{R}^{144}</m> in the <m>144 \times 10000</m> matrix <m>x</m>.</p>
 
@@ -78,7 +78,7 @@
 
 <p>To verify that your implementation of PCA is correct, you should check the covariance matrix for the rotated data <m>x_{\rm rot}</m>. PCA guarantees that the covariance matrix for the rotated data is a diagonal matrix (a matrix with non-zero entries only along the main diagonal). Implement code to compute the covariance matrix and verify this property. One way to do this is to compute the covariance matrix, and visualise it using the MATLAB command <code>imagesc</code>. The image should show a coloured diagonal line against a blue background. For this dataset, because of the range of the diagonal entries, the diagonal line may not be apparent, so you might get a figure like the one show below, but this trick of visualizing using <code>imagesc</code> will come in handy later in this exercise.</p>
 
-<p><img src='/wayback-ufldl/stanford-ufldl/tutorial/images/Pca_covar.png' width='100%' /></p>
+<p><img src='/stanford-ufldl/archive/tutorial/images/Pca_covar.png' width='100%' /></p>
 
 <h3 id="step_2_find_number_of_components_to_retain">Step 2: Find number of components to retain</h3>
 
@@ -91,10 +91,10 @@
 <p>To see the effect of dimension reduction, go back from <m>\tilde{x}</m> to produce the matrix <m>\hat{x}</m>, the dimension-reduced data but expressed in the original 144 dimensional space of image patches. Visualise <m>\hat{x}</m> and compare it to the raw data, <m>x</m>. You will observe that there is little loss due to throwing away the principal components that correspond to dimensions with low variation. For comparison, you may also wish to generate and visualise <m>\hat{x}</m> for when only 90% of the variance is retained.</p>
 <table>
 <tr>
-<td> <img src='/wayback-ufldl/stanford-ufldl/tutorial/images/Raw_images.png' width='100%' /> </td>
-<td> <img src='/wayback-ufldl/stanford-ufldl/tutorial/images/Pca_images.png' width='100%' /> </td> 
+<td> <img src='/stanford-ufldl/archive/tutorial/images/Raw_images.png' width='100%' /> </td>
+<td> <img src='/stanford-ufldl/archive/tutorial/images/Pca_images.png' width='100%' /> </td> 
 <td>
-<img src='/wayback-ufldl/stanford-ufldl/tutorial/images/Pca_images_90.png' width='100%' /> 
+<img src='/stanford-ufldl/archive/tutorial/images/Pca_images_90.png' width='100%' /> 
 </td>
 </tr>
 <tr>
@@ -121,10 +121,10 @@
 <table>
  <tr>
  <td>
- <img src='/wayback-ufldl/stanford-ufldl/tutorial/images/Pca_whitened_covar.png' width='100%' />
+ <img src='/stanford-ufldl/archive/tutorial/images/Pca_whitened_covar.png' width='100%' />
  </td>
  <td>
- <img src='/wayback-ufldl/stanford-ufldl/tutorial/images/Pca_whitened_unregularised_covar.png' width='100%' />
+ <img src='/stanford-ufldl/archive/tutorial/images/Pca_whitened_unregularised_covar.png' width='100%' />
  </td>
  </tr>
  <tr>
@@ -139,9 +139,9 @@
  <tr>
  <td>
 
- <img src='/wayback-ufldl/stanford-ufldl/tutorial/images/Zca_whitened_images.png' width='100%' />
+ <img src='/stanford-ufldl/archive/tutorial/images/Zca_whitened_images.png' width='100%' />
  </td><td>
- <img src='/wayback-ufldl/stanford-ufldl/tutorial/images/Raw_images.png' width='100%' />
+ <img src='/stanford-ufldl/archive/tutorial/images/Raw_images.png' width='100%' />
  </td>
  </tr>
  <tr>
@@ -160,13 +160,13 @@
     </div>
 
     <!-- Generate sidebar --->
-    <script src='/wayback-ufldl/stanford-ufldl/tutorial/sidebar/sidebar.js'></script>
+    <script src='/stanford-ufldl/archive/tutorial/sidebar/sidebar.js'></script>
     <script>
       function renderHeading(name) {
         return '<div class = "panel-heading">' + name + '</div>';
       };
       function renderItem(name, link) { 
-        return '<a href="/wayback-ufldl/stanford-ufldl/tutorial/' + link + '" class="list-group-item nav">' + name +
+        return '<a href="/stanford-ufldl/archive/tutorial/' + link + '" class="list-group-item nav">' + name +
           '</a>';
       };
       renderedHtml = '<div class = "panel panel-default">';
@@ -184,7 +184,7 @@
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="//code.jquery.com/jquery.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="/wayback-ufldl/stanford-ufldl/tutorial/js/bootstrap.min.js"></script>
+    <script src="/stanford-ufldl/archive/tutorial/js/bootstrap.min.js"></script>
     <script>
       var inputs = document.getElementsByTagName("m");
       for (var i = 0; i < inputs.length; i++) { 

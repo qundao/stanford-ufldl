@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Exercise:PCA and Whitening - Ufldl</title>
-<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
-<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+<link rel="stylesheet" href="/stanford-ufldl/archive/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/stanford-ufldl/archive/wiki/skins/monobook/main.css" media="screen"/>
 
 </head>
 
@@ -56,8 +56,8 @@
 <h3> <span class="mw-headline" id="Step_0:_Prepare_data"> Step 0: Prepare data </span></h3>
 <h4> <span class="mw-headline" id="Step_0a:_Load_data"> Step 0a: Load data </span></h4>
 <p>The starter code contains code to load a set of natural images and sample 12x12 patches from them. The raw patches will look something like this:
-</p><p><a href="" class="image" title="Raw patches"><img alt="Raw patches" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/4/45/Raw_images.png/240px-Raw_images.png" width="240" height="240"/></a>
-</p><p>These patches are stored as column vectors <img class="tex" alt="x^{(i)} \in \mathbb{R}^{144}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/7/7/d7789b07b0ad4c14977970072dfa8a9c.png"/> in the <img class="tex" alt="144 \times 10000" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/7/d/07d857d6be303d0064eda5f8ad530ea1.png"/> matrix <span class="texhtml"><i>x</i></span>.
+</p><p><a href="" class="image" title="Raw patches"><img alt="Raw patches" src="/stanford-ufldl/archive/wiki/images/thumb/4/45/Raw_images.png/240px-Raw_images.png" width="240" height="240"/></a>
+</p><p>These patches are stored as column vectors <img class="tex" alt="x^{(i)} \in \mathbb{R}^{144}" src="/stanford-ufldl/archive/wiki/images/math/d/7/7/d7789b07b0ad4c14977970072dfa8a9c.png"/> in the <img class="tex" alt="144 \times 10000" src="/stanford-ufldl/archive/wiki/images/math/0/7/d/07d857d6be303d0064eda5f8ad530ea1.png"/> matrix <span class="texhtml"><i>x</i></span>.
 </p>
 <h4> <span class="mw-headline" id="Step_0b:_Zero_mean_the_data"> Step 0b: Zero mean the data </span></h4>
 <p>First, for each image patch, compute the mean pixel value and subtract it from that image, this centering the image around zero.  You should compute a different mean value for each image patch.
@@ -68,20 +68,20 @@
 </p>
 <h4> <span class="mw-headline" id="Step_1b:_Check_covariance"> Step 1b: Check covariance </span></h4>
 <p>To verify that your implementation of PCA is correct, you should check the covariance matrix for the rotated data <span class="texhtml"><i>x</i><sub>rot</sub></span>.  PCA guarantees that the covariance matrix for the rotated data is a diagonal matrix (a matrix with non-zero entries only along the main diagonal). Implement code to compute the covariance matrix and verify this property. One way to do this is to compute the covariance matrix, and visualise it using the MATLAB command <tt>imagesc</tt>. The image should show a coloured diagonal line against a blue background. For this dataset, because of the range of the diagonal entries, the diagonal line may not be apparent, so you might get a figure like the one show below, but this trick of visualizing using <tt>imagesc</tt> will come in handy later in this exercise. 
-</p><p><a href="" class="image"><img alt="Pca covar.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/0/01/Pca_covar.png/360px-Pca_covar.png" width="360" height="270"/></a>
+</p><p><a href="" class="image"><img alt="Pca covar.png" src="/stanford-ufldl/archive/wiki/images/thumb/0/01/Pca_covar.png/360px-Pca_covar.png" width="360" height="270"/></a>
 </p>
 <h3> <span class="mw-headline" id="Step_2:_Find_number_of_components_to_retain"> Step 2: Find number of components to retain </span></h3>
 <p>Next, choose <span class="texhtml"><i>k</i></span>, the number of principal components to retain.  Pick <span class="texhtml"><i>k</i></span> to be as small as possible, but so that at least 99% of the variance is retained.  In the step after this, you will discard all but the top <span class="texhtml"><i>k</i></span> principal components, reducing the dimension of the original data to <span class="texhtml"><i>k</i></span>.
 </p>
 <h3> <span class="mw-headline" id="Step_3:_PCA_with_dimension_reduction"> Step 3: PCA with dimension reduction </span></h3>
-<p>Now that you have found <span class="texhtml"><i>k</i></span>, compute <img class="tex" alt="\tilde{x}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/1/8/51883bb93a4ebf4069a08b311c8bed76.png"/>, the reduced-dimension representation of the data.  This gives you a representation of each image patch as a <span class="texhtml"><i>k</i></span> dimensional vector instead of a 144 dimensional vector.  If you are training a sparse autoencoder or other algorithm on this reduced-dimensional data, it will run faster than if you were training on the original 144 dimensional data. 
-</p><p>To see the effect of dimension reduction, go back from <img class="tex" alt="\tilde{x}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/1/8/51883bb93a4ebf4069a08b311c8bed76.png"/> to produce the matrix <img class="tex" alt="\hat{x}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/b/a/8baf9dc7043aae61e37e171dc9f537e9.png"/>, the dimension-reduced data but expressed in the original 144 dimensional space of image patches. Visualise <img class="tex" alt="\hat{x}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/b/a/8baf9dc7043aae61e37e171dc9f537e9.png"/> and compare it to the raw data, <span class="texhtml"><i>x</i></span>. You will observe that there is little loss due to throwing away the principal components that correspond to dimensions with low variation. For comparison, you may also wish to generate and visualise <img class="tex" alt="\hat{x}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/b/a/8baf9dc7043aae61e37e171dc9f537e9.png"/> for when only 90% of the variance is retained.  
+<p>Now that you have found <span class="texhtml"><i>k</i></span>, compute <img class="tex" alt="\tilde{x}" src="/stanford-ufldl/archive/wiki/images/math/5/1/8/51883bb93a4ebf4069a08b311c8bed76.png"/>, the reduced-dimension representation of the data.  This gives you a representation of each image patch as a <span class="texhtml"><i>k</i></span> dimensional vector instead of a 144 dimensional vector.  If you are training a sparse autoencoder or other algorithm on this reduced-dimensional data, it will run faster than if you were training on the original 144 dimensional data. 
+</p><p>To see the effect of dimension reduction, go back from <img class="tex" alt="\tilde{x}" src="/stanford-ufldl/archive/wiki/images/math/5/1/8/51883bb93a4ebf4069a08b311c8bed76.png"/> to produce the matrix <img class="tex" alt="\hat{x}" src="/stanford-ufldl/archive/wiki/images/math/8/b/a/8baf9dc7043aae61e37e171dc9f537e9.png"/>, the dimension-reduced data but expressed in the original 144 dimensional space of image patches. Visualise <img class="tex" alt="\hat{x}" src="/stanford-ufldl/archive/wiki/images/math/8/b/a/8baf9dc7043aae61e37e171dc9f537e9.png"/> and compare it to the raw data, <span class="texhtml"><i>x</i></span>. You will observe that there is little loss due to throwing away the principal components that correspond to dimensions with low variation. For comparison, you may also wish to generate and visualise <img class="tex" alt="\hat{x}" src="/stanford-ufldl/archive/wiki/images/math/8/b/a/8baf9dc7043aae61e37e171dc9f537e9.png"/> for when only 90% of the variance is retained.  
 </p>
 <table>
 <tr>
-<td><a href="" class="image" title="Raw images"><img alt="Raw images" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/4/45/Raw_images.png/240px-Raw_images.png" width="240" height="240"/></a></td> 
-<td><a href="" class="image" title="PCA dimension-reduced images (99% variance)"><img alt="PCA dimension-reduced images (99% variance)" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/5/52/Pca_images.png/240px-Pca_images.png" width="240" height="240"/></a></td>
-<td><a href="" class="image" title="PCA dimension-reduced images (50% variance)"><img alt="PCA dimension-reduced images (90% variance)" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/1/12/Pca_images_90.png/240px-Pca_images_90.png" width="240" height="240"/></a></td>
+<td><a href="" class="image" title="Raw images"><img alt="Raw images" src="/stanford-ufldl/archive/wiki/images/thumb/4/45/Raw_images.png/240px-Raw_images.png" width="240" height="240"/></a></td> 
+<td><a href="" class="image" title="PCA dimension-reduced images (99% variance)"><img alt="PCA dimension-reduced images (99% variance)" src="/stanford-ufldl/archive/wiki/images/thumb/5/52/Pca_images.png/240px-Pca_images.png" width="240" height="240"/></a></td>
+<td><a href="" class="image" title="PCA dimension-reduced images (50% variance)"><img alt="PCA dimension-reduced images (90% variance)" src="/stanford-ufldl/archive/wiki/images/thumb/1/12/Pca_images_90.png/240px-Pca_images_90.png" width="240" height="240"/></a></td>
 </tr>
 <tr>
 <td>Raw images <br/> &nbsp; </td>
@@ -102,8 +102,8 @@
 </p>
 <table>
 <tr>
-<td><a href="" class="image" title="Covariance for PCA whitening with regularization"><img alt="Covariance for PCA whitening with regularization" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/d/d4/Pca_whitened_covar.png/360px-Pca_whitened_covar.png" width="360" height="270"/></a></td>
-<td><a href="" class="image" title="Covariance for PCA whitening without regularization"><img alt="Covariance for PCA whitening with regularization" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/8/81/Pca_whitened_unregularised_covar.png/360px-Pca_whitened_unregularised_covar.png" width="360" height="270"/></a></td>
+<td><a href="" class="image" title="Covariance for PCA whitening with regularization"><img alt="Covariance for PCA whitening with regularization" src="/stanford-ufldl/archive/wiki/images/thumb/d/d4/Pca_whitened_covar.png/360px-Pca_whitened_covar.png" width="360" height="270"/></a></td>
+<td><a href="" class="image" title="Covariance for PCA whitening without regularization"><img alt="Covariance for PCA whitening with regularization" src="/stanford-ufldl/archive/wiki/images/thumb/8/81/Pca_whitened_unregularised_covar.png/360px-Pca_whitened_unregularised_covar.png" width="360" height="270"/></a></td>
 </tr>
 <tr>
 <td><center>Covariance for PCA whitening with regularization</center></td>
@@ -116,10 +116,10 @@
 <table>
 <tr>
 <td>
-<p><a href="" class="image" title="ZCA whitened images"><img alt="ZCA whitened images" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/3/36/Zca_whitened_images.png/240px-Zca_whitened_images.png" width="240" height="240"/></a> 
+<p><a href="" class="image" title="ZCA whitened images"><img alt="ZCA whitened images" src="/stanford-ufldl/archive/wiki/images/thumb/3/36/Zca_whitened_images.png/240px-Zca_whitened_images.png" width="240" height="240"/></a> 
 </p>
 </td><td>
-<p><a href="" class="image" title="Raw images"><img alt="Raw images" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/4/45/Raw_images.png/240px-Raw_images.png" width="240" height="240"/></a>
+<p><a href="" class="image" title="Raw images"><img alt="Raw images" src="/stanford-ufldl/archive/wiki/images/thumb/4/45/Raw_images.png/240px-Raw_images.png" width="240" height="240"/></a>
 </p>
 </td>
 </tr>
@@ -131,7 +131,7 @@
 <p><br/>
 </p>
 <div style="text-align: center;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
-<p><a href="/wayback-ufldl/stanford-ufldl/wiki/PCA" title="PCA">PCA</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Whitening" title="Whitening">Whitening</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Implementing_PCA/Whitening" title="Implementing PCA/Whitening">Implementing PCA/Whitening</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_PCA_in_2D" title="Exercise:PCA in 2D">Exercise:PCA in 2D</a> | <strong class="selflink">Exercise:PCA and Whitening</strong>
+<p><a href="/stanford-ufldl/archive/wiki/PCA" title="PCA">PCA</a> | <a href="/stanford-ufldl/archive/wiki/Whitening" title="Whitening">Whitening</a> | <a href="/stanford-ufldl/archive/wiki/Implementing_PCA/Whitening" title="Implementing PCA/Whitening">Implementing PCA/Whitening</a> | <a href="/stanford-ufldl/archive/wiki/Exercise_PCA_in_2D" title="Exercise:PCA in 2D">Exercise:PCA in 2D</a> | <strong class="selflink">Exercise:PCA and Whitening</strong>
 </p>
 </div>
 
@@ -153,7 +153,7 @@ Expensive parser function count: 0/100
 		<h5>Views</h5>
 		<div class="pBody">
 			<ul>
-				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_PCA_and_Whitening" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-nstab-main" class="selected"><a href="/stanford-ufldl/archive/wiki/Exercise_PCA_and_Whitening" title="View the content page [c]" accesskey="c">Page</a></li>
 				 <li id="ca-talk" class="new"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
 				 <li id="ca-viewsource"><a href="" title="This page is protected.
 You can view its source [e]" accesskey="e">View source</a></li>
@@ -169,15 +169,15 @@ You can view its source [e]" accesskey="e">View source</a></li>
 		</div>
 	</div>
 	<div class="portlet" id="p-logo">
-		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+		<a style="background-image: url(/stanford-ufldl/archive/wiki/skins/common/images/dolphin-openclipart.png);" href="/stanford-ufldl/archive/wiki/Main_Page" title="Visit the main page"></a>
 	</div>
 	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
 	<div class="generated-sidebar portlet" id="p-ufldl_resources">
 		<h5>ufldl resources</h5>
 		<div class="pBody">
 			<ul>
-				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
-				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+				<li id="n-UFLDL-Tutorial"><a href="/stanford-ufldl/archive/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/stanford-ufldl/archive/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
 			</ul>
 		</div>
 	</div>
@@ -185,7 +185,7 @@ You can view its source [e]" accesskey="e">View source</a></li>
 		<h5>wiki</h5>
 		<div class="pBody">
 			<ul>
-				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-mainpage-description"><a href="/stanford-ufldl/archive/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
 				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
 				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
 				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
@@ -218,9 +218,9 @@ You can view its source [e]" accesskey="e">View source</a></li>
 <div id="footer">
 	<ul id="f-list">
 		<li id="lastmod"> This page was last modified on 26 May 2011, at 11:01.</li>
-		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
-		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
-		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+		<li id="privacy"><a href="/stanford-ufldl/archive/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/stanford-ufldl/archive/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/stanford-ufldl/archive/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
 	</ul>
 </div>
 </div>

@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Deep Networks: Overview - Ufldl</title>
-<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
-<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+<link rel="stylesheet" href="/stanford-ufldl/archive/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/stanford-ufldl/archive/wiki/skins/monobook/main.css" media="screen"/>
 
 </head>
 
@@ -52,7 +52,7 @@ non-linear transformation of the previous layer, a deep network can have
 significantly greater representational power (i.e., can learn
 significantly more complex functions) than a shallow one. 
 </p><p>Note that when training a deep network, it is important to use a <i>non-linear</i>
-activation function <img class="tex" alt="f(\cdot)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/1/0/a1044326f95cfbf46f9859c97cf280be.png"/> in each hidden layer.   This is
+activation function <img class="tex" alt="f(\cdot)" src="/stanford-ufldl/archive/wiki/images/math/a/1/0/a1044326f95cfbf46f9859c97cf280be.png"/> in each hidden layer.   This is
 because multiple layers of linear functions would itself compute only a linear
 function of the input (i.e., composing multiple linear functions together
 results in just another linear function), and thus be no more expressive than
@@ -91,7 +91,7 @@ and expressive power have been appreciated for many decades, until recently
 researchers had little success training deep architectures.
 </p><p>The main learning algorithm that researchers were using was to randomly initialize
 the weights of a deep network, and then train it using a labeled
-training set <img class="tex" alt="\{ (x^{(1)}_l, y^{(1)}), \ldots, (x^{(m_l)}_l, y^{(m_l)}) \}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/2/9/f290c22f1a4602ccbff79e88a921a19f.png"/>
+training set <img class="tex" alt="\{ (x^{(1)}_l, y^{(1)}), \ldots, (x^{(m_l)}_l, y^{(m_l)}) \}" src="/stanford-ufldl/archive/wiki/images/math/f/2/9/f290c22f1a4602ccbff79e88a921a19f.png"/>
 using a supervised learning objective, for example by applying gradient descent to try to
 drive down the training error.  However, this usually did not work well.
 There were several reasons for this.
@@ -109,8 +109,8 @@ supervised learning usually resulted in the parameters converging to reasonable 
 but when we are training a deep network, this works much less well.  
 In particular, training a neural network using supervised learning
 involves solving a highly non-convex optimization problem (say, minimizing the
-training error <img class="tex" alt="\textstyle \sum_i ||h_W(x^{(i)}) - y^{(i)}||^2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/f/8/af88e32bad0255ab0bfe49108db2bd6e.png"/> as a
-function of the network parameters <img class="tex" alt="\textstyle W" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/c/9/8c9cb254a5e388f2bcaf294e52d745a6.png"/>).  
+training error <img class="tex" alt="\textstyle \sum_i ||h_W(x^{(i)}) - y^{(i)}||^2" src="/stanford-ufldl/archive/wiki/images/math/a/f/8/af88e32bad0255ab0bfe49108db2bd6e.png"/> as a
+function of the network parameters <img class="tex" alt="\textstyle W" src="/stanford-ufldl/archive/wiki/images/math/8/c/9/8c9cb254a5e388f2bcaf294e52d745a6.png"/>).  
 In a deep network, this problem turns out to be rife with bad local optima, and
 training with gradient descent (or methods like conjugate gradient and L-BFGS)
 no longer work well. 
@@ -160,7 +160,7 @@ layer-wise training has been attributed to a number of factors:
 unlabeled data is cheap and plentiful.  The promise of self-taught learning is
 that by exploiting the massive amount of unlabeled data, we can learn much
 better models.  By using unlabeled data to learn a good initial value for the
-weights in all the layers <img class="tex" alt="\textstyle W^{(l)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/8/f/f8f8834256f511d88fec05e3b27c67b1.png"/> (except for the final
+weights in all the layers <img class="tex" alt="\textstyle W^{(l)}" src="/stanford-ufldl/archive/wiki/images/math/f/8/f/f8f8834256f511d88fec05e3b27c67b1.png"/> (except for the final
 classification layer that maps to the outputs/predictions), our algorithm is
 able to learn and discover patterns from massively more amounts of data than
 purely supervised approaches.  This often results in much better classifiers 
@@ -181,14 +181,14 @@ implementing greedy layer-wise training.
 </p><p><br/>
 </p>
 <div style="text-align: center;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
-<p><a href="/wayback-ufldl/stanford-ufldl/wiki/Self-Taught_Learning_to_Deep_Networks" title="Self-Taught Learning to Deep Networks"> From Self-Taught Learning to Deep Networks</a> | <strong class="selflink">Deep Networks: Overview</strong> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Stacked_Autoencoders" title="Stacked Autoencoders">Stacked Autoencoders</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Fine-tuning_Stacked_AEs" title="Fine-tuning Stacked AEs">Fine-tuning Stacked AEs</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise__Implement_deep_networks_for_digit_classification" title="Exercise: Implement deep networks for digit classification">Exercise: Implement deep networks for digit classification</a>
+<p><a href="/stanford-ufldl/archive/wiki/Self-Taught_Learning_to_Deep_Networks" title="Self-Taught Learning to Deep Networks"> From Self-Taught Learning to Deep Networks</a> | <strong class="selflink">Deep Networks: Overview</strong> | <a href="/stanford-ufldl/archive/wiki/Stacked_Autoencoders" title="Stacked Autoencoders">Stacked Autoencoders</a> | <a href="/stanford-ufldl/archive/wiki/Fine-tuning_Stacked_AEs" title="Fine-tuning Stacked AEs">Fine-tuning Stacked AEs</a> | <a href="/stanford-ufldl/archive/wiki/Exercise__Implement_deep_networks_for_digit_classification" title="Exercise: Implement deep networks for digit classification">Exercise: Implement deep networks for digit classification</a>
 </p>
 </div>
 <p><br/>
 </p><p><br/>
 </p>
 <div style="text-align: left;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
-<p>Language&nbsp;: <a href="/wayback-ufldl/stanford-ufldl/wiki/%E6%B7%B1%E5%BA%A6%E7%BD%91%E7%BB%9C%E6%A6%82%E8%A7%88" title="深度网络概览">中文</a>
+<p>Language&nbsp;: <a href="/stanford-ufldl/archive/wiki/%E6%B7%B1%E5%BA%A6%E7%BD%91%E7%BB%9C%E6%A6%82%E8%A7%88" title="深度网络概览">中文</a>
 </p>
 </div>
 
@@ -210,7 +210,7 @@ Expensive parser function count: 0/100
 		<h5>Views</h5>
 		<div class="pBody">
 			<ul>
-				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/Deep_Networks__Overview" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-nstab-main" class="selected"><a href="/stanford-ufldl/archive/wiki/Deep_Networks__Overview" title="View the content page [c]" accesskey="c">Page</a></li>
 				 <li id="ca-talk" class="new"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
 				 <li id="ca-viewsource"><a href="" title="This page is protected.
 You can view its source [e]" accesskey="e">View source</a></li>
@@ -226,15 +226,15 @@ You can view its source [e]" accesskey="e">View source</a></li>
 		</div>
 	</div>
 	<div class="portlet" id="p-logo">
-		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+		<a style="background-image: url(/stanford-ufldl/archive/wiki/skins/common/images/dolphin-openclipart.png);" href="/stanford-ufldl/archive/wiki/Main_Page" title="Visit the main page"></a>
 	</div>
 	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
 	<div class="generated-sidebar portlet" id="p-ufldl_resources">
 		<h5>ufldl resources</h5>
 		<div class="pBody">
 			<ul>
-				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
-				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+				<li id="n-UFLDL-Tutorial"><a href="/stanford-ufldl/archive/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/stanford-ufldl/archive/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
 			</ul>
 		</div>
 	</div>
@@ -242,7 +242,7 @@ You can view its source [e]" accesskey="e">View source</a></li>
 		<h5>wiki</h5>
 		<div class="pBody">
 			<ul>
-				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-mainpage-description"><a href="/stanford-ufldl/archive/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
 				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
 				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
 				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
@@ -275,9 +275,9 @@ You can view its source [e]" accesskey="e">View source</a></li>
 <div id="footer">
 	<ul id="f-list">
 		<li id="lastmod"> This page was last modified on 7 April 2013, at 13:31.</li>
-		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
-		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
-		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+		<li id="privacy"><a href="/stanford-ufldl/archive/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/stanford-ufldl/archive/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/stanford-ufldl/archive/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
 	</ul>
 </div>
 </div>

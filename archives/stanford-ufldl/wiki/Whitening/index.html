@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Whitening - Ufldl</title>
-<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
-<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+<link rel="stylesheet" href="/stanford-ufldl/archive/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/stanford-ufldl/archive/wiki/skins/monobook/main.css" media="screen"/>
 
 </head>
 
@@ -42,91 +42,91 @@ correlated with each other, and (ii) the features all have the same variance.
 describe how this can be combined with smoothing, and finally how to combine
 this with PCA. 
 </p><p>How can we make our input features uncorrelated with each other?  We had
-already done this when computing <img class="tex" alt="\textstyle x_{\rm rot}^{(i)} = U^Tx^{(i)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/d/0/cd047246fd68f6d52b2fd068e063c0ef.png"/>.  
-Repeating our previous figure, our plot for <img class="tex" alt="\textstyle x_{\rm rot}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/7/0/170047e804738636731477291969d554.png"/> was:
-</p><p><a href="" class="image"><img alt="PCA-rotated.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/1/12/PCA-rotated.png/600px-PCA-rotated.png" width="600" height="450"/></a>
+already done this when computing <img class="tex" alt="\textstyle x_{\rm rot}^{(i)} = U^Tx^{(i)}" src="/stanford-ufldl/archive/wiki/images/math/c/d/0/cd047246fd68f6d52b2fd068e063c0ef.png"/>.  
+Repeating our previous figure, our plot for <img class="tex" alt="\textstyle x_{\rm rot}" src="/stanford-ufldl/archive/wiki/images/math/1/7/0/170047e804738636731477291969d554.png"/> was:
+</p><p><a href="" class="image"><img alt="PCA-rotated.png" src="/stanford-ufldl/archive/wiki/images/thumb/1/12/PCA-rotated.png/600px-PCA-rotated.png" width="600" height="450"/></a>
 </p><p>The covariance matrix of this data is given by:
 </p><p><img class="tex" alt="\begin{align}
 \begin{bmatrix}
 7.29 &amp; 0  \\
 0 &amp; 0.69
 \end{bmatrix}.
-\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/e/5/fe5ed797b9c818df5bc8bf5d5c001e02.png"/>
+\end{align}" src="/stanford-ufldl/archive/wiki/images/math/f/e/5/fe5ed797b9c818df5bc8bf5d5c001e02.png"/>
 </p><p>(Note: Technically, many of the
 statements in this section about the "covariance" will be true only if the data
 has zero mean.  In the rest of this section, we will take this assumption as
 implicit in our statements.  However, even if the data's mean isn't exactly zero, 
 the intuitions we're presenting here still hold true, and so this isn't something
 that you should worry about.)
-</p><p>It is no accident that the diagonal values are <img class="tex" alt="\textstyle \lambda_1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/1/3/e138a7c8755e6a4400dd6bb08974d139.png"/> and <img class="tex" alt="\textstyle \lambda_2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/4/1/a/41ab4ee633f1ad3d25809270aedbe566.png"/>.  
+</p><p>It is no accident that the diagonal values are <img class="tex" alt="\textstyle \lambda_1" src="/stanford-ufldl/archive/wiki/images/math/e/1/3/e138a7c8755e6a4400dd6bb08974d139.png"/> and <img class="tex" alt="\textstyle \lambda_2" src="/stanford-ufldl/archive/wiki/images/math/4/1/a/41ab4ee633f1ad3d25809270aedbe566.png"/>.  
 Further, 
 the off-diagonal entries are zero; thus, 
-<img class="tex" alt="\textstyle x_{{\rm rot},1}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/0/6/0066d1e2efa2f0019a3dfd3469862934.png"/> and <img class="tex" alt="\textstyle x_{{\rm rot},2}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/f/2/3f2601aaa1d6e648c789bd9a831cc4eb.png"/> are uncorrelated, satisfying one of our desiderata 
+<img class="tex" alt="\textstyle x_{{\rm rot},1}" src="/stanford-ufldl/archive/wiki/images/math/0/0/6/0066d1e2efa2f0019a3dfd3469862934.png"/> and <img class="tex" alt="\textstyle x_{{\rm rot},2}" src="/stanford-ufldl/archive/wiki/images/math/3/f/2/3f2601aaa1d6e648c789bd9a831cc4eb.png"/> are uncorrelated, satisfying one of our desiderata 
 for whitened data (that the features be less correlated).
 </p><p>To make each of our input features have unit variance, we can simply rescale
-each feature <img class="tex" alt="\textstyle x_{{\rm rot},i}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/1/5/d1527b3272bc5c1fe3fc308c7a21e689.png"/> by <img class="tex" alt="\textstyle 1/\sqrt{\lambda_i}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/a/d/7ad8b4911f758fec9b3c6d0b4b61a82c.png"/>.  Concretely, we define
-our whitened data <img class="tex" alt="\textstyle x_{{\rm PCAwhite}} \in \Re^n" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/6/9/9693d90272b2475c8369fa23df7267ed.png"/> as follows: 
+each feature <img class="tex" alt="\textstyle x_{{\rm rot},i}" src="/stanford-ufldl/archive/wiki/images/math/d/1/5/d1527b3272bc5c1fe3fc308c7a21e689.png"/> by <img class="tex" alt="\textstyle 1/\sqrt{\lambda_i}" src="/stanford-ufldl/archive/wiki/images/math/7/a/d/7ad8b4911f758fec9b3c6d0b4b61a82c.png"/>.  Concretely, we define
+our whitened data <img class="tex" alt="\textstyle x_{{\rm PCAwhite}} \in \Re^n" src="/stanford-ufldl/archive/wiki/images/math/9/6/9/9693d90272b2475c8369fa23df7267ed.png"/> as follows: 
 </p>
 <dl><dd><img class="tex" alt="\begin{align}
 x_{{\rm PCAwhite},i} = \frac{x_{{\rm rot},i} }{\sqrt{\lambda_i}}.   
-\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/2/9/e296118ba2bdf453dbe38426359f2230.png"/>
+\end{align}" src="/stanford-ufldl/archive/wiki/images/math/e/2/9/e296118ba2bdf453dbe38426359f2230.png"/>
 </dd></dl>
-<p>Plotting <img class="tex" alt="\textstyle x_{{\rm PCAwhite}}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/3/1/a3135c6f5975d0a74cd2d9082be9638a.png"/>, we get:
-</p><p><a href="" class="image"><img alt="PCA-whitened.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/9/98/PCA-whitened.png/600px-PCA-whitened.png" width="600" height="450"/></a>
-</p><p>This data now has covariance equal to the identity matrix <img class="tex" alt="\textstyle I" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/4/f/54f708ffb9cc17b9820863a36120c90c.png"/>.  We say that
-<img class="tex" alt="\textstyle x_{{\rm PCAwhite}}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/3/1/a3135c6f5975d0a74cd2d9082be9638a.png"/> is our <b>PCA whitened</b> version of the data: The 
-different components of <img class="tex" alt="\textstyle x_{{\rm PCAwhite}}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/3/1/a3135c6f5975d0a74cd2d9082be9638a.png"/> are uncorrelated and have
+<p>Plotting <img class="tex" alt="\textstyle x_{{\rm PCAwhite}}" src="/stanford-ufldl/archive/wiki/images/math/a/3/1/a3135c6f5975d0a74cd2d9082be9638a.png"/>, we get:
+</p><p><a href="" class="image"><img alt="PCA-whitened.png" src="/stanford-ufldl/archive/wiki/images/thumb/9/98/PCA-whitened.png/600px-PCA-whitened.png" width="600" height="450"/></a>
+</p><p>This data now has covariance equal to the identity matrix <img class="tex" alt="\textstyle I" src="/stanford-ufldl/archive/wiki/images/math/5/4/f/54f708ffb9cc17b9820863a36120c90c.png"/>.  We say that
+<img class="tex" alt="\textstyle x_{{\rm PCAwhite}}" src="/stanford-ufldl/archive/wiki/images/math/a/3/1/a3135c6f5975d0a74cd2d9082be9638a.png"/> is our <b>PCA whitened</b> version of the data: The 
+different components of <img class="tex" alt="\textstyle x_{{\rm PCAwhite}}" src="/stanford-ufldl/archive/wiki/images/math/a/3/1/a3135c6f5975d0a74cd2d9082be9638a.png"/> are uncorrelated and have
 unit variance. 
 </p><p><b>Whitening combined with dimensionality reduction.</b> 
 If you want to have data that is whitened and which is lower dimensional than
-the original input, you can also optionally keep only the top <img class="tex" alt="\textstyle k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> components of
-<img class="tex" alt="\textstyle x_{{\rm PCAwhite}}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/3/1/a3135c6f5975d0a74cd2d9082be9638a.png"/>.  When we combine PCA whitening with regularization
-(described later), the last few components of <img class="tex" alt="\textstyle x_{{\rm PCAwhite}}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/3/1/a3135c6f5975d0a74cd2d9082be9638a.png"/> will be
+the original input, you can also optionally keep only the top <img class="tex" alt="\textstyle k" src="/stanford-ufldl/archive/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> components of
+<img class="tex" alt="\textstyle x_{{\rm PCAwhite}}" src="/stanford-ufldl/archive/wiki/images/math/a/3/1/a3135c6f5975d0a74cd2d9082be9638a.png"/>.  When we combine PCA whitening with regularization
+(described later), the last few components of <img class="tex" alt="\textstyle x_{{\rm PCAwhite}}" src="/stanford-ufldl/archive/wiki/images/math/a/3/1/a3135c6f5975d0a74cd2d9082be9638a.png"/> will be
 nearly zero anyway, and thus can safely be dropped.
 </p>
 <h2> <span class="mw-headline" id="ZCA_Whitening"> ZCA Whitening </span></h2>
 <p>Finally, it turns out that this way of getting the 
-data to have covariance identity <img class="tex" alt="\textstyle I" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/4/f/54f708ffb9cc17b9820863a36120c90c.png"/> isn't unique. 
+data to have covariance identity <img class="tex" alt="\textstyle I" src="/stanford-ufldl/archive/wiki/images/math/5/4/f/54f708ffb9cc17b9820863a36120c90c.png"/> isn't unique. 
 Concretely, if 
-<img class="tex" alt="\textstyle R" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/e/e/fee54137ee7748e26642e71145effa05.png"/> is any orthogonal matrix, so that it satisfies <img class="tex" alt="\textstyle RR^T = R^TR = I" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/7/d/77d64d6a092c3f7adb9eae6eb4af41ff.png"/> (less formally,
-if <img class="tex" alt="\textstyle R" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/e/e/fee54137ee7748e26642e71145effa05.png"/> is a rotation/reflection matrix),
-then <img class="tex" alt="\textstyle R \,x_{\rm PCAwhite}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/c/d/bcd43a98b71d807cddbdb7a3a33bbc1a.png"/> will also have identity covariance.  
+<img class="tex" alt="\textstyle R" src="/stanford-ufldl/archive/wiki/images/math/f/e/e/fee54137ee7748e26642e71145effa05.png"/> is any orthogonal matrix, so that it satisfies <img class="tex" alt="\textstyle RR^T = R^TR = I" src="/stanford-ufldl/archive/wiki/images/math/7/7/d/77d64d6a092c3f7adb9eae6eb4af41ff.png"/> (less formally,
+if <img class="tex" alt="\textstyle R" src="/stanford-ufldl/archive/wiki/images/math/f/e/e/fee54137ee7748e26642e71145effa05.png"/> is a rotation/reflection matrix),
+then <img class="tex" alt="\textstyle R \,x_{\rm PCAwhite}" src="/stanford-ufldl/archive/wiki/images/math/b/c/d/bcd43a98b71d807cddbdb7a3a33bbc1a.png"/> will also have identity covariance.  
 In <b>ZCA whitening</b>,
-we choose <img class="tex" alt="\textstyle R = U" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/6/1/b61977ba8ab2bacb0c31fa5575db43fd.png"/>.  We define 
+we choose <img class="tex" alt="\textstyle R = U" src="/stanford-ufldl/archive/wiki/images/math/b/6/1/b61977ba8ab2bacb0c31fa5575db43fd.png"/>.  We define 
 </p>
 <dl><dd><img class="tex" alt="\begin{align}
 x_{\rm ZCAwhite} = U x_{\rm PCAwhite}
-\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/f/b/cfb1fa6b1049a5fdb2da4d7e88856751.png"/>
+\end{align}" src="/stanford-ufldl/archive/wiki/images/math/c/f/b/cfb1fa6b1049a5fdb2da4d7e88856751.png"/>
 </dd></dl>
-<p>Plotting <img class="tex" alt="\textstyle x_{\rm ZCAwhite}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/6/6/a668553308d25ae0f796a9f92c807931.png"/>, we get: 
-</p><p><a href="" class="image"><img alt="ZCA-whitened.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/a/a4/ZCA-whitened.png/600px-ZCA-whitened.png" width="600" height="450"/></a>
-</p><p>It can be shown that out of all possible choices for <img class="tex" alt="\textstyle R" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/e/e/fee54137ee7748e26642e71145effa05.png"/>, 
-this choice of rotation causes <img class="tex" alt="\textstyle x_{\rm ZCAwhite}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/6/6/a668553308d25ae0f796a9f92c807931.png"/> to be as close as possible to the 
-original input data <img class="tex" alt="\textstyle x" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/>.  
-</p><p>When using ZCA whitening (unlike PCA whitening), we usually keep all <img class="tex" alt="\textstyle n" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/c/5/0c59de0fa75c1baa1c024aabfa43b2e3.png"/> dimensions
+<p>Plotting <img class="tex" alt="\textstyle x_{\rm ZCAwhite}" src="/stanford-ufldl/archive/wiki/images/math/a/6/6/a668553308d25ae0f796a9f92c807931.png"/>, we get: 
+</p><p><a href="" class="image"><img alt="ZCA-whitened.png" src="/stanford-ufldl/archive/wiki/images/thumb/a/a4/ZCA-whitened.png/600px-ZCA-whitened.png" width="600" height="450"/></a>
+</p><p>It can be shown that out of all possible choices for <img class="tex" alt="\textstyle R" src="/stanford-ufldl/archive/wiki/images/math/f/e/e/fee54137ee7748e26642e71145effa05.png"/>, 
+this choice of rotation causes <img class="tex" alt="\textstyle x_{\rm ZCAwhite}" src="/stanford-ufldl/archive/wiki/images/math/a/6/6/a668553308d25ae0f796a9f92c807931.png"/> to be as close as possible to the 
+original input data <img class="tex" alt="\textstyle x" src="/stanford-ufldl/archive/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/>.  
+</p><p>When using ZCA whitening (unlike PCA whitening), we usually keep all <img class="tex" alt="\textstyle n" src="/stanford-ufldl/archive/wiki/images/math/0/c/5/0c59de0fa75c1baa1c024aabfa43b2e3.png"/> dimensions
 of the data, and do not try to reduce its dimension.
 </p>
 <h2> <span class="mw-headline" id="Regularizaton"> Regularizaton </span></h2>
 <p>When implementing PCA whitening or ZCA whitening in practice, sometimes some
-of the eigenvalues <img class="tex" alt="\textstyle \lambda_i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/3/5/23536ce45f0ee57fffa389163f8437bd.png"/> will be numerically close to 0, and thus the scaling
-step where we divide by <img class="tex" alt="\sqrt{\lambda_i}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/e/8/3e85dc0c50d11861f9d02bb43ab2d989.png"/> would involve dividing by a value close to zero; this 
+of the eigenvalues <img class="tex" alt="\textstyle \lambda_i" src="/stanford-ufldl/archive/wiki/images/math/2/3/5/23536ce45f0ee57fffa389163f8437bd.png"/> will be numerically close to 0, and thus the scaling
+step where we divide by <img class="tex" alt="\sqrt{\lambda_i}" src="/stanford-ufldl/archive/wiki/images/math/3/e/8/3e85dc0c50d11861f9d02bb43ab2d989.png"/> would involve dividing by a value close to zero; this 
 may cause the data to blow up (take on large values) or otherwise be numerically unstable.  In practice, we 
 therefore implement this scaling step using 
-a small amount of regularization, and add a small constant <img class="tex" alt="\textstyle \epsilon" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/8/e/a8eae7b5e90c024c40de690158e0e6b1.png"/> 
+a small amount of regularization, and add a small constant <img class="tex" alt="\textstyle \epsilon" src="/stanford-ufldl/archive/wiki/images/math/a/8/e/a8eae7b5e90c024c40de690158e0e6b1.png"/> 
 to the eigenvalues before taking their square root and inverse:
 </p>
 <dl><dd><img class="tex" alt="\begin{align}
 x_{{\rm PCAwhite},i} = \frac{x_{{\rm rot},i} }{\sqrt{\lambda_i + \epsilon}}.
-\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/7/b/67be9aaa628b437297c08a916d0d5307.png"/>
+\end{align}" src="/stanford-ufldl/archive/wiki/images/math/6/7/b/67be9aaa628b437297c08a916d0d5307.png"/>
 </dd></dl>
-<p>When <img class="tex" alt="\textstyle x" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/> takes values around <img class="tex" alt="\textstyle [-1,1]" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/5/a/85a1c5a07f21a9eebbfb1dca380f8d38.png"/>, a value of <img class="tex" alt="\textstyle \epsilon \approx 10^{-5}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/d/d/cdd6f0cc52395a161edf391fad0ef2ef.png"/>
+<p>When <img class="tex" alt="\textstyle x" src="/stanford-ufldl/archive/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/> takes values around <img class="tex" alt="\textstyle [-1,1]" src="/stanford-ufldl/archive/wiki/images/math/8/5/a/85a1c5a07f21a9eebbfb1dca380f8d38.png"/>, a value of <img class="tex" alt="\textstyle \epsilon \approx 10^{-5}" src="/stanford-ufldl/archive/wiki/images/math/c/d/d/cdd6f0cc52395a161edf391fad0ef2ef.png"/>
 might be typical. 
-</p><p>For the case of images, adding <img class="tex" alt="\textstyle \epsilon" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/8/e/a8eae7b5e90c024c40de690158e0e6b1.png"/> here also has the effect of slightly smoothing (or low-pass
+</p><p>For the case of images, adding <img class="tex" alt="\textstyle \epsilon" src="/stanford-ufldl/archive/wiki/images/math/a/8/e/a8eae7b5e90c024c40de690158e0e6b1.png"/> here also has the effect of slightly smoothing (or low-pass
 filtering) the input image.  This also has a desirable effect of removing aliasing artifacts
 caused by the way pixels are laid out in an image, and can improve the features learned 
 (details are beyond the scope of these notes). 
-</p><p>ZCA whitening is a form of pre-processing of the data that maps it from <img class="tex" alt="\textstyle x" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/> to
-<img class="tex" alt="\textstyle x_{\rm ZCAwhite}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/6/6/a668553308d25ae0f796a9f92c807931.png"/>.  It turns out that this is also a rough model of how the
+</p><p>ZCA whitening is a form of pre-processing of the data that maps it from <img class="tex" alt="\textstyle x" src="/stanford-ufldl/archive/wiki/images/math/f/6/c/f6c0f8758a1eb9c99c0bbe309ff2c5a5.png"/> to
+<img class="tex" alt="\textstyle x_{\rm ZCAwhite}" src="/stanford-ufldl/archive/wiki/images/math/a/6/6/a668553308d25ae0f796a9f92c807931.png"/>.  It turns out that this is also a rough model of how the
 biological eye (the retina) processes images.  Specifically, as your eye
 perceives images, most adjacent "pixels" in your eye will perceive very
 similar values, since adjacent parts of an image tend to be highly correlated
@@ -139,13 +139,13 @@ image, which is then transmitted to your brain.
 </p><p><br/>
 </p>
 <div style="text-align: center;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
-<p><a href="/wayback-ufldl/stanford-ufldl/wiki/PCA" title="PCA">PCA</a> | <strong class="selflink">Whitening</strong> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Implementing_PCA/Whitening" title="Implementing PCA/Whitening">Implementing PCA/Whitening</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_PCA_in_2D" title="Exercise:PCA in 2D">Exercise:PCA in 2D</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_PCA_and_Whitening" title="Exercise:PCA and Whitening">Exercise:PCA and Whitening</a>
+<p><a href="/stanford-ufldl/archive/wiki/PCA" title="PCA">PCA</a> | <strong class="selflink">Whitening</strong> | <a href="/stanford-ufldl/archive/wiki/Implementing_PCA/Whitening" title="Implementing PCA/Whitening">Implementing PCA/Whitening</a> | <a href="/stanford-ufldl/archive/wiki/Exercise_PCA_in_2D" title="Exercise:PCA in 2D">Exercise:PCA in 2D</a> | <a href="/stanford-ufldl/archive/wiki/Exercise_PCA_and_Whitening" title="Exercise:PCA and Whitening">Exercise:PCA and Whitening</a>
 </p>
 </div>
 <p><br/>
 </p>
 <div style="text-align: left;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
-<p>Language&nbsp;: <a href="/wayback-ufldl/stanford-ufldl/wiki/%E7%99%BD%E5%8C%96" title="白化">中文</a>
+<p>Language&nbsp;: <a href="/stanford-ufldl/archive/wiki/%E7%99%BD%E5%8C%96" title="白化">中文</a>
 </p>
 </div>
 
@@ -167,7 +167,7 @@ Expensive parser function count: 0/100
 		<h5>Views</h5>
 		<div class="pBody">
 			<ul>
-				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/Whitening" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-nstab-main" class="selected"><a href="/stanford-ufldl/archive/wiki/Whitening" title="View the content page [c]" accesskey="c">Page</a></li>
 				 <li id="ca-talk" class="new"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
 				 <li id="ca-viewsource"><a href="" title="This page is protected.
 You can view its source [e]" accesskey="e">View source</a></li>
@@ -183,15 +183,15 @@ You can view its source [e]" accesskey="e">View source</a></li>
 		</div>
 	</div>
 	<div class="portlet" id="p-logo">
-		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+		<a style="background-image: url(/stanford-ufldl/archive/wiki/skins/common/images/dolphin-openclipart.png);" href="/stanford-ufldl/archive/wiki/Main_Page" title="Visit the main page"></a>
 	</div>
 	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
 	<div class="generated-sidebar portlet" id="p-ufldl_resources">
 		<h5>ufldl resources</h5>
 		<div class="pBody">
 			<ul>
-				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
-				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+				<li id="n-UFLDL-Tutorial"><a href="/stanford-ufldl/archive/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/stanford-ufldl/archive/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
 			</ul>
 		</div>
 	</div>
@@ -199,7 +199,7 @@ You can view its source [e]" accesskey="e">View source</a></li>
 		<h5>wiki</h5>
 		<div class="pBody">
 			<ul>
-				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-mainpage-description"><a href="/stanford-ufldl/archive/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
 				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
 				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
 				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
@@ -232,9 +232,9 @@ You can view its source [e]" accesskey="e">View source</a></li>
 <div id="footer">
 	<ul id="f-list">
 		<li id="lastmod"> This page was last modified on 7 April 2013, at 13:20.</li>
-		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
-		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
-		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+		<li id="privacy"><a href="/stanford-ufldl/archive/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/stanford-ufldl/archive/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/stanford-ufldl/archive/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
 	</ul>
 </div>
 </div>

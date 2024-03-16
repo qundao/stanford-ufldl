@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Exercise:Sparse Autoencoder - Ufldl</title>
-<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
-<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+<link rel="stylesheet" href="/stanford-ufldl/archive/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/stanford-ufldl/archive/wiki/skins/monobook/main.css" media="screen"/>
 
 </head>
 
@@ -58,7 +58,7 @@ is licensed under a Creative Commons, Attribute, Non-Commercial license.
 If you need to use this software for commercial purposes, you can 
 download and use a different function (fminlbfgs) that can serve the same
 purpose, but runs ~3x slower for this exercise (and thus is less recommended). 
-You can read more about this in the <a href="/wayback-ufldl/stanford-ufldl/wiki/Fminlbfgs_Details" title="Fminlbfgs Details">Fminlbfgs_Details</a> page. 
+You can read more about this in the <a href="/stanford-ufldl/archive/wiki/Fminlbfgs_Details" title="Fminlbfgs Details">Fminlbfgs_Details</a> page. 
 </p><p><br/>
 </p>
 <h3> <span class="mw-headline" id="Step_1:_Generate_training_set">Step 1: Generate training set</span></h3>
@@ -66,7 +66,7 @@ You can read more about this in the <a href="/wayback-ufldl/stanford-ufldl/wiki/
 example <span class="texhtml"><i>x</i></span>, randomly pick one of the 10 images, then randomly sample 
 an 8&times;8 image patch from the selected image, and convert the image patch (either 
 in row-major order or column-major order; it doesn't matter) into a 64-dimensional 
-vector to get a training example <img class="tex" alt="x \in \Re^{64}." src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/2/e/52e8298f9075e83d832c225274661c53.png"/>
+vector to get a training example <img class="tex" alt="x \in \Re^{64}." src="/stanford-ufldl/archive/wiki/images/math/5/2/e/52e8298f9075e83d832c225274661c53.png"/>
 </p><p>Complete the code in <tt>sampleIMAGES.m</tt>.  Your code should sample 10000 image 
 patches and concatenate them into a 64&times;10000 matrix. 
 </p><p>To make sure your implementation is working, run the code in "Step 1" of <tt>train.m</tt>.
@@ -89,14 +89,14 @@ image patch.
 (Section 3 of the lecture notes)
 and the corresponding derivatives of <span class="texhtml"><i>J</i><sub>sparse</sub></span> with respect to 
 the different parameters.  Use the sigmoid function for the activation function, 
-<img class="tex" alt="f(z) = \frac{1}{{1+e^{-z}}}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/4/a/e/4ae7d98ac96ae42135ae42929a235787.png"/>. 
+<img class="tex" alt="f(z) = \frac{1}{{1+e^{-z}}}" src="/stanford-ufldl/archive/wiki/images/math/4/a/e/4ae7d98ac96ae42135ae42929a235787.png"/>. 
 In particular, complete the code in <tt>sparseAutoencoderCost.m</tt>.
 </p><p>The sparse autoencoder is parameterized by matrices 
-<img class="tex" alt="W^{(1)} \in \Re^{s_1\times s_2}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/2/1/12193f1859b9cafbf3bdcd4cfc62ecb7.png"/>,
-<img class="tex" alt="W^{(2)} \in \Re^{s_2\times s_3}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/e/d/fedc3aec5abaabac539e73a60cd9465f.png"/> 
+<img class="tex" alt="W^{(1)} \in \Re^{s_1\times s_2}" src="/stanford-ufldl/archive/wiki/images/math/1/2/1/12193f1859b9cafbf3bdcd4cfc62ecb7.png"/>,
+<img class="tex" alt="W^{(2)} \in \Re^{s_2\times s_3}" src="/stanford-ufldl/archive/wiki/images/math/f/e/d/fedc3aec5abaabac539e73a60cd9465f.png"/> 
 vectors 
-<img class="tex" alt="b^{(1)} \in \Re^{s_2}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/9/d/99dba513cd3e3ea1d9e51ef34766a336.png"/>, 
-<img class="tex" alt="b^{(2)} \in \Re^{s_3}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/1/8/e186d54c3d04fca48aca0a5c4ccd8bf0.png"/>.
+<img class="tex" alt="b^{(1)} \in \Re^{s_2}" src="/stanford-ufldl/archive/wiki/images/math/9/9/d/99dba513cd3e3ea1d9e51ef34766a336.png"/>, 
+<img class="tex" alt="b^{(2)} \in \Re^{s_3}" src="/stanford-ufldl/archive/wiki/images/math/e/1/8/e186d54c3d04fca48aca0a5c4ccd8bf0.png"/>.
 However, for subsequent notational convenience, we will "unroll" all of these parameters
 into a very long parameter vector <span class="texhtml">&theta;</span> with <span class="texhtml"><i>s</i><sub>1</sub><i>s</i><sub>2</sub> + <i>s</i><sub>2</sub><i>s</i><sub>3</sub> + <i>s</i><sub>2</sub> + <i>s</i><sub>3</sub></span> elements.  The
 code for converting between the <span class="texhtml">(<i>W</i><sup>(1)</sup>,<i>W</i><sup>(2)</sup>,<i>b</i><sup>(1)</sup>,<i>b</i><sup>(2)</sup>)</span> and the <span class="texhtml">&theta;</span> parameterization 
@@ -115,8 +115,8 @@ term are working, add in code to compute the weight decay and sparsity penalty t
 Specifically, complete the code in <tt>computeNumericalGradient.m</tt>.  Please 
 use <tt>EPSILON</tt> = 10<sup>-4</sup> as described in the lecture notes. 
 </p><p>We've also provided code in <tt>checkNumericalGradient.m</tt> for you to test your code. 
-This code defines a simple quadratic function <img class="tex" alt="h: \Re^2 \mapsto \Re" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/2/b/f2b7676d71d07e5769e6e8e58d6469f2.png"/> given by 
-<img class="tex" alt="h(x) = x_1^2 + 3x_1 x_2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/d/b/5db1a6e3a00429921bdd48a41dfea2f3.png"/>, and evaluates it at the point <span class="texhtml"><i>x</i> = (4,10)<sup><i>T</i></sup></span>.  It allows you
+This code defines a simple quadratic function <img class="tex" alt="h: \Re^2 \mapsto \Re" src="/stanford-ufldl/archive/wiki/images/math/f/2/b/f2b7676d71d07e5769e6e8e58d6469f2.png"/> given by 
+<img class="tex" alt="h(x) = x_1^2 + 3x_1 x_2" src="/stanford-ufldl/archive/wiki/images/math/5/d/b/5db1a6e3a00429921bdd48a41dfea2f3.png"/>, and evaluates it at the point <span class="texhtml"><i>x</i> = (4,10)<sup><i>T</i></sup></span>.  It allows you
 to verify that your numerically evaluated gradient is very close to the true (analytically
 computed) gradient.  
 </p><p>After using <tt>checkNumericalGradient.m</tt> to make sure your implementation is correct, 
@@ -143,9 +143,9 @@ rather than the "<span class="texhtml">(<i>W</i><sup>(1)</sup>,<i>W</i><sup>(2)<
 to it.
 </p><p>Train a sparse autoencoder with 64 input units, 25 hidden units, and 64 output units.
 In our starter code, we have provided a function for initializing the parameters.
-We initialize the biases <img class="tex" alt="b^{(l)}_i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/e/a/6ea0ff7533b239d7ad97668ee35c259d.png"/> to zero, and the weights <img class="tex" alt="W^{(l)}_{ij}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/1/8/9183f327132cdf5ca9876aa4038f6e2f.png"/>
+We initialize the biases <img class="tex" alt="b^{(l)}_i" src="/stanford-ufldl/archive/wiki/images/math/6/e/a/6ea0ff7533b239d7ad97668ee35c259d.png"/> to zero, and the weights <img class="tex" alt="W^{(l)}_{ij}" src="/stanford-ufldl/archive/wiki/images/math/9/1/8/9183f327132cdf5ca9876aa4038f6e2f.png"/>
 to random numbers drawn uniformly from the interval 
-<img class="tex" alt="\left[-\sqrt{\frac{6}{n_{\rm in}+n_{\rm out}+1}},\sqrt{\frac{6}{n_{\rm in}+n_{\rm out}+1}}\,\right]" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/1/e/b1e650d9fdd8c53c515c23d49fc8fe40.png"/>, where <span class="texhtml"><i>n</i><sub>in</sub></span> is the fan-in
+<img class="tex" alt="\left[-\sqrt{\frac{6}{n_{\rm in}+n_{\rm out}+1}},\sqrt{\frac{6}{n_{\rm in}+n_{\rm out}+1}}\,\right]" src="/stanford-ufldl/archive/wiki/images/math/b/1/e/b1e650d9fdd8c53c515c23d49fc8fe40.png"/>, where <span class="texhtml"><i>n</i><sub>in</sub></span> is the fan-in
 (the number of inputs feeding into a node) and <span class="texhtml"><i>n</i><sub>out</sub></span> is the fan-in (the number of
 units that a node feeds into).
 </p><p>The values we provided for the various parameters (<span class="texhtml">&lambda;,&beta;,&rho;</span>, etc.)
@@ -165,7 +165,7 @@ your code).
 autoencoder algorithm learning a set of edge detectors.  For example, this
 was the visualization we obtained: 
 </p><p><br/>
-<a href="" class="image"><img alt="Gabor.jpg" src="/wayback-ufldl/stanford-ufldl/wiki/images/0/0f/Gabor.jpg" width="380" height="380"/></a>
+<a href="" class="image"><img alt="Gabor.jpg" src="/stanford-ufldl/archive/wiki/images/0/0f/Gabor.jpg" width="380" height="380"/></a>
 </p><p><br/>
 Our implementation took around 5 minutes to run on a fast computer.
 In case you end up needing to try out multiple implementations or 
@@ -175,12 +175,12 @@ and to run the experiments you'll need.
 that we do not consider successful (either a buggy implementation, or where
 the parameters were poorly tuned):
 </p><p><br/>
-<a href="" class="image"><img alt="Badfilter1.jpg" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/a/ad/Badfilter1.jpg/240px-Badfilter1.jpg" width="240" height="239"/></a> <a href="" class="image"><img alt="Badfilter2.jpg" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/1/11/Badfilter2.jpg/240px-Badfilter2.jpg" width="240" height="239"/></a> <a href="" class="image"><img alt="Badfilter3.jpg" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/f/fb/Badfilter3.jpg/240px-Badfilter3.jpg" width="240" height="237"/></a>
-</p><p><a href="" class="image"><img alt="Badfilter4.jpg" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/3/32/Badfilter4.jpg/240px-Badfilter4.jpg" width="240" height="238"/></a> <a href="" class="image"><img alt="Badfilter5.jpg" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/6/61/Badfilter5.jpg/240px-Badfilter5.jpg" width="240" height="238"/></a> <a href="" class="image"><img alt="Badfilter6.jpg" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/9/91/Badfilter6.jpg/240px-Badfilter6.jpg" width="240" height="238"/></a>
+<a href="" class="image"><img alt="Badfilter1.jpg" src="/stanford-ufldl/archive/wiki/images/thumb/a/ad/Badfilter1.jpg/240px-Badfilter1.jpg" width="240" height="239"/></a> <a href="" class="image"><img alt="Badfilter2.jpg" src="/stanford-ufldl/archive/wiki/images/thumb/1/11/Badfilter2.jpg/240px-Badfilter2.jpg" width="240" height="239"/></a> <a href="" class="image"><img alt="Badfilter3.jpg" src="/stanford-ufldl/archive/wiki/images/thumb/f/fb/Badfilter3.jpg/240px-Badfilter3.jpg" width="240" height="237"/></a>
+</p><p><a href="" class="image"><img alt="Badfilter4.jpg" src="/stanford-ufldl/archive/wiki/images/thumb/3/32/Badfilter4.jpg/240px-Badfilter4.jpg" width="240" height="238"/></a> <a href="" class="image"><img alt="Badfilter5.jpg" src="/stanford-ufldl/archive/wiki/images/thumb/6/61/Badfilter5.jpg/240px-Badfilter5.jpg" width="240" height="238"/></a> <a href="" class="image"><img alt="Badfilter6.jpg" src="/stanford-ufldl/archive/wiki/images/thumb/9/91/Badfilter6.jpg/240px-Badfilter6.jpg" width="240" height="238"/></a>
 </p><p><br/>
 </p>
 <div style="text-align: center;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
-<p><a href="/wayback-ufldl/stanford-ufldl/wiki/Neural_Networks" title="Neural Networks">Neural Networks</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Backpropagation_Algorithm" title="Backpropagation Algorithm">Backpropagation Algorithm</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Gradient_checking_and_advanced_optimization" title="Gradient checking and advanced optimization">Gradient checking and advanced optimization</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Autoencoders_and_Sparsity" title="Autoencoders and Sparsity">Autoencoders and Sparsity</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Visualizing_a_Trained_Autoencoder" title="Visualizing a Trained Autoencoder">Visualizing a Trained Autoencoder</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Sparse_Autoencoder_Notation_Summary" title="Sparse Autoencoder Notation Summary">Sparse Autoencoder Notation Summary</a> | <strong class="selflink">Exercise:Sparse Autoencoder</strong>
+<p><a href="/stanford-ufldl/archive/wiki/Neural_Networks" title="Neural Networks">Neural Networks</a> | <a href="/stanford-ufldl/archive/wiki/Backpropagation_Algorithm" title="Backpropagation Algorithm">Backpropagation Algorithm</a> | <a href="/stanford-ufldl/archive/wiki/Gradient_checking_and_advanced_optimization" title="Gradient checking and advanced optimization">Gradient checking and advanced optimization</a> | <a href="/stanford-ufldl/archive/wiki/Autoencoders_and_Sparsity" title="Autoencoders and Sparsity">Autoencoders and Sparsity</a> | <a href="/stanford-ufldl/archive/wiki/Visualizing_a_Trained_Autoencoder" title="Visualizing a Trained Autoencoder">Visualizing a Trained Autoencoder</a> | <a href="/stanford-ufldl/archive/wiki/Sparse_Autoencoder_Notation_Summary" title="Sparse Autoencoder Notation Summary">Sparse Autoencoder Notation Summary</a> | <strong class="selflink">Exercise:Sparse Autoencoder</strong>
 </p>
 </div>
 
@@ -202,7 +202,7 @@ Expensive parser function count: 0/100
 		<h5>Views</h5>
 		<div class="pBody">
 			<ul>
-				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Sparse_Autoencoder" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-nstab-main" class="selected"><a href="/stanford-ufldl/archive/wiki/Exercise_Sparse_Autoencoder" title="View the content page [c]" accesskey="c">Page</a></li>
 				 <li id="ca-talk" class="new"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
 				 <li id="ca-viewsource"><a href="" title="This page is protected.
 You can view its source [e]" accesskey="e">View source</a></li>
@@ -218,15 +218,15 @@ You can view its source [e]" accesskey="e">View source</a></li>
 		</div>
 	</div>
 	<div class="portlet" id="p-logo">
-		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+		<a style="background-image: url(/stanford-ufldl/archive/wiki/skins/common/images/dolphin-openclipart.png);" href="/stanford-ufldl/archive/wiki/Main_Page" title="Visit the main page"></a>
 	</div>
 	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
 	<div class="generated-sidebar portlet" id="p-ufldl_resources">
 		<h5>ufldl resources</h5>
 		<div class="pBody">
 			<ul>
-				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
-				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+				<li id="n-UFLDL-Tutorial"><a href="/stanford-ufldl/archive/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/stanford-ufldl/archive/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
 			</ul>
 		</div>
 	</div>
@@ -234,7 +234,7 @@ You can view its source [e]" accesskey="e">View source</a></li>
 		<h5>wiki</h5>
 		<div class="pBody">
 			<ul>
-				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-mainpage-description"><a href="/stanford-ufldl/archive/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
 				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
 				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
 				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
@@ -267,9 +267,9 @@ You can view its source [e]" accesskey="e">View source</a></li>
 <div id="footer">
 	<ul id="f-list">
 		<li id="lastmod"> This page was last modified on 10 July 2012, at 14:34.</li>
-		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
-		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
-		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+		<li id="privacy"><a href="/stanford-ufldl/archive/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/stanford-ufldl/archive/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/stanford-ufldl/archive/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
 	</ul>
 </div>
 </div>

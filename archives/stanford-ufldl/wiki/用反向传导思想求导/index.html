@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>用反向传导思想求导 - Ufldl</title>
-<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
-<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+<link rel="stylesheet" href="/stanford-ufldl/archive/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/stanford-ufldl/archive/wiki/skins/monobook/main.css" media="screen"/>
 
 </head>
 
@@ -35,7 +35,7 @@
 </ul>
 </td></tr></table><script>if (window.showTocToggle) { var tocShowText = "show"; var tocHideText = "hide"; showTocToggle(); } </script>
 <h2> <span class="mw-headline" id=".E7.AE.80.E4.BB.8B"> 简介 </span></h2>
-<p>在<a href="/wayback-ufldl/stanford-ufldl/wiki/%E5%8F%8D%E5%90%91%E4%BC%A0%E5%AF%BC%E7%AE%97%E6%B3%95" title="反向传导算法"> 反向传导算法 </a>一节中，我们介绍了在稀疏自编码器中用反向传导算法来求梯度的方法。事实证明，反向传导算法与矩阵运算相结合的方法，对于计算复杂矩阵函数（从矩阵到实数的函数，或用符号表示为：从 <img class="tex" alt="\mathbb{R}^{r \times c} \rightarrow \mathbb{R}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/b/3/5b3a7630692b07263c08fac96c88c98e.png"/> ）的梯度是十分强大和直观的。
+<p>在<a href="/stanford-ufldl/archive/wiki/%E5%8F%8D%E5%90%91%E4%BC%A0%E5%AF%BC%E7%AE%97%E6%B3%95" title="反向传导算法"> 反向传导算法 </a>一节中，我们介绍了在稀疏自编码器中用反向传导算法来求梯度的方法。事实证明，反向传导算法与矩阵运算相结合的方法，对于计算复杂矩阵函数（从矩阵到实数的函数，或用符号表示为：从 <img class="tex" alt="\mathbb{R}^{r \times c} \rightarrow \mathbb{R}" src="/stanford-ufldl/archive/wiki/images/math/5/b/3/5b3a7630692b07263c08fac96c88c98e.png"/> ）的梯度是十分强大和直观的。
 </p><p><br/>
 首先，我们回顾一下反向传导的思想，为了更适合我们的目的，将其稍作修改呈现于下:
 </p>
@@ -45,14 +45,14 @@
 \delta^{(n_l)}_i
 = \frac{\partial}{\partial z^{(n_l)}_i} \;\;
         J(z^{(n_l)})
-" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/3/c/13cbf81577c102ed2e01d67f71723076.png"/>
+" src="/stanford-ufldl/archive/wiki/images/math/1/3/c/13cbf81577c102ed2e01d67f71723076.png"/>
 </dd></dl>
 其中 <span class="texhtml"><i>J</i>(<i>z</i>)</span> 是我们的“目标函数”（稍后解释）。
-<li>对 <img class="tex" alt="l = n_l-1, n_l-2, n_l-3, \ldots, 2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/8/8/988861db3f04c9f1150b482aca116daa.png"/> ,                                                
+<li>对 <img class="tex" alt="l = n_l-1, n_l-2, n_l-3, \ldots, 2" src="/stanford-ufldl/archive/wiki/images/math/9/8/8/988861db3f04c9f1150b482aca116daa.png"/> ,                                                
 <dl><dd>对第 <span class="texhtml"><i>l</i></span> 层中的每个节点 <span class="texhtml"><i>i</i></span> , 令 
 <dl><dd><img class="tex" alt="
 \delta^{(l)}_i = \left( \sum_{j=1}^{s_{l+1}} W^{(l)}_{ji} \delta^{(l+1)}_j \right) \bullet \frac{\partial}{\partial z^{(l)}_i} f^{(l)} (z^{(l)}_i)
-" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/4/7/947031b9c9f1be0fc792bf2a1b98c27d.png"/>                                         
+" src="/stanford-ufldl/archive/wiki/images/math/9/4/7/947031b9c9f1be0fc792bf2a1b98c27d.png"/>                                         
 </dd></dl>
 </dd></dl>
 <li>计算我们要的偏导数
@@ -60,7 +60,7 @@
 \begin{align}
 \nabla_{W^{(l)}} J(W,b;x,y) &amp;= \delta^{(l+1)} (a^{(l)})^T, \\
 \end{align}
-" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/a/3/5a34eec4ca6a8dd244ed4497cd78ad63.png"/>
+" src="/stanford-ufldl/archive/wiki/images/math/5/a/3/5a34eec4ca6a8dd244ed4497cd78ad63.png"/>
 </dd></dl>
 </ol>
 <p><br/>
@@ -69,30 +69,30 @@
 <ul>
 <li><span class="texhtml"><i>l</i></span> 是神经网络的层数
 <li><span class="texhtml"><i>n</i><sub><i>l</i></sub></span> 第l层神经元的个数
-<li><img class="tex" alt="W^{(l)}_{ji}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/6/1/36184dd6c51daad9e5c9f1973933460e.png"/> 是 <span class="texhtml"><i>l</i></span> 层第 <span class="texhtml"><i>i</i></span> 个节点到第 <span class="texhtml">(<i>l</i> + 1)</span> 层第 <span class="texhtml"><i>j</i></span> 个节点的权重
-<li><img class="tex" alt="z^{(l)}_i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/5/3/053932a35e5e7923d66bfd5cbc15b280.png"/> 是第 <span class="texhtml"><i>l</i></span> 层第 <span class="texhtml"><i>i</i></span> 个单元的输入
-<li><img class="tex" alt="a^{(l)}_i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/f/1/2f12132475b24d761ca573173962be9b.png"/> 是第 <span class="texhtml"><i>l</i></span> 层第 <span class="texhtml"><i>i</i></span> 个节点的激励
-<li><img class="tex" alt="A \bullet B" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/3/c/03caf6030df47b28250decb7a399c191.png"/> 是矩阵的Hadamard积或逐个元素乘积，对 <img class="tex" alt="r \times c" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/5/b/f5b34ce727a51879b69d50dbb38cec68.png"/> 矩阵 <span class="texhtml"><i>A</i></span> 和 <span class="texhtml"><i>B</i></span> ，它们的乘积是 <img class="tex" alt="r \times c" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/5/b/f5b34ce727a51879b69d50dbb38cec68.png"/> 矩阵 <img class="tex" alt="C = A \bullet B" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/b/f/dbf40e2ec518a8d773f3b648f9bd4b7d.png"/> ，即 <img class="tex" alt="C_{r, c} = A_{r, c} \cdot B_{r, c}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/b/2/9b25139003c1d65c569180099b9e56a7.png"/> 
+<li><img class="tex" alt="W^{(l)}_{ji}" src="/stanford-ufldl/archive/wiki/images/math/3/6/1/36184dd6c51daad9e5c9f1973933460e.png"/> 是 <span class="texhtml"><i>l</i></span> 层第 <span class="texhtml"><i>i</i></span> 个节点到第 <span class="texhtml">(<i>l</i> + 1)</span> 层第 <span class="texhtml"><i>j</i></span> 个节点的权重
+<li><img class="tex" alt="z^{(l)}_i" src="/stanford-ufldl/archive/wiki/images/math/0/5/3/053932a35e5e7923d66bfd5cbc15b280.png"/> 是第 <span class="texhtml"><i>l</i></span> 层第 <span class="texhtml"><i>i</i></span> 个单元的输入
+<li><img class="tex" alt="a^{(l)}_i" src="/stanford-ufldl/archive/wiki/images/math/2/f/1/2f12132475b24d761ca573173962be9b.png"/> 是第 <span class="texhtml"><i>l</i></span> 层第 <span class="texhtml"><i>i</i></span> 个节点的激励
+<li><img class="tex" alt="A \bullet B" src="/stanford-ufldl/archive/wiki/images/math/0/3/c/03caf6030df47b28250decb7a399c191.png"/> 是矩阵的Hadamard积或逐个元素乘积，对 <img class="tex" alt="r \times c" src="/stanford-ufldl/archive/wiki/images/math/f/5/b/f5b34ce727a51879b69d50dbb38cec68.png"/> 矩阵 <span class="texhtml"><i>A</i></span> 和 <span class="texhtml"><i>B</i></span> ，它们的乘积是 <img class="tex" alt="r \times c" src="/stanford-ufldl/archive/wiki/images/math/f/5/b/f5b34ce727a51879b69d50dbb38cec68.png"/> 矩阵 <img class="tex" alt="C = A \bullet B" src="/stanford-ufldl/archive/wiki/images/math/d/b/f/dbf40e2ec518a8d773f3b648f9bd4b7d.png"/> ，即 <img class="tex" alt="C_{r, c} = A_{r, c} \cdot B_{r, c}" src="/stanford-ufldl/archive/wiki/images/math/9/b/2/9b25139003c1d65c569180099b9e56a7.png"/> 
 <li><span class="texhtml"><i>f</i><sup>(<i>l</i>)</sup></span> 是第 <span class="texhtml"><i>l</i></span> 层中各单元的激励函数
 </ul>
-<p>假设我们有一个函数 <span class="texhtml"><i>F</i></span> ， <span class="texhtml"><i>F</i></span> 以矩阵 <span class="texhtml"><i>X</i></span> 为参数生成一个实数。我们希望用反向传导思想计算 <span class="texhtml"><i>F</i></span> 关于 <span class="texhtml"><i>X</i></span> 的梯度，即 <img class="tex" alt="\nabla_X F" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/8/a/c8a57f802f72156c4dbee1bd9fde338e.png"/> 。大致思路是将函数 <span class="texhtml"><i>F</i></span> 看成一个多层神经网络，并使用反向传导思想求梯度。
+<p>假设我们有一个函数 <span class="texhtml"><i>F</i></span> ， <span class="texhtml"><i>F</i></span> 以矩阵 <span class="texhtml"><i>X</i></span> 为参数生成一个实数。我们希望用反向传导思想计算 <span class="texhtml"><i>F</i></span> 关于 <span class="texhtml"><i>X</i></span> 的梯度，即 <img class="tex" alt="\nabla_X F" src="/stanford-ufldl/archive/wiki/images/math/c/8/a/c8a57f802f72156c4dbee1bd9fde338e.png"/> 。大致思路是将函数 <span class="texhtml"><i>F</i></span> 看成一个多层神经网络，并使用反向传导思想求梯度。
 </p><p>为了实现这个想法，我们取目标函数为 <span class="texhtml"><i>J</i>(<i>z</i>)</span> ，当计算最后一层神经元的输出时，会产生值 <span class="texhtml"><i>F</i>(<i>X</i>)</span> 。对于中间层，我们将选择激励函数 <span class="texhtml"><i>f</i><sup>(<i>l</i>)</sup></span> 。
 </p><p>稍后我们会看到，使用这种方法，我们可以很容易计算出对于输入 <span class="texhtml"><i>X</i></span> 以及网络中任意一个权重的导数。
 </p><p><br/>
 </p>
 <h2> <span class="mw-headline" id=".E7.A4.BA.E4.BE.8B"> 示例 </span></h2>
-<p>为了阐述如何使用反向传导思想计算关于输入的导数，我们要在示例1,示例2中用 <a href="/wayback-ufldl/stanford-ufldl/wiki/%E7%A8%80%E7%96%8F%E7%BC%96%E7%A0%81%E8%87%AA%E7%BC%96%E7%A0%81%E8%A1%A8%E8%BE%BE" title="稀疏编码自编码表达"> 稀疏编码 </a> 章节中的两个函数。在示例3中，我们使用<a href="/wayback-ufldl/stanford-ufldl/wiki/%E7%8B%AC%E7%AB%8B%E6%88%90%E5%88%86%E5%88%86%E6%9E%90" title="独立成分分析"> 独立成分分析 </a>一节中的一个函数来说明使用此思想计算关于权重的偏导的方法，以及在这种特殊情况下，如何处理相互捆绑或重复的权重。
+<p>为了阐述如何使用反向传导思想计算关于输入的导数，我们要在示例1,示例2中用 <a href="/stanford-ufldl/archive/wiki/%E7%A8%80%E7%96%8F%E7%BC%96%E7%A0%81%E8%87%AA%E7%BC%96%E7%A0%81%E8%A1%A8%E8%BE%BE" title="稀疏编码自编码表达"> 稀疏编码 </a> 章节中的两个函数。在示例3中，我们使用<a href="/stanford-ufldl/archive/wiki/%E7%8B%AC%E7%AB%8B%E6%88%90%E5%88%86%E5%88%86%E6%9E%90" title="独立成分分析"> 独立成分分析 </a>一节中的一个函数来说明使用此思想计算关于权重的偏导的方法，以及在这种特殊情况下，如何处理相互捆绑或重复的权重。
 </p><p><br/>
 </p>
 <h3> <span class="mw-headline" id=".E7.A4.BA.E4.BE.8B1.EF.BC.9A.E7.A8.80.E7.96.8F.E7.BC.96.E7.A0.81.E4.B8.AD.E6.9D.83.E9.87.8D.E7.9F.A9.E9.98.B5.E7.9A.84.E7.9B.AE.E6.A0.87.E5.87.BD.E6.95.B0"> 示例1：稀疏编码中权重矩阵的目标函数 </span></h3>
-<p>回顾一下<a href="/wayback-ufldl/stanford-ufldl/wiki/%E7%A8%80%E7%96%8F%E7%BC%96%E7%A0%81%E8%87%AA%E7%BC%96%E7%A0%81%E8%A1%A8%E8%BE%BE" title="稀疏编码自编码表达"> 稀疏编码 </a>，当给定特征矩阵 <span class="texhtml"><i>s</i></span> 时，权重矩阵 <span class="texhtml"><i>A</i></span> 的目标函数为:
+<p>回顾一下<a href="/stanford-ufldl/archive/wiki/%E7%A8%80%E7%96%8F%E7%BC%96%E7%A0%81%E8%87%AA%E7%BC%96%E7%A0%81%E8%A1%A8%E8%BE%BE" title="稀疏编码自编码表达"> 稀疏编码 </a>，当给定特征矩阵 <span class="texhtml"><i>s</i></span> 时，权重矩阵 <span class="texhtml"><i>A</i></span> 的目标函数为:
 </p>
-<dl><dd><img class="tex" alt="F(A; s) = \lVert As - x \rVert_2^2 + \gamma \lVert A \rVert_2^2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/8/a/d8a544d689b8b25c191b77b5010f2e98.png"/>
+<dl><dd><img class="tex" alt="F(A; s) = \lVert As - x \rVert_2^2 + \gamma \lVert A \rVert_2^2" src="/stanford-ufldl/archive/wiki/images/math/d/8/a/d8a544d689b8b25c191b77b5010f2e98.png"/>
 </dd></dl>
 <p><br/>
-我们希望求 <span class="texhtml"><i>F</i></span> 对于 <span class="texhtml"><i>A</i></span> 的梯度，即 <img class="tex" alt="\nabla_A F(A)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/c/2/bc2d77b08b71888b46b4cc02b319a8d5.png"/> 。因为目标函数是两个含 <span class="texhtml"><i>A</i></span> 的式子之和，所以它的梯度是每个式子的梯度之和。第二项的梯度很容易求，因此我们只考虑第一项的梯度。
+我们希望求 <span class="texhtml"><i>F</i></span> 对于 <span class="texhtml"><i>A</i></span> 的梯度，即 <img class="tex" alt="\nabla_A F(A)" src="/stanford-ufldl/archive/wiki/images/math/b/c/2/bc2d77b08b71888b46b4cc02b319a8d5.png"/> 。因为目标函数是两个含 <span class="texhtml"><i>A</i></span> 的式子之和，所以它的梯度是每个式子的梯度之和。第二项的梯度很容易求，因此我们只考虑第一项的梯度。
 </p><p><br/>
-第一项, <img class="tex" alt="\lVert As - x \rVert_2^2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/d/2/7d2f077de4b218982f04826f6f5a91aa.png"/> ,可以看成一个用 <span class="texhtml"><i>s</i></span> 做输入的神经网络的实例，通过四步进行计算，文字以及图形描述如下：
+第一项, <img class="tex" alt="\lVert As - x \rVert_2^2" src="/stanford-ufldl/archive/wiki/images/math/7/d/2/7d2f077de4b218982f04826f6f5a91aa.png"/> ,可以看成一个用 <span class="texhtml"><i>s</i></span> 做输入的神经网络的实例，通过四步进行计算，文字以及图形描述如下：
 </p>
 <ol>
 <li>把 <span class="texhtml"><i>A</i></span> 作为第一层到第二层的权重。
@@ -100,7 +100,7 @@
 <li>通过单位权重将结果不变地传到第三层。在第三层使用平方函数作为激励函数。
 <li>将第三层的所有激励相加。
 </ol>
-<p><a href="" class="image"><img alt="Backpropagation Method Example 1.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/b/bd/Backpropagation_Method_Example_1.png/400px-Backpropagation_Method_Example_1.png" width="400" height="380"/></a>
+<p><a href="" class="image"><img alt="Backpropagation Method Example 1.png" src="/stanford-ufldl/archive/wiki/images/thumb/b/bd/Backpropagation_Method_Example_1.png/400px-Backpropagation_Method_Example_1.png" width="400" height="380"/></a>
 </p><p><br/>
 该网络的权重和激励函数如下表所示：
 </p>
@@ -119,11 +119,11 @@
 <tr>
 <td>3</td>
 <td>N/A</td>
-<td><img class="tex" alt="f(z_i) = z_i^2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/4/d/b/4dbeed1b426fc9b28e3903789a481ede.png"/></td>
+<td><img class="tex" alt="f(z_i) = z_i^2" src="/stanford-ufldl/archive/wiki/images/math/4/d/b/4dbeed1b426fc9b28e3903789a481ede.png"/></td>
 </tr>
 </table>
-<p>为了使 <span class="texhtml"><i>J</i>(<i>z</i><sup>(3)</sup>) = <i>F</i>(<i>x</i>)</span> ，我们可令 <img class="tex" alt="J(z^{(3)}) = \sum_k J(z^{(3)}_k)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/4/e/c4e22c48b65f68377d01e81d6312b145.png"/> 。
-</p><p>一旦我们将 <span class="texhtml"><i>F</i></span> 看成神经网络，梯度 <img class="tex" alt="\nabla_X F" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/8/a/c8a57f802f72156c4dbee1bd9fde338e.png"/> 就很容易求了——使用反向传导得到：
+<p>为了使 <span class="texhtml"><i>J</i>(<i>z</i><sup>(3)</sup>) = <i>F</i>(<i>x</i>)</span> ，我们可令 <img class="tex" alt="J(z^{(3)}) = \sum_k J(z^{(3)}_k)" src="/stanford-ufldl/archive/wiki/images/math/c/4/e/c4e22c48b65f68377d01e81d6312b145.png"/> 。
+</p><p>一旦我们将 <span class="texhtml"><i>F</i></span> 看成神经网络，梯度 <img class="tex" alt="\nabla_X F" src="/stanford-ufldl/archive/wiki/images/math/c/8/a/c8a57f802f72156c4dbee1bd9fde338e.png"/> 就很容易求了——使用反向传导得到：
 </p>
 <table align="center">
 <tr><th width="50px">层</th><th width="200px">激励函数的导数<span class="texhtml"><i>f</i>'</span></th><th width="200px">Delta</th><th>该层输入<span class="texhtml"><i>z</i></span></th></tr>
@@ -136,13 +136,13 @@
 <tr>
 <td>2</td>
 <td><span class="texhtml"><i>f</i>'(<i>z</i><sub><i>i</i></sub>) = 1</span></td>
-<td><img class="tex" alt="\left( I^T \delta^{(3)} \right) \bullet 1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/f/7/6f744c80bb2283af18f61dace3f51daf.png"/></td>
+<td><img class="tex" alt="\left( I^T \delta^{(3)} \right) \bullet 1" src="/stanford-ufldl/archive/wiki/images/math/6/f/7/6f744c80bb2283af18f61dace3f51daf.png"/></td>
 <td><span class="texhtml"><i>A</i><i>s</i></span></td>
 </tr>
 <tr>
 <td>1</td>
 <td><span class="texhtml"><i>f</i>'(<i>z</i><sub><i>i</i></sub>) = 1</span></td>
-<td><img class="tex" alt="\left( A^T \delta^{(2)} \right) \bullet 1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/2/a/a2aace0cbcafb22f600ca0c286cd34ac.png"/></td>
+<td><img class="tex" alt="\left( A^T \delta^{(2)} \right) \bullet 1" src="/stanford-ufldl/archive/wiki/images/math/a/2/a/a2aace0cbcafb22f600ca0c286cd34ac.png"/></td>
 <td><span class="texhtml"><i>s</i></span></td>
 </tr>
 </table>
@@ -154,18 +154,18 @@
 \nabla_X F &amp; = A^T I^T 2(As - x) \\
 &amp; = A^T 2(As - x)
 \end{align}
-" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/5/a/35a198eeea379f6e5fddd29fe4a6c2d7.png"/>
+" src="/stanford-ufldl/archive/wiki/images/math/3/5/a/35a198eeea379f6e5fddd29fe4a6c2d7.png"/>
 </dd></dl>
 <p><br/>
 </p>
 <h3> <span class="mw-headline" id=".E7.A4.BA.E4.BE.8B2.EF.BC.9A.E7.A8.80.E7.96.8F.E7.BC.96.E7.A0.81.E4.B8.AD.E7.9A.84.E5.B9.B3.E6.BB.91.E5.9C.B0.E5.BD.A2L1.E7.A8.80.E7.96.8F.E7.BD.9A.E5.87.BD.E6.95.B0"> 示例2：稀疏编码中的平滑地形L1稀疏罚函数 </span></h3>
-<p>回顾<a href="/wayback-ufldl/stanford-ufldl/wiki/%E7%A8%80%E7%96%8F%E7%BC%96%E7%A0%81%E8%87%AA%E7%BC%96%E7%A0%81%E8%A1%A8%E8%BE%BE" title="稀疏编码自编码表达"> 稀疏编码 </a>一节中对 <span class="texhtml"><i>s</i></span> 的平滑地形L1稀疏罚函数：
+<p>回顾<a href="/stanford-ufldl/archive/wiki/%E7%A8%80%E7%96%8F%E7%BC%96%E7%A0%81%E8%87%AA%E7%BC%96%E7%A0%81%E8%A1%A8%E8%BE%BE" title="稀疏编码自编码表达"> 稀疏编码 </a>一节中对 <span class="texhtml"><i>s</i></span> 的平滑地形L1稀疏罚函数：
 </p>
-<dl><dd><img class="tex" alt="\sum{ \sqrt{Vss^T + \epsilon} }" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/c/d/ccd5a0f991db6bdba852b147ee42d91b.png"/>
+<dl><dd><img class="tex" alt="\sum{ \sqrt{Vss^T + \epsilon} }" src="/stanford-ufldl/archive/wiki/images/math/c/c/d/ccd5a0f991db6bdba852b147ee42d91b.png"/>
 </dd></dl>
 <p>其中 <span class="texhtml"><i>V</i></span> 是分组矩阵， <span class="texhtml"><i>s</i></span> 是特征矩阵， <span class="texhtml">&epsilon;</span> 是一个常数。
-</p><p>我们希望求得 <img class="tex" alt="\nabla_s \sum{ \sqrt{Vss^T + \epsilon} }" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/3/c/23c8b28a984cc20529d2eff361fbbe91.png"/> 。像上面那样，我们把这一项看做一个神经网络的实例：
-</p><p><a href="" class="image"><img alt="Backpropagation Method Example 2.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/5/57/Backpropagation_Method_Example_2.png/600px-Backpropagation_Method_Example_2.png" width="600" height="414"/></a>
+</p><p>我们希望求得 <img class="tex" alt="\nabla_s \sum{ \sqrt{Vss^T + \epsilon} }" src="/stanford-ufldl/archive/wiki/images/math/2/3/c/23c8b28a984cc20529d2eff361fbbe91.png"/> 。像上面那样，我们把这一项看做一个神经网络的实例：
+</p><p><a href="" class="image"><img alt="Backpropagation Method Example 2.png" src="/stanford-ufldl/archive/wiki/images/thumb/5/57/Backpropagation_Method_Example_2.png/600px-Backpropagation_Method_Example_2.png" width="600" height="414"/></a>
 </p><p><br/>
 该网络的权重和激励函数如下表所示：
 </p>
@@ -174,7 +174,7 @@
 <tr>
 <td>1</td>
 <td><span class="texhtml"><i>I</i></span></td>
-<td><img class="tex" alt="f(z_i) = z_i^2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/4/d/b/4dbeed1b426fc9b28e3903789a481ede.png"/></td>
+<td><img class="tex" alt="f(z_i) = z_i^2" src="/stanford-ufldl/archive/wiki/images/math/4/d/b/4dbeed1b426fc9b28e3903789a481ede.png"/></td>
 </tr>
 <tr>
 <td>2</td>
@@ -189,38 +189,38 @@
 <tr>
 <td>4</td>
 <td>N/A</td>
-<td><img class="tex" alt="f(z_i) = z_i^{\frac{1}{2}}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/2/f/f2f3700ca152ab5d67ee52aacb2a386d.png"/></td>
+<td><img class="tex" alt="f(z_i) = z_i^{\frac{1}{2}}" src="/stanford-ufldl/archive/wiki/images/math/f/2/f/f2f3700ca152ab5d67ee52aacb2a386d.png"/></td>
 </tr>
 </table>
 <p><br/>
-为使 <span class="texhtml"><i>J</i>(<i>z</i><sup>(4)</sup>) = <i>F</i>(<i>x</i>)</span> ，我们可令 <img class="tex" alt="J(z^{(4)}) = \sum_k J(z^{(4)}_k)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/c/c/5cc78742561e48008ea2fdc832873d87.png"/> 。
-</p><p>一旦我们把 <span class="texhtml"><i>F</i></span> 看做一个神经网络，梯度 <img class="tex" alt="\nabla_X F" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/8/a/c8a57f802f72156c4dbee1bd9fde338e.png"/> 变得很容易计算——使用反向传导得到：
+为使 <span class="texhtml"><i>J</i>(<i>z</i><sup>(4)</sup>) = <i>F</i>(<i>x</i>)</span> ，我们可令 <img class="tex" alt="J(z^{(4)}) = \sum_k J(z^{(4)}_k)" src="/stanford-ufldl/archive/wiki/images/math/5/c/c/5cc78742561e48008ea2fdc832873d87.png"/> 。
+</p><p>一旦我们把 <span class="texhtml"><i>F</i></span> 看做一个神经网络，梯度 <img class="tex" alt="\nabla_X F" src="/stanford-ufldl/archive/wiki/images/math/c/8/a/c8a57f802f72156c4dbee1bd9fde338e.png"/> 变得很容易计算——使用反向传导得到：
 </p>
 <table align="center">
 <tr><th width="50px">层</th><th width="200px">激励函数的导数 <span class="texhtml"><i>f</i>'</span>
 </th><th width="200px">Delta</th><th>该层输入<span class="texhtml"><i>z</i></span></th></tr>
 <tr>
 <td>4</td>
-<td><img class="tex" alt="f'(z_i) = \frac{1}{2} z_i^{-\frac{1}{2}}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/c/c/7cc2c62a26d215a7fa8f8207ed608ac2.png"/></td>
-<td><img class="tex" alt="f'(z_i) = \frac{1}{2} z_i^{-\frac{1}{2}}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/c/c/7cc2c62a26d215a7fa8f8207ed608ac2.png"/></td>
+<td><img class="tex" alt="f'(z_i) = \frac{1}{2} z_i^{-\frac{1}{2}}" src="/stanford-ufldl/archive/wiki/images/math/7/c/c/7cc2c62a26d215a7fa8f8207ed608ac2.png"/></td>
+<td><img class="tex" alt="f'(z_i) = \frac{1}{2} z_i^{-\frac{1}{2}}" src="/stanford-ufldl/archive/wiki/images/math/7/c/c/7cc2c62a26d215a7fa8f8207ed608ac2.png"/></td>
 <td><span class="texhtml">(<i>V</i><i>s</i><i>s</i><sup><i>T</i></sup> + &epsilon;)</span></td>
 </tr>
 <tr>
 <td>3</td>
 <td><span class="texhtml"><i>f</i>'(<i>z</i><sub><i>i</i></sub>) = 1</span></td>
-<td><img class="tex" alt="\left( I^T \delta^{(4)} \right) \bullet 1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/0/0/1003bad489ec177dfb4d21f0fb28aa33.png"/></td>
+<td><img class="tex" alt="\left( I^T \delta^{(4)} \right) \bullet 1" src="/stanford-ufldl/archive/wiki/images/math/1/0/0/1003bad489ec177dfb4d21f0fb28aa33.png"/></td>
 <td><span class="texhtml"><i>V</i><i>s</i><i>s</i><sup><i>T</i></sup></span></td>
 </tr>
 <tr>
 <td>2</td>
 <td><span class="texhtml"><i>f</i>'(<i>z</i><sub><i>i</i></sub>) = 1</span></td>
-<td><img class="tex" alt="\left( V^T \delta^{(3)} \right) \bullet 1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/4/4/8/448bee03baea6c9d1c1424ca51950110.png"/></td>
+<td><img class="tex" alt="\left( V^T \delta^{(3)} \right) \bullet 1" src="/stanford-ufldl/archive/wiki/images/math/4/4/8/448bee03baea6c9d1c1424ca51950110.png"/></td>
 <td><span class="texhtml"><i>s</i><i>s</i><sup><i>T</i></sup></span></td>
 </tr>
 <tr>
 <td>1</td>
 <td><span class="texhtml"><i>f</i>'(<i>z</i><sub><i>i</i></sub>) = 2<i>z</i><sub><i>i</i></sub></span></td>
-<td><img class="tex" alt="\left( I^T \delta^{(2)} \right) \bullet 2s" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/c/3/7c37119eae8bb947942dbd49fa994625.png"/></td>
+<td><img class="tex" alt="\left( I^T \delta^{(2)} \right) \bullet 2s" src="/stanford-ufldl/archive/wiki/images/math/7/c/3/7c37119eae8bb947942dbd49fa994625.png"/></td>
 <td><span class="texhtml"><i>s</i></span></td>
 </tr>
 </table>
@@ -233,14 +233,14 @@
 &amp; = V^T \frac{1}{2}(Vss^T + \epsilon)^{-\frac{1}{2}} \bullet 2s \\
 &amp; = V^T (Vss^T + \epsilon)^{-\frac{1}{2}} \bullet s
 \end{align}
-" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/0/1/c01e5b899a859c62c2a9de3d9e1bff34.png"/>
+" src="/stanford-ufldl/archive/wiki/images/math/c/0/1/c01e5b899a859c62c2a9de3d9e1bff34.png"/>
 </dd></dl>
 <p><br/>
 </p>
 <h3> <span class="mw-headline" id=".E7.A4.BA.E4.BE.8B3.EF.BC.9AICA.E9.87.8D.E5.BB.BA.E4.BB.A3.E4.BB.B7"> 示例3：ICA重建代价 </span></h3>
-<p>回顾 <a href="/wayback-ufldl/stanford-ufldl/wiki/%E7%8B%AC%E7%AB%8B%E6%88%90%E5%88%86%E5%88%86%E6%9E%90" title="独立成分分析"> 独立成分分析(ICA) </a>一节重建代价一项： <img class="tex" alt="\lVert W^TWx - x \rVert_2^2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/9/8/c981b116dd26204d280f18b707c38a2c.png"/> ，其中 <span class="texhtml"><i>W</i></span> 是权重矩阵， <span class="texhtml"><i>x</i></span> 是输入。
-</p><p>我们希望计算 <img class="tex" alt="\nabla_W \lVert W^TWx - x \rVert_2^2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/1/0/c10b279f6aea106e455f113f8f3ab2c7.png"/> ——对于<b>权重矩阵</b>的导数，而不是像前两例中对于<b>输入</b>的导数。不过我们仍然用类似的方法处理，把该项看做一个神经网络的实例：
-</p><p><a href="" class="image"><img alt="Backpropagation Method Example 3.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/9/9e/Backpropagation_Method_Example_3.png/400px-Backpropagation_Method_Example_3.png" width="400" height="217"/></a>
+<p>回顾 <a href="/stanford-ufldl/archive/wiki/%E7%8B%AC%E7%AB%8B%E6%88%90%E5%88%86%E5%88%86%E6%9E%90" title="独立成分分析"> 独立成分分析(ICA) </a>一节重建代价一项： <img class="tex" alt="\lVert W^TWx - x \rVert_2^2" src="/stanford-ufldl/archive/wiki/images/math/c/9/8/c981b116dd26204d280f18b707c38a2c.png"/> ，其中 <span class="texhtml"><i>W</i></span> 是权重矩阵， <span class="texhtml"><i>x</i></span> 是输入。
+</p><p>我们希望计算 <img class="tex" alt="\nabla_W \lVert W^TWx - x \rVert_2^2" src="/stanford-ufldl/archive/wiki/images/math/c/1/0/c10b279f6aea106e455f113f8f3ab2c7.png"/> ——对于<b>权重矩阵</b>的导数，而不是像前两例中对于<b>输入</b>的导数。不过我们仍然用类似的方法处理，把该项看做一个神经网络的实例：
+</p><p><a href="" class="image"><img alt="Backpropagation Method Example 3.png" src="/stanford-ufldl/archive/wiki/images/thumb/9/9e/Backpropagation_Method_Example_3.png/400px-Backpropagation_Method_Example_3.png" width="400" height="217"/></a>
 </p><p><br/>
 该网络的权重和激励函数如下表所示：
 </p>
@@ -264,11 +264,11 @@
 <tr>
 <td>4</td>
 <td>N/A</td>
-<td><img class="tex" alt="f(z_i) = z_i^2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/4/d/b/4dbeed1b426fc9b28e3903789a481ede.png"/></td>
+<td><img class="tex" alt="f(z_i) = z_i^2" src="/stanford-ufldl/archive/wiki/images/math/4/d/b/4dbeed1b426fc9b28e3903789a481ede.png"/></td>
 </tr>
 </table>
-<p>为使 <span class="texhtml"><i>J</i>(<i>z</i><sup>(4)</sup>) = <i>F</i>(<i>x</i>)</span> ，我们可令 <img class="tex" alt="J(z^{(4)}) = \sum_k J(z^{(4)}_k)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/c/c/5cc78742561e48008ea2fdc832873d87.png"/> 。
-</p><p>既然我们可将 <span class="texhtml"><i>F</i></span> 看做神经网络，我们就能计算出梯度 <img class="tex" alt="\nabla_W F" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/7/3/e7379e93c2fe4b318c07026bd7adb4ab.png"/> 。然而，我们现在面临的难题是 <span class="texhtml"><i>W</i></span> 在网络中出现了两次。幸运的是，可以证明如果 <span class="texhtml"><i>W</i></span> 在网络中出现多次，那么对于 <span class="texhtml"><i>W</i></span> 的梯度是对网络中每个 <span class="texhtml"><i>W</i></span> 实例的梯度的简单相加（你需要自己给出对这一事实的严格证明来说服自己）。知道这一点后，我们将首先计算delta：
+<p>为使 <span class="texhtml"><i>J</i>(<i>z</i><sup>(4)</sup>) = <i>F</i>(<i>x</i>)</span> ，我们可令 <img class="tex" alt="J(z^{(4)}) = \sum_k J(z^{(4)}_k)" src="/stanford-ufldl/archive/wiki/images/math/5/c/c/5cc78742561e48008ea2fdc832873d87.png"/> 。
+</p><p>既然我们可将 <span class="texhtml"><i>F</i></span> 看做神经网络，我们就能计算出梯度 <img class="tex" alt="\nabla_W F" src="/stanford-ufldl/archive/wiki/images/math/e/7/3/e7379e93c2fe4b318c07026bd7adb4ab.png"/> 。然而，我们现在面临的难题是 <span class="texhtml"><i>W</i></span> 在网络中出现了两次。幸运的是，可以证明如果 <span class="texhtml"><i>W</i></span> 在网络中出现多次，那么对于 <span class="texhtml"><i>W</i></span> 的梯度是对网络中每个 <span class="texhtml"><i>W</i></span> 实例的梯度的简单相加（你需要自己给出对这一事实的严格证明来说服自己）。知道这一点后，我们将首先计算delta：
 </p>
 <table align="center">
 <tr><th width="50px">层</th><th width="200px">激励函数的导数 <span class="texhtml"><i>f</i>'</span>
@@ -282,19 +282,19 @@
 <tr>
 <td>3</td>
 <td><span class="texhtml"><i>f</i>'(<i>z</i><sub><i>i</i></sub>) = 1</span></td>
-<td><img class="tex" alt="\left( I^T \delta^{(4)} \right) \bullet 1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/0/0/1003bad489ec177dfb4d21f0fb28aa33.png"/></td>
+<td><img class="tex" alt="\left( I^T \delta^{(4)} \right) \bullet 1" src="/stanford-ufldl/archive/wiki/images/math/1/0/0/1003bad489ec177dfb4d21f0fb28aa33.png"/></td>
 <td><span class="texhtml"><i>W</i><sup><i>T</i></sup><i>W</i><i>x</i></span></td>
 </tr>
 <tr>
 <td>2</td>
 <td><span class="texhtml"><i>f</i>'(<i>z</i><sub><i>i</i></sub>) = 1</span></td>
-<td><img class="tex" alt="\left( (W^T)^T \delta^{(3)} \right) \bullet 1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/5/5/a55a8b7c6e47321b78ed05c829066cb7.png"/></td>
+<td><img class="tex" alt="\left( (W^T)^T \delta^{(3)} \right) \bullet 1" src="/stanford-ufldl/archive/wiki/images/math/a/5/5/a55a8b7c6e47321b78ed05c829066cb7.png"/></td>
 <td><span class="texhtml"><i>W</i><i>x</i></span></td>
 </tr>
 <tr>
 <td>1</td>
 <td><span class="texhtml"><i>f</i>'(<i>z</i><sub><i>i</i></sub>) = 1</span></td>
-<td><img class="tex" alt="\left( W^T \delta^{(2)} \right) \bullet 1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/3/0/b30a81c1e4eaf5c73a17572300a1310e.png"/></td>
+<td><img class="tex" alt="\left( W^T \delta^{(2)} \right) \bullet 1" src="/stanford-ufldl/archive/wiki/images/math/b/3/0/b30a81c1e4eaf5c73a17572300a1310e.png"/></td>
 <td><span class="texhtml"><i>x</i></span></td>
 </tr>
 </table>
@@ -306,7 +306,7 @@
 \nabla_{W^T} F &amp; = \delta^{(3)} a^{(2)T} \\
 &amp; = 2(W^TWx - x) (Wx)^T
 \end{align}
-" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/9/3/993726ae12c879a47221ef98d5278c7d.png"/>
+" src="/stanford-ufldl/archive/wiki/images/math/9/9/3/993726ae12c879a47221ef98d5278c7d.png"/>
 </dd></dl>
 <p>对于 <span class="texhtml"><i>W</i></span>&nbsp;:
 </p>
@@ -315,7 +315,7 @@
 \nabla_{W} F &amp; = \delta^{(2)} a^{(1)T} \\
 &amp; = (W^T)(2(W^TWx -x)) x^T
 \end{align}
-" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/4/9/049ff65a0c5539792da624939122acb9.png"/>
+" src="/stanford-ufldl/archive/wiki/images/math/0/4/9/049ff65a0c5539792da624939122acb9.png"/>
 </dd></dl>
 <p>最后进行求和，得到对于 <span class="texhtml"><i>W</i></span> 的最终梯度，注意我们需要对 <span class="texhtml"><i>W</i><sup><i>T</i></sup></span> 梯度进行转置，来得到关于 <span class="texhtml"><i>W</i></span> 的梯度（原谅我在这里稍稍滥用了符号）：
 </p>
@@ -324,7 +324,7 @@
 \nabla_{W} F &amp; = \nabla_{W} F + (\nabla_{W^T} F)^T \\
 &amp; = (W^T)(2(W^TWx -x)) x^T + 2(Wx)(W^TWx - x)^T
 \end{align}
-" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/0/f/c0f24f7a4b6928641a9bc10318b6b85d.png"/>
+" src="/stanford-ufldl/archive/wiki/images/math/c/0/f/c0f24f7a4b6928641a9bc10318b6b85d.png"/>
 </dd></dl>
 <p><br/>
 </p>
@@ -354,7 +354,7 @@
 </p><p><br/>
 </p>
 <div style="text-align: left;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
-<p>Language&nbsp;: <a href="/wayback-ufldl/stanford-ufldl/wiki/Deriving_gradients_using_the_backpropagation_idea" title="Deriving gradients using the backpropagation idea">English</a>
+<p>Language&nbsp;: <a href="/stanford-ufldl/archive/wiki/Deriving_gradients_using_the_backpropagation_idea" title="Deriving gradients using the backpropagation idea">English</a>
 </p>
 </div>
 
@@ -376,7 +376,7 @@ Expensive parser function count: 0/100
 		<h5>Views</h5>
 		<div class="pBody">
 			<ul>
-				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/%E7%94%A8%E5%8F%8D%E5%90%91%E4%BC%A0%E5%AF%BC%E6%80%9D%E6%83%B3%E6%B1%82%E5%AF%BC" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-nstab-main" class="selected"><a href="/stanford-ufldl/archive/wiki/%E7%94%A8%E5%8F%8D%E5%90%91%E4%BC%A0%E5%AF%BC%E6%80%9D%E6%83%B3%E6%B1%82%E5%AF%BC" title="View the content page [c]" accesskey="c">Page</a></li>
 				 <li id="ca-talk" class="new"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
 				 <li id="ca-viewsource"><a href="" title="This page is protected.
 You can view its source [e]" accesskey="e">View source</a></li>
@@ -392,15 +392,15 @@ You can view its source [e]" accesskey="e">View source</a></li>
 		</div>
 	</div>
 	<div class="portlet" id="p-logo">
-		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+		<a style="background-image: url(/stanford-ufldl/archive/wiki/skins/common/images/dolphin-openclipart.png);" href="/stanford-ufldl/archive/wiki/Main_Page" title="Visit the main page"></a>
 	</div>
 	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
 	<div class="generated-sidebar portlet" id="p-ufldl_resources">
 		<h5>ufldl resources</h5>
 		<div class="pBody">
 			<ul>
-				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
-				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+				<li id="n-UFLDL-Tutorial"><a href="/stanford-ufldl/archive/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/stanford-ufldl/archive/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
 			</ul>
 		</div>
 	</div>
@@ -408,7 +408,7 @@ You can view its source [e]" accesskey="e">View source</a></li>
 		<h5>wiki</h5>
 		<div class="pBody">
 			<ul>
-				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-mainpage-description"><a href="/stanford-ufldl/archive/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
 				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
 				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
 				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
@@ -441,9 +441,9 @@ You can view its source [e]" accesskey="e">View source</a></li>
 <div id="footer">
 	<ul id="f-list">
 		<li id="lastmod"> This page was last modified on 8 April 2013, at 09:53.</li>
-		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
-		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
-		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+		<li id="privacy"><a href="/stanford-ufldl/archive/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/stanford-ufldl/archive/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/stanford-ufldl/archive/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
 	</ul>
 </div>
 </div>

@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>数据预处理 - Ufldl</title>
-<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
-<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+<link rel="stylesheet" href="/stanford-ufldl/archive/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/stanford-ufldl/archive/wiki/skins/monobook/main.css" media="screen"/>
 
 </head>
 
@@ -84,13 +84,13 @@
 </p>
 <h2> <span class="mw-headline" id="PCA.2FZCA.E7.99.BD.E5.8C.96"> PCA/ZCA白化 </span></h2>
 <p>在做完简单的归一化后，白化通常会被用来作为接下来的预处理步骤，它会使我们的算法工作得更好。实际上许多深度学习算法都依赖于白化来获得好的特征。
-</p><p>在进行 PCA/ZCA 白化时，首先使特征零均值化是很有必要的，这保证了 <img class="tex" alt=" \frac{1}{m} \sum_i x^{(i)} = 0 " src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/3/8/e38353138423fe3c99226921e02ee649.png"/>。特别地，这一步需要在计算协方差矩阵前完成。（唯一例外的情况是已经进行了逐样本均值消减，并且数据在各维度上或像素上是平稳的。）
+</p><p>在进行 PCA/ZCA 白化时，首先使特征零均值化是很有必要的，这保证了 <img class="tex" alt=" \frac{1}{m} \sum_i x^{(i)} = 0 " src="/stanford-ufldl/archive/wiki/images/math/e/3/8/e38353138423fe3c99226921e02ee649.png"/>。特别地，这一步需要在计算协方差矩阵前完成。（唯一例外的情况是已经进行了逐样本均值消减，并且数据在各维度上或像素上是平稳的。）
 </p><p>接下来在 PCA/ZCA 白化中我们需要选择合适的 <tt>epsilon</tt>（回忆一下，这是规则化项，对数据有低通滤波作用）。 选取合适的 <tt>epsilon</tt> 值对特征学习起着很大作用，下面讨论在两种不同场合下如何选取 <tt>epsilon</tt>：
 </p><p><br/>
 </p>
 <h3> <span class="mw-headline" id=".E5.9F.BA.E4.BA.8E.E9.87.8D.E6.9E.84.E7.9A.84.E6.A8.A1.E5.9E.8B"> 基于重构的模型 </span></h3>
 <p>在基于重构的模型中(包括自编码器，稀疏编码，受限 Boltzman 机（RBM），k-均值（K-Means）)，经常倾向于选取合适的 <tt>epsilon</tt> 以使得白化达到低通滤波的效果。（译注：通常认为数据中的高频分量是噪声，低通滤波的作用就是尽可能抑制这些噪声，同时保留有用的信息。在 PCA 等方法中，假设数据的信息主要分布在方差较高的方向，方差较低的方向是噪声（即高频分量），因此后文中 <tt>epsilon</tt> 的选择与特征值有关）。一种检验 <tt>epsilon</tt> 是否合适的方法是用该值对数据进行 ZCA 白化，然后对白化前后的数据进行可视化。如果 <tt>epsilon</tt> 值过低，白化后的数据会显得噪声很大；相反，如果 <tt>epsilon</tt> 值过高，白化后的数据与原始数据相比就过于模糊。一种直观上得到 <tt>epsilon</tt> 大小的方法是以图形方式画出数据的特征值，如下图的例子所示，你可以看到一条"长尾"，它对应于数据中的高频噪声部分。你需要选取合适的 <tt>epsilon</tt>，使其能够在很大程度上过滤掉这条"长尾"，也就是说，选取的 <tt>epsilon</tt> 应大于大多数较小的、反映数据中噪声的特征值。
-</p><p><a href="" class="image"><img alt="ZCA Eigenvalues Plot.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/9/91/ZCA_Eigenvalues_Plot.png" width="482" height="392"/></a>
+</p><p><a href="" class="image"><img alt="ZCA Eigenvalues Plot.png" src="/stanford-ufldl/archive/wiki/images/9/91/ZCA_Eigenvalues_Plot.png" width="482" height="392"/></a>
 </p><p>在基于重构的模型中，损失函数有一项是用于惩罚那些与原始输入数据差异较大的重构结果（译注：以自动编码机为例，要求输入数据经过编码和解码之后还能尽可能的还原输入数据）。如果 <tt>epsilon</tt> 太小，白化后的数据中就会包含很多噪声，而模型要拟合这些噪声，以达到很好的重构结果。因此，对于基于重构的模型来说，对原始数据进行低通滤波就显得非常重要。
 </p>
 <div style="background-color: #eeeeee; border-style: dotted; padding: 5px">
@@ -100,10 +100,10 @@
 <p><br/>
 </p>
 <h3> <span class="mw-headline" id=".E5.9F.BA.E4.BA.8E.E6.AD.A3.E4.BA.A4.E5.8C.96ICA.E7.9A.84.E6.A8.A1.E5.9E.8B"> 基于正交化ICA的模型 </span></h3>
-<p>对基于正交化ICA的模型来说，保证输入数据尽可能地白化（即协方差矩阵为单位矩阵）非常重要。这是因为：这类模型需要对学习到的特征做正交化，以解除不同维度之间的相关性（详细内容请参考 <a href="/wayback-ufldl/stanford-ufldl/wiki/Independent_Component_Analysis" title="Independent Component Analysis"> ICA </a> 一节）。因此在这种情况下，<tt>epsilon</tt> 要足够小（比如 <span class="texhtml"><i>e</i><i>p</i><i>s</i><i>i</i><i>l</i><i>o</i><i>n</i> = 1<i>e</i> &minus; 6</span>）。
+<p>对基于正交化ICA的模型来说，保证输入数据尽可能地白化（即协方差矩阵为单位矩阵）非常重要。这是因为：这类模型需要对学习到的特征做正交化，以解除不同维度之间的相关性（详细内容请参考 <a href="/stanford-ufldl/archive/wiki/Independent_Component_Analysis" title="Independent Component Analysis"> ICA </a> 一节）。因此在这种情况下，<tt>epsilon</tt> 要足够小（比如 <span class="texhtml"><i>e</i><i>p</i><i>s</i><i>i</i><i>l</i><i>o</i><i>n</i> = 1<i>e</i> &minus; 6</span>）。
 </p>
 <div style="background-color: #eeeeee; border-style: dotted; padding: 5px">
-<p>提示：我们也可以在PCA白化过程中同时降低数据的维度。这是一个很好的主意，因为这样可以大大提升算法的速度（减少了运算量和参数数目）。确定要保留的主成分数目有一个经验法则：即所保留的成分的总方差达到总样本方差的 99% 以上。(详细内容请参考<a href="/wayback-ufldl/stanford-ufldl/wiki/PCA#Number_of_components_to_retain" title="PCA"> PCA </a>)
+<p>提示：我们也可以在PCA白化过程中同时降低数据的维度。这是一个很好的主意，因为这样可以大大提升算法的速度（减少了运算量和参数数目）。确定要保留的主成分数目有一个经验法则：即所保留的成分的总方差达到总样本方差的 99% 以上。(详细内容请参考<a href="/stanford-ufldl/archive/wiki/PCA#Number_of_components_to_retain" title="PCA"> PCA </a>)
 </p>
 </div>
 <p><br/>
@@ -186,7 +186,7 @@
 </p><p><br/>
 </p>
 <div style="text-align: left;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
-<p>Language&nbsp;: <a href="/wayback-ufldl/stanford-ufldl/wiki/Data_Preprocessing" title="Data Preprocessing">English</a>
+<p>Language&nbsp;: <a href="/stanford-ufldl/archive/wiki/Data_Preprocessing" title="Data Preprocessing">English</a>
 </p>
 </div>
 
@@ -208,7 +208,7 @@ Expensive parser function count: 0/100
 		<h5>Views</h5>
 		<div class="pBody">
 			<ul>
-				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-nstab-main" class="selected"><a href="/stanford-ufldl/archive/wiki/%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86" title="View the content page [c]" accesskey="c">Page</a></li>
 				 <li id="ca-talk" class="new"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
 				 <li id="ca-viewsource"><a href="" title="This page is protected.
 You can view its source [e]" accesskey="e">View source</a></li>
@@ -224,15 +224,15 @@ You can view its source [e]" accesskey="e">View source</a></li>
 		</div>
 	</div>
 	<div class="portlet" id="p-logo">
-		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+		<a style="background-image: url(/stanford-ufldl/archive/wiki/skins/common/images/dolphin-openclipart.png);" href="/stanford-ufldl/archive/wiki/Main_Page" title="Visit the main page"></a>
 	</div>
 	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
 	<div class="generated-sidebar portlet" id="p-ufldl_resources">
 		<h5>ufldl resources</h5>
 		<div class="pBody">
 			<ul>
-				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
-				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+				<li id="n-UFLDL-Tutorial"><a href="/stanford-ufldl/archive/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/stanford-ufldl/archive/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
 			</ul>
 		</div>
 	</div>
@@ -240,7 +240,7 @@ You can view its source [e]" accesskey="e">View source</a></li>
 		<h5>wiki</h5>
 		<div class="pBody">
 			<ul>
-				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-mainpage-description"><a href="/stanford-ufldl/archive/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
 				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
 				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
 				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
@@ -273,9 +273,9 @@ You can view its source [e]" accesskey="e">View source</a></li>
 <div id="footer">
 	<ul id="f-list">
 		<li id="lastmod"> This page was last modified on 8 April 2013, at 04:22.</li>
-		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
-		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
-		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+		<li id="privacy"><a href="/stanford-ufldl/archive/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/stanford-ufldl/archive/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/stanford-ufldl/archive/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
 	</ul>
 </div>
 </div>

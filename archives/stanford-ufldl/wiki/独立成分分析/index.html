@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>独立成分分析 - Ufldl</title>
-<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
-<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+<link rel="stylesheet" href="/stanford-ufldl/archive/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/stanford-ufldl/archive/wiki/skins/monobook/main.css" media="screen"/>
 
 </head>
 
@@ -30,13 +30,13 @@
 </ul>
 </td></tr></table><script>if (window.showTocToggle) { var tocShowText = "show"; var tocHideText = "hide"; showTocToggle(); } </script>
 <h2> <span class="mw-headline" id=".E6.A6.82.E8.BF.B0"> 概述 </span></h2>
-<p>试着回想一下，在介绍<a href="/wayback-ufldl/stanford-ufldl/wiki/Sparse_Coding" title="Sparse Coding"> 稀疏编码算法</a>中我们想为样本数据学习得到一个超完备基（over-complete basis）。具体来说，这意味着用稀疏编码学习得到的基向量之间不一定线性独立。尽管在某些情况下这已经满足需要，但有时我们仍然希望得到的是一组线性独立基。独立成分分析算法（ICA）正实现了这一点。而且，在 ICA 中，我们希望学习到的基不仅要线性独立，而且还是一组标准正交基。（一组标准正交基 <img class="tex" alt="(\phi_1, \ldots \phi_n)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/0/7/e078088de2e18c58f059ccf6003bb02e.png"/> 需要满足条件：<img class="tex" alt="\phi_i \cdot \phi_j = 0" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/7/1/7714b6e595515d72c3f872b0bf8a66ca.png"/>（如果 <img class="tex" alt="i \ne j" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/d/2/3d27367ea16a2a7b40b3eb3172a32120.png"/>）或者 <img class="tex" alt="\phi_i \cdot \phi_j = 1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/e/f/cefc9d96167af64ff1f74823b2eddf81.png"/>（如果 <span class="texhtml"><i>i</i> = <i>j</i></span>））
+<p>试着回想一下，在介绍<a href="/stanford-ufldl/archive/wiki/Sparse_Coding" title="Sparse Coding"> 稀疏编码算法</a>中我们想为样本数据学习得到一个超完备基（over-complete basis）。具体来说，这意味着用稀疏编码学习得到的基向量之间不一定线性独立。尽管在某些情况下这已经满足需要，但有时我们仍然希望得到的是一组线性独立基。独立成分分析算法（ICA）正实现了这一点。而且，在 ICA 中，我们希望学习到的基不仅要线性独立，而且还是一组标准正交基。（一组标准正交基 <img class="tex" alt="(\phi_1, \ldots \phi_n)" src="/stanford-ufldl/archive/wiki/images/math/e/0/7/e078088de2e18c58f059ccf6003bb02e.png"/> 需要满足条件：<img class="tex" alt="\phi_i \cdot \phi_j = 0" src="/stanford-ufldl/archive/wiki/images/math/7/7/1/7714b6e595515d72c3f872b0bf8a66ca.png"/>（如果 <img class="tex" alt="i \ne j" src="/stanford-ufldl/archive/wiki/images/math/3/d/2/3d27367ea16a2a7b40b3eb3172a32120.png"/>）或者 <img class="tex" alt="\phi_i \cdot \phi_j = 1" src="/stanford-ufldl/archive/wiki/images/math/c/e/f/cefc9d96167af64ff1f74823b2eddf81.png"/>（如果 <span class="texhtml"><i>i</i> = <i>j</i></span>））
 </p><p><br/>
 与稀疏编码算法类似，独立成分分析也有一个简单的数学形式。给定数据 x，我们希望学习得到一组基向量――以列向量形式构成的矩阵 <span class="texhtml"><i>W</i></span>，其满足以下特点：首先，与稀疏编码一样，特征是稀疏的；其次，基是标准正交的（注意，在稀疏编码中，矩阵 <span class="texhtml"><i>A</i></span> 用于将特征 <span class="texhtml"><i>s</i></span> 映射到原始数据，而在独立成分分析中，矩阵 <span class="texhtml"><i>W</i></span> 工作的方向相反，是将原始数据 <span class="texhtml"><i>x</i></span> 映射到特征）。这样我们得到以下目标函数：
 </p>
 <dl><dd><img class="tex" alt="
 J(W) = \lVert Wx \rVert_1 
-" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/3/a/73ad4fdda9d31a406703b227b18ffa8c.png"/>
+" src="/stanford-ufldl/archive/wiki/images/math/7/3/a/73ad4fdda9d31a406703b227b18ffa8c.png"/>
 </dd></dl>
 <p><br/>
 由于 <span class="texhtml"><i>W</i><i>x</i></span> 实际上是描述样本数据的特征，这个目标函数等价于在稀疏编码中特征 <span class="texhtml"><i>s</i></span> 的稀疏惩罚项。加入标准正交性约束后，独立成分分析相当于求解如下优化问题：
@@ -46,12 +46,12 @@ J(W) = \lVert Wx \rVert_1
      {\rm minimize} &amp; \lVert Wx \rVert_1  \\
      {\rm s.t.}     &amp; WW^T = I \\
 \end{array} 
-" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/7/0/a708fd5869392a2f83a3b9f662c8ad95.png"/>
+" src="/stanford-ufldl/archive/wiki/images/math/a/7/0/a708fd5869392a2f83a3b9f662c8ad95.png"/>
 </dd></dl>
 <p><br/> 
 与深度学习中的通常情况一样，这个问题没有简单的解析解，而且更糟糕的是，由于标准正交性约束，使得用梯度下降方法来求解该问题变得更加困难――每次梯度下降迭代之后，必须将新的基映射回正交基空间中（以此保证正交性约束）。
 </p><p><br/>
-实践中，在最优化目标函数的同时施加正交性约束（如下一节<a href="/wayback-ufldl/stanford-ufldl/wiki/Independent_Component_Analysis#Orthonormal_ICA" title="Independent Component Analysis"> 正交ICA</a>中讲到的）是可行的，但是速度慢。在标准正交基是不可或缺的情况下，标准正交ICA的使用会受到一些限制。（哪些情况见：<a href="" class="new" title="TODO (page does not exist)">TODO</a> ）
+实践中，在最优化目标函数的同时施加正交性约束（如下一节<a href="/stanford-ufldl/archive/wiki/Independent_Component_Analysis#Orthonormal_ICA" title="Independent Component Analysis"> 正交ICA</a>中讲到的）是可行的，但是速度慢。在标准正交基是不可或缺的情况下，标准正交ICA的使用会受到一些限制。（哪些情况见：<a href="" class="new" title="TODO (page does not exist)">TODO</a> ）
 </p><p><br/>
 </p>
 <h2> <span class="mw-headline" id=".E6.A0.87.E5.87.86.E6.AD.A3.E4.BA.A4ICA"> 标准正交ICA </span></h2>
@@ -62,13 +62,13 @@ J(W) = \lVert Wx \rVert_1
      {\rm minimize} &amp; \lVert Wx \rVert_1  \\
      {\rm s.t.}     &amp; WW^T = I \\
 \end{array} 
-" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/7/0/a708fd5869392a2f83a3b9f662c8ad95.png"/>
+" src="/stanford-ufldl/archive/wiki/images/math/a/7/0/a708fd5869392a2f83a3b9f662c8ad95.png"/>
 </dd></dl>
 <p><br/>
 通过观察可知，约束<span class="texhtml"><i>W</i><i>W</i><sup><i>T</i></sup> = <i>I</i></span>隐含着另外两个约束:
 </p><p><br/>
-第一，因为要学习到一组标准正交基，所以基向量的个数必须小于输入数据的维度。具体来说，这意味着不能像通常在<a href="/wayback-ufldl/stanford-ufldl/wiki/Sparse_Coding__Autoencoder_Interpretation" title="Sparse Coding: Autoencoder Interpretation"> 稀疏编码</a>中所做的那样来学习得到超完备基（over-complete bases）。
-</p><p>第二，数据必须经过无正则<a href="/wayback-ufldl/stanford-ufldl/wiki/Whitening" title="Whitening"> ZCA白化</a>（也即,<span class="texhtml">&epsilon;</span>设为0）。（为什么必须这样做？见<a href="" class="new" title="TODO (page does not exist)">TODO</a>）
+第一，因为要学习到一组标准正交基，所以基向量的个数必须小于输入数据的维度。具体来说，这意味着不能像通常在<a href="/stanford-ufldl/archive/wiki/Sparse_Coding__Autoencoder_Interpretation" title="Sparse Coding: Autoencoder Interpretation"> 稀疏编码</a>中所做的那样来学习得到超完备基（over-complete bases）。
+</p><p>第二，数据必须经过无正则<a href="/stanford-ufldl/archive/wiki/Whitening" title="Whitening"> ZCA白化</a>（也即,<span class="texhtml">&epsilon;</span>设为0）。（为什么必须这样做？见<a href="" class="new" title="TODO (page does not exist)">TODO</a>）
 </p><p><br/>
 因此，在优化标准正交ICA目标函数之前，必须确保数据被白化过，并且学习的是一组不完备基（under-complete basis）。
 </p><p><br/>
@@ -77,15 +77,15 @@ J(W) = \lVert Wx \rVert_1
 重复以下步骤直到完成：
 </p>
 <ol>
-<li><img class="tex" alt="W \leftarrow W - \alpha \nabla_W \lVert Wx \rVert_1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/4/7/0473c51ee006a1ebe67ea41048f464d4.png"/>
-<li><img class="tex" alt="W \leftarrow \operatorname{proj}_U W" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/d/d/3dd67ce73de20c6fa0f6d28655ffb3f2.png"/>, 其中<span class="texhtml"><i>U</i></span>是满足<span class="texhtml"><i>W</i><i>W</i><sup><i>T</i></sup> = <i>I</i></span>的矩阵空间
+<li><img class="tex" alt="W \leftarrow W - \alpha \nabla_W \lVert Wx \rVert_1" src="/stanford-ufldl/archive/wiki/images/math/0/4/7/0473c51ee006a1ebe67ea41048f464d4.png"/>
+<li><img class="tex" alt="W \leftarrow \operatorname{proj}_U W" src="/stanford-ufldl/archive/wiki/images/math/3/d/d/3dd67ce73de20c6fa0f6d28655ffb3f2.png"/>, 其中<span class="texhtml"><i>U</i></span>是满足<span class="texhtml"><i>W</i><i>W</i><sup><i>T</i></sup> = <i>I</i></span>的矩阵空间
 </ol>
 <p><br/>
-在实际中,学习速率<span class="texhtml">&alpha;</span>是可变的,使用一个线搜索算法来加速梯度.投影步骤通过设置<img class="tex" alt="W \leftarrow (WW^T)^{-\frac{1}{2}} W" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/2/a/02a48a27174c21e10da8fee21b04f5cd.png"/>来完成,这实际上可以看成就是ZCA白化(<a href="" class="new" title="TODO (page does not exist)">TODO</a>:解释为什么这就象ZCA白化).
+在实际中,学习速率<span class="texhtml">&alpha;</span>是可变的,使用一个线搜索算法来加速梯度.投影步骤通过设置<img class="tex" alt="W \leftarrow (WW^T)^{-\frac{1}{2}} W" src="/stanford-ufldl/archive/wiki/images/math/0/2/a/02a48a27174c21e10da8fee21b04f5cd.png"/>来完成,这实际上可以看成就是ZCA白化(<a href="" class="new" title="TODO (page does not exist)">TODO</a>:解释为什么这就象ZCA白化).
 </p><p><br/>
 </p>
 <h2> <span class="mw-headline" id=".E6.8B.93.E6.89.91ICA"> 拓扑ICA </span></h2>
-<p>与<a href="/wayback-ufldl/stanford-ufldl/wiki/Sparse_Coding__Autoencoder_Interpretation" title="Sparse Coding: Autoencoder Interpretation"> 稀疏编码算法</a>类似，加上一个拓扑代价项，独立成分分析法可以修改成具有拓扑性质的算法。
+<p>与<a href="/stanford-ufldl/archive/wiki/Sparse_Coding__Autoencoder_Interpretation" title="Sparse Coding: Autoencoder Interpretation"> 稀疏编码算法</a>类似，加上一个拓扑代价项，独立成分分析法可以修改成具有拓扑性质的算法。
 </p><p><br/>
 </p>
 <h2> <span class="mw-headline" id=".E4.B8.AD.E8.8B.B1.E6.96.87.E5.AF.B9.E7.85.A7">中英文对照</span></h2>
@@ -107,7 +107,7 @@ J(W) = \lVert Wx \rVert_1
 </p><p><br/>
 </p>
 <div style="text-align: left;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
-<p>Language&nbsp;: <a href="/wayback-ufldl/stanford-ufldl/wiki/Independent_Component_Analysis" title="Independent Component Analysis">English</a>
+<p>Language&nbsp;: <a href="/stanford-ufldl/archive/wiki/Independent_Component_Analysis" title="Independent Component Analysis">English</a>
 </p>
 </div>
 
@@ -129,7 +129,7 @@ Expensive parser function count: 0/100
 		<h5>Views</h5>
 		<div class="pBody">
 			<ul>
-				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/%E7%8B%AC%E7%AB%8B%E6%88%90%E5%88%86%E5%88%86%E6%9E%90" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-nstab-main" class="selected"><a href="/stanford-ufldl/archive/wiki/%E7%8B%AC%E7%AB%8B%E6%88%90%E5%88%86%E5%88%86%E6%9E%90" title="View the content page [c]" accesskey="c">Page</a></li>
 				 <li id="ca-talk" class="new"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
 				 <li id="ca-viewsource"><a href="" title="This page is protected.
 You can view its source [e]" accesskey="e">View source</a></li>
@@ -145,15 +145,15 @@ You can view its source [e]" accesskey="e">View source</a></li>
 		</div>
 	</div>
 	<div class="portlet" id="p-logo">
-		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+		<a style="background-image: url(/stanford-ufldl/archive/wiki/skins/common/images/dolphin-openclipart.png);" href="/stanford-ufldl/archive/wiki/Main_Page" title="Visit the main page"></a>
 	</div>
 	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
 	<div class="generated-sidebar portlet" id="p-ufldl_resources">
 		<h5>ufldl resources</h5>
 		<div class="pBody">
 			<ul>
-				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
-				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+				<li id="n-UFLDL-Tutorial"><a href="/stanford-ufldl/archive/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/stanford-ufldl/archive/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
 			</ul>
 		</div>
 	</div>
@@ -161,7 +161,7 @@ You can view its source [e]" accesskey="e">View source</a></li>
 		<h5>wiki</h5>
 		<div class="pBody">
 			<ul>
-				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-mainpage-description"><a href="/stanford-ufldl/archive/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
 				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
 				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
 				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
@@ -194,9 +194,9 @@ You can view its source [e]" accesskey="e">View source</a></li>
 <div id="footer">
 	<ul id="f-list">
 		<li id="lastmod"> This page was last modified on 8 April 2013, at 04:37.</li>
-		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
-		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
-		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+		<li id="privacy"><a href="/stanford-ufldl/archive/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/stanford-ufldl/archive/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/stanford-ufldl/archive/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
 	</ul>
 </div>
 </div>

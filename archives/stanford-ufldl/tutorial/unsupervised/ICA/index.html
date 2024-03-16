@@ -5,9 +5,9 @@
     <title>Unsupervised Feature Learning and Deep Learning Tutorial</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
-    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/bootstrap_readable.min.css" rel="stylesheet">
-    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/pygments/default.css" rel="stylesheet">
-    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/custom.css" rel="stylesheet">
+    <link href="/stanford-ufldl/archive/tutorial/css/bootstrap_readable.min.css" rel="stylesheet">
+    <link href="/stanford-ufldl/archive/tutorial/css/pygments/default.css" rel="stylesheet">
+    <link href="/stanford-ufldl/archive/tutorial/css/custom.css" rel="stylesheet">
     <script type="text/javascript"
           src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
     </script>
@@ -27,7 +27,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/wayback-ufldl/stanford-ufldl/tutorial/">UFLDL Tutorial</a>
+          <a class="navbar-brand" href="/stanford-ufldl/archive/tutorial/">UFLDL Tutorial</a>
         </div>
         <!---
         <div class="collapse navbar-collapse">
@@ -50,7 +50,7 @@
 <div class="post">
 <h3 id="introduction">Introduction</h3>
 
-<p>If you recall, in <a href="/wayback-ufldl/stanford-ufldl/tutorial/unsupervised/SparseCoding">Sparse Coding</a>, we wanted to learn an <strong>over-complete</strong> basis for the data. In particular, this implies that the basis vectors that we learn in sparse coding will not be linearly independent. While this may be desirable in certain situations, sometimes we want to learn a linearly independent basis for the data. In independent component analysis (ICA), this is exactly what we want to do. Further, in ICA, we want to learn not just any linearly independent basis, but an <strong>orthonormal</strong> basis for the data. (An orthonormal basis is a basis <m>(\phi_1, \ldots \phi_n)</m> such that <m>\phi_i \cdot \phi_j = 0</m> if <m>i \ne j</m> and <m>1</m> if <m>i = j</m>).</p>
+<p>If you recall, in <a href="/stanford-ufldl/archive/tutorial/unsupervised/SparseCoding">Sparse Coding</a>, we wanted to learn an <strong>over-complete</strong> basis for the data. In particular, this implies that the basis vectors that we learn in sparse coding will not be linearly independent. While this may be desirable in certain situations, sometimes we want to learn a linearly independent basis for the data. In independent component analysis (ICA), this is exactly what we want to do. Further, in ICA, we want to learn not just any linearly independent basis, but an <strong>orthonormal</strong> basis for the data. (An orthonormal basis is a basis <m>(\phi_1, \ldots \phi_n)</m> such that <m>\phi_i \cdot \phi_j = 0</m> if <m>i \ne j</m> and <m>1</m> if <m>i = j</m>).</p>
 
 <p>Like sparse coding, independent component analysis has a simple mathematical formulation. Given some data <m>x</m>, we would like to learn a set of basis vectors which we represent in the columns of a matrix <m>W</m>, such that, firstly, as in sparse coding, our features are <strong>sparse</strong>; and secondly, our basis is an <strong>orthonormal</strong> basis. (Note that while in sparse coding, our matrix <m>A</m> was for mapping <strong>features</strong> <m>s</m> to <strong>raw data</strong>, in independent component analysis, our matrix <m>W</m> works in the opposite direction, mapping <strong>raw data</strong> <m>x</m> to <strong>features</strong> instead). This gives us the following objective function:</p>
 <m>
@@ -80,7 +80,7 @@ J(W) = \lVert Wx \rVert_1
 
 <p>Firstly, since we are learning an orthonormal basis, the number of basis vectors we learn must be less than the dimension of the input. In particular, this means that we cannot learn over-complete bases as we usually do in [[Sparse Coding: Autoencoder Interpretation | sparse coding]].</p>
 
-<p>Secondly, the data must be <a href="/wayback-ufldl/stanford-ufldl/tutorial/unsupervised/PCAWhitening">ZCA whitened</a> with no regularization (that is, with <m>\epsilon</m> set to 0).</p>
+<p>Secondly, the data must be <a href="/stanford-ufldl/archive/tutorial/unsupervised/PCAWhitening">ZCA whitened</a> with no regularization (that is, with <m>\epsilon</m> set to 0).</p>
 
 <p>Hence, before we even begin to optimize for the orthonormal ICA objective, we must ensure that our data has been <strong>whitened</strong>, and that we are learning an <strong>under-complete</strong> basis.</p>
 
@@ -103,13 +103,13 @@ J(W) = \lVert Wx \rVert_1
     </div>
 
     <!-- Generate sidebar --->
-    <script src='/wayback-ufldl/stanford-ufldl/tutorial/sidebar/sidebar.js'></script>
+    <script src='/stanford-ufldl/archive/tutorial/sidebar/sidebar.js'></script>
     <script>
       function renderHeading(name) {
         return '<div class = "panel-heading">' + name + '</div>';
       };
       function renderItem(name, link) { 
-        return '<a href="/wayback-ufldl/stanford-ufldl/tutorial/' + link + '" class="list-group-item nav">' + name +
+        return '<a href="/stanford-ufldl/archive/tutorial/' + link + '" class="list-group-item nav">' + name +
           '</a>';
       };
       renderedHtml = '<div class = "panel panel-default">';
@@ -127,7 +127,7 @@ J(W) = \lVert Wx \rVert_1
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="//code.jquery.com/jquery.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="/wayback-ufldl/stanford-ufldl/tutorial/js/bootstrap.min.js"></script>
+    <script src="/stanford-ufldl/archive/tutorial/js/bootstrap.min.js"></script>
     <script>
       var inputs = document.getElementsByTagName("m");
       for (var i = 0; i < inputs.length; i++) { 

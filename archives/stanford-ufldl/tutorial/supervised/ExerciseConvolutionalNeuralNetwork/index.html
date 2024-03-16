@@ -5,9 +5,9 @@
     <title>Unsupervised Feature Learning and Deep Learning Tutorial</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
-    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/bootstrap_readable.min.css" rel="stylesheet">
-    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/pygments/default.css" rel="stylesheet">
-    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/custom.css" rel="stylesheet">
+    <link href="/stanford-ufldl/archive/tutorial/css/bootstrap_readable.min.css" rel="stylesheet">
+    <link href="/stanford-ufldl/archive/tutorial/css/pygments/default.css" rel="stylesheet">
+    <link href="/stanford-ufldl/archive/tutorial/css/custom.css" rel="stylesheet">
     <script type="text/javascript"
           src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
     </script>
@@ -27,7 +27,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/wayback-ufldl/stanford-ufldl/tutorial/">UFLDL Tutorial</a>
+          <a class="navbar-brand" href="/stanford-ufldl/archive/tutorial/">UFLDL Tutorial</a>
         </div>
         <!---
         <div class="collapse navbar-collapse">
@@ -60,7 +60,7 @@
 
 <p><a href="https://github.com/amaas/stanford_dl_ex/tree/master/common">MNIST helper functions</a></p>
 
-<p>We strongly suggest that you complete the <a href="/wayback-ufldl/stanford-ufldl/tutorial/supervised/ExerciseConvolutionAndPooling">convolution and pooling</a>, <a href="/wayback-ufldl/stanford-ufldl/tutorial/supervised/ExerciseSupervisedNeuralNetwork">multilayer supervised neural network</a> and <a href="/wayback-ufldl/stanford-ufldl/tutorial/supervised/SoftmaxRegression">softmax regression</a> exercises prior to starting this one.</p>
+<p>We strongly suggest that you complete the <a href="/stanford-ufldl/archive/tutorial/supervised/ExerciseConvolutionAndPooling">convolution and pooling</a>, <a href="/stanford-ufldl/archive/tutorial/supervised/ExerciseSupervisedNeuralNetwork">multilayer supervised neural network</a> and <a href="/stanford-ufldl/archive/tutorial/supervised/SoftmaxRegression">softmax regression</a> exercises prior to starting this one.</p>
 
 <h3 id="step_0_initialize_parameters_and_load_data">Step 0: Initialize Parameters and Load Data</h3>
 
@@ -74,9 +74,9 @@
 
 <h4 id="step_1a_forward_propagation">Step 1a: Forward Propagation</h4>
 
-<p>Convolve every image with every filter, then mean pool the responses. This should be similar to the implementation from the <a href="/wayback-ufldl/stanford-ufldl/tutorial/supervised/ExerciseConvolutionAndPooling">convolution and pooling</a> exercise using MATLAB’s <code>conv2</code> function. You will need to store the activations after the convolution but before the pooling for efficient back propagation later.</p>
+<p>Convolve every image with every filter, then mean pool the responses. This should be similar to the implementation from the <a href="/stanford-ufldl/archive/tutorial/supervised/ExerciseConvolutionAndPooling">convolution and pooling</a> exercise using MATLAB’s <code>conv2</code> function. You will need to store the activations after the convolution but before the pooling for efficient back propagation later.</p>
 
-<p>Following the convolutional layer, we unroll the subsampled filter responses into a 2D matrix with each column representing an image. Using the <code>activationsPooled</code> matrix, implement a standard softmax layer following the style of the <a href="/wayback-ufldl/stanford-ufldl/tutorial/supervised/SoftmaxRegression">softmax regression</a> exercise.</p>
+<p>Following the convolutional layer, we unroll the subsampled filter responses into a 2D matrix with each column representing an image. Using the <code>activationsPooled</code> matrix, implement a standard softmax layer following the style of the <a href="/stanford-ufldl/archive/tutorial/supervised/SoftmaxRegression">softmax regression</a> exercise.</p>
 
 <h4 id="step_1b_calculate_cost">Step 1b: Calculate Cost</h4>
 
@@ -142,9 +142,9 @@ After the error has been upsampled, all that's left to be done to propagate thro
 
 <h4 id="step_1d_gradient_calculation">Step 1d: Gradient Calculation</h4>
 
-<p>Compute the gradient for the densely connected weights and bias, <code>W_d</code> and <code>b_d</code> following the equations presented in <a href="/wayback-ufldl/stanford-ufldl/tutorial/supervised/MultiLayerNeuralNetworks">multilayer neural networks</a>.</p>
+<p>Compute the gradient for the densely connected weights and bias, <code>W_d</code> and <code>b_d</code> following the equations presented in <a href="/stanford-ufldl/archive/tutorial/supervised/MultiLayerNeuralNetworks">multilayer neural networks</a>.</p>
 
-<p>In order to compute the gradient with respect to each of the filters for a single training example (i.e. image) in the convolutional layer, you must first convolve the error term for that image-filter pair as computed in the previous step with the original training image. Again, use MATLAB’s <code>conv2</code> function with the ‘valid’ option to handle borders correctly. Make sure to flip the error matrix for that image-filter pair prior to the convolution as discussed in the simple <a href="/wayback-ufldl/stanford-ufldl/tutorial/supervised/ExerciseConvolutionAndPooling">convolution exercise</a>. The final gradient for a given filter is the sum over the convolution of all images with the error for that image-filter pair.</p>
+<p>In order to compute the gradient with respect to each of the filters for a single training example (i.e. image) in the convolutional layer, you must first convolve the error term for that image-filter pair as computed in the previous step with the original training image. Again, use MATLAB’s <code>conv2</code> function with the ‘valid’ option to handle borders correctly. Make sure to flip the error matrix for that image-filter pair prior to the convolution as discussed in the simple <a href="/stanford-ufldl/archive/tutorial/supervised/ExerciseConvolutionAndPooling">convolution exercise</a>. The final gradient for a given filter is the sum over the convolution of all images with the error for that image-filter pair.</p>
 
 <p>The gradient w.r.t to the bias term for each filter in the convolutional layer is simply the sum of all error terms corresponding to the given filter.</p>
 
@@ -160,9 +160,9 @@ After the error has been upsampled, all that's left to be done to propagate thro
 
 <p>Using a batch method such as L-BFGS to train a convolutional network of this size even on MNIST, a relatively small dataset, can be computationally slow. A single iteration of calculating the cost and gradient for the full training set can take several minutes or more. Thus you will use stochastic gradient descent (SGD) to learn the parameters of the network.</p>
 
-<p>You will use SGD with momentum as described in <a href="/wayback-ufldl/stanford-ufldl/tutorial/supervised/OptimizationStochasticGradientDescent">Stochastic Gradient Descent</a>. Implement the velocity vector and parameter vector update in <code>minFuncSGD.m</code>.</p>
+<p>You will use SGD with momentum as described in <a href="/stanford-ufldl/archive/tutorial/supervised/OptimizationStochasticGradientDescent">Stochastic Gradient Descent</a>. Implement the velocity vector and parameter vector update in <code>minFuncSGD.m</code>.</p>
 
-<p>In this implementation of SGD we use a relatively heuristic method of annealing the learning rate for better convergence as learning slows down. We simply halve the learning rate after each epoch. As mentioned in <a href="/wayback-ufldl/stanford-ufldl/tutorial/supervised/OptimizationStochasticGradientDescent">Stochastic Gradient Descent</a>, we also randomly shuffle the data before each epoch, which tends to provide better convergence.</p>
+<p>In this implementation of SGD we use a relatively heuristic method of annealing the learning rate for better convergence as learning slows down. We simply halve the learning rate after each epoch. As mentioned in <a href="/stanford-ufldl/archive/tutorial/supervised/OptimizationStochasticGradientDescent">Stochastic Gradient Descent</a>, we also randomly shuffle the data before each epoch, which tends to provide better convergence.</p>
 
 <h3 id="step_4_test">Step 4: Test</h3>
 
@@ -182,13 +182,13 @@ After the error has been upsampled, all that's left to be done to propagate thro
     </div>
 
     <!-- Generate sidebar --->
-    <script src='/wayback-ufldl/stanford-ufldl/tutorial/sidebar/sidebar.js'></script>
+    <script src='/stanford-ufldl/archive/tutorial/sidebar/sidebar.js'></script>
     <script>
       function renderHeading(name) {
         return '<div class = "panel-heading">' + name + '</div>';
       };
       function renderItem(name, link) { 
-        return '<a href="/wayback-ufldl/stanford-ufldl/tutorial/' + link + '" class="list-group-item nav">' + name +
+        return '<a href="/stanford-ufldl/archive/tutorial/' + link + '" class="list-group-item nav">' + name +
           '</a>';
       };
       renderedHtml = '<div class = "panel panel-default">';
@@ -206,7 +206,7 @@ After the error has been upsampled, all that's left to be done to propagate thro
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="//code.jquery.com/jquery.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="/wayback-ufldl/stanford-ufldl/tutorial/js/bootstrap.min.js"></script>
+    <script src="/stanford-ufldl/archive/tutorial/js/bootstrap.min.js"></script>
     <script>
       var inputs = document.getElementsByTagName("m");
       for (var i = 0; i < inputs.length; i++) { 

@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>稀疏编码自编码表达 - Ufldl</title>
-<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
-<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+<link rel="stylesheet" href="/stanford-ufldl/archive/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/stanford-ufldl/archive/wiki/skins/monobook/main.css" media="screen"/>
 
 </head>
 
@@ -37,7 +37,7 @@
 </td></tr></table><script>if (window.showTocToggle) { var tocShowText = "show"; var tocHideText = "hide"; showTocToggle(); } </script>
 <h2> <span class="mw-headline" id=".E7.A8.80.E7.96.8F.E7.BC.96.E7.A0.81"> 稀疏编码 </span></h2>
 <p>在稀疏自编码算法中，我们试着学习得到一组权重参数 <span class="texhtml"><i>W</i></span>（以及相应的截距 <span class="texhtml"><i>b</i></span>），通过这些参数可以使我们得到稀疏特征向量 <span class="texhtml">&sigma;(<i>W</i><i>x</i> + <i>b</i>)</span> ，这些特征向量对于重构输入样本非常有用。
-</p><p><a href="" class="image"><img alt="STL SparseAE.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/f/ff/STL_SparseAE.png/240px-STL_SparseAE.png" width="240" height="328"/></a>
+</p><p><a href="" class="image"><img alt="STL SparseAE.png" src="/stanford-ufldl/archive/wiki/images/thumb/f/ff/STL_SparseAE.png/240px-STL_SparseAE.png" width="240" height="328"/></a>
 </p><p><br/>
 稀疏编码可以看作是稀疏自编码方法的一个变形，该方法试图直接学习数据的特征集。利用与此特征集相应的基向量，将学习得到的特征集从特征空间转换到样本数据空间，这样我们就可以用学习得到的特征集重构样本数据。 
 </p><p><br/>
@@ -45,41 +45,41 @@
 </p>
 <dl><dd><img class="tex" alt="
 J(A, s) = \lVert As - x \rVert_2^2 + \lambda \lVert s \rVert_1
-" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/0/7/2072898a1e2ee735eb51f8b527f21e2e.png"/>
+" src="/stanford-ufldl/archive/wiki/images/math/2/0/7/2072898a1e2ee735eb51f8b527f21e2e.png"/>
 </dd></dl>
-<p>（<img class="tex" alt="\lVert x \rVert_k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/5/1/05140fa4a71b91000681ae96011488e9.png"/>是x的Lk范数，等价于 <img class="tex" alt="\left( \sum{ \left| x_i^k \right| } \right) ^{\frac{1}{k}}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/7/6/67605df92ae8c43173bbb80f7a93cb83.png"/>。L2 范数即大家熟知的欧几里得范数，L1 范数是向量元素的绝对值之和）
+<p>（<img class="tex" alt="\lVert x \rVert_k" src="/stanford-ufldl/archive/wiki/images/math/0/5/1/05140fa4a71b91000681ae96011488e9.png"/>是x的Lk范数，等价于 <img class="tex" alt="\left( \sum{ \left| x_i^k \right| } \right) ^{\frac{1}{k}}" src="/stanford-ufldl/archive/wiki/images/math/6/7/6/67605df92ae8c43173bbb80f7a93cb83.png"/>。L2 范数即大家熟知的欧几里得范数，L1 范数是向量元素的绝对值之和）
 </p><p><br/>
 上式前第一部分是利用基向量将特征集重构为样本数据所产生的误差，第二部分为稀疏性惩罚项（sparsity penalty term），用于保证特征集的稀疏性。 
 </p><p><br/>
-但是，如目标函数所示，它的约束性并不强――按常数比例缩放<span class="texhtml"><i>A</i></span>的同时再按这个常数的倒数缩放 <span class="texhtml"><i>s</i></span>，结果不会改变误差大小，却会减少稀疏代价（表达式第二项）的值。因此，需要为 <span class="texhtml"><i>A</i></span> 中每项 <span class="texhtml"><i>A</i><sub><i>j</i></sub></span> 增加额外约束 <img class="tex" alt="A_j^TA_j \le 1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/e/0/ee05eff183594aed415392b8104bfb1d.png"/>。问题变为：
+但是，如目标函数所示，它的约束性并不强――按常数比例缩放<span class="texhtml"><i>A</i></span>的同时再按这个常数的倒数缩放 <span class="texhtml"><i>s</i></span>，结果不会改变误差大小，却会减少稀疏代价（表达式第二项）的值。因此，需要为 <span class="texhtml"><i>A</i></span> 中每项 <span class="texhtml"><i>A</i><sub><i>j</i></sub></span> 增加额外约束 <img class="tex" alt="A_j^TA_j \le 1" src="/stanford-ufldl/archive/wiki/images/math/e/e/0/ee05eff183594aed415392b8104bfb1d.png"/>。问题变为：
 </p>
 <dl><dd><img class="tex" alt="
 \begin{array}{rcl}
      {\rm minimize} &amp; \lVert As - x \rVert_2^2 + \lambda \lVert s \rVert_1 \\
      {\rm s.t.}     &amp;    A_j^TA_j \le 1 \; \forall j \\
 \end{array} 
-" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/2/f/a2f57c5746669d09790f9d862352c89b.png"/>
+" src="/stanford-ufldl/archive/wiki/images/math/a/2/f/a2f57c5746669d09790f9d862352c89b.png"/>
 </dd></dl>
 <p><br/>
 遗憾的是，因为目标函数并不是一个凸函数，所以不能用梯度方法解决这个优化问题。但是，在给定 <span class="texhtml"><i>A</i></span> 的情况下，最小化 <span class="texhtml"><i>J</i>(<i>A</i>,<i>s</i>)</span> 求解 <span class="texhtml"><i>s</i></span> 是凸的。同理，给定 <span class="texhtml"><i>s</i></span> 最小化 <span class="texhtml"><i>J</i>(<i>A</i>,<i>s</i>)</span> 求解 <span class="texhtml"><i>A</i></span> 也是凸的。这表明，可以通过交替固定 <span class="texhtml"><i>s</i></span>和 A 分别求解 <span class="texhtml"><i>A</i></span>和<span class="texhtml"><i>s</i></span>。实践表明，这一策略取得的效果非常好。 
 </p><p><br/>
-但是，以上表达式带来了另一个难题：不能用简单的梯度方法来实现约束条件 <img class="tex" alt="A_j^TA_j \le 1 \; \forall j" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/4/c/1/4c19ae5304ebe923a3053ea8efbc7622.png"/>。因此在实际问题中，此约束条件还不足以成为“权重衰变”（"weight decay"）项以保证 A 的每一项值够小。这样我们就得到一个新的目标函数： 
+但是，以上表达式带来了另一个难题：不能用简单的梯度方法来实现约束条件 <img class="tex" alt="A_j^TA_j \le 1 \; \forall j" src="/stanford-ufldl/archive/wiki/images/math/4/c/1/4c19ae5304ebe923a3053ea8efbc7622.png"/>。因此在实际问题中，此约束条件还不足以成为“权重衰变”（"weight decay"）项以保证 A 的每一项值够小。这样我们就得到一个新的目标函数： 
 </p>
 <dl><dd><img class="tex" alt="
 J(A, s) = \lVert As - x \rVert_2^2 + \lambda \lVert s \rVert_1 + \gamma \lVert A \rVert_2^2
-" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/d/6/1d6a2cef1550cd6830cc45e56d120dd5.png"/>
+" src="/stanford-ufldl/archive/wiki/images/math/1/d/6/1d6a2cef1550cd6830cc45e56d120dd5.png"/>
 </dd></dl>
-<p>（注意上式中第三项， <img class="tex" alt="\lVert A \rVert_2^2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/0/5/e05f2e1c0e4f84b54964b13b6d1aafe1.png"/>等价于<img class="tex" alt="\sum_r{\sum_c{A_{rc}^2}}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/b/e/2be909f8e140d9bae7a5b5f2be0ed26c.png"/>，是A各项的平方和）
+<p>（注意上式中第三项， <img class="tex" alt="\lVert A \rVert_2^2" src="/stanford-ufldl/archive/wiki/images/math/e/0/5/e05f2e1c0e4f84b54964b13b6d1aafe1.png"/>等价于<img class="tex" alt="\sum_r{\sum_c{A_{rc}^2}}" src="/stanford-ufldl/archive/wiki/images/math/2/b/e/2be909f8e140d9bae7a5b5f2be0ed26c.png"/>，是A各项的平方和）
 </p><p><br/>
-这一目标函数带来了最后一个问题，即 L1 范数在 0 点处不可微影响了梯度方法的应用。尽管可以通过其他非梯度下降方法避开这一问题，但是本文通过使用近似值“平滑” L1 范数的方法解决此难题。使用 <img class="tex" alt="\sqrt{x^2 + \epsilon}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/d/7/dd7d0966210455f769c5ed37c206c606.png"/> 代替 <img class="tex" alt="\left| x \right|" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/a/3/6a37fe2d78bd89637e639ae2f90c1a1b.png"/>, 对 L1 范数进行平滑，其中 <span class="texhtml">&epsilon;</span> 是“平滑参数”（"smoothing parameter"）或者“稀疏参数”（"sparsity parameter"） （如果 <span class="texhtml">&epsilon;</span>远大于<span class="texhtml"><i>x</i></span>, 则 <span class="texhtml"><i>x</i> + &epsilon;</span> 的值由 <span class="texhtml">&epsilon;</span> 主导，其平方根近似于<span class="texhtml">&epsilon;</span>）。在下文提及拓扑稀疏编码时，“平滑”会派上用场。 
+这一目标函数带来了最后一个问题，即 L1 范数在 0 点处不可微影响了梯度方法的应用。尽管可以通过其他非梯度下降方法避开这一问题，但是本文通过使用近似值“平滑” L1 范数的方法解决此难题。使用 <img class="tex" alt="\sqrt{x^2 + \epsilon}" src="/stanford-ufldl/archive/wiki/images/math/d/d/7/dd7d0966210455f769c5ed37c206c606.png"/> 代替 <img class="tex" alt="\left| x \right|" src="/stanford-ufldl/archive/wiki/images/math/6/a/3/6a37fe2d78bd89637e639ae2f90c1a1b.png"/>, 对 L1 范数进行平滑，其中 <span class="texhtml">&epsilon;</span> 是“平滑参数”（"smoothing parameter"）或者“稀疏参数”（"sparsity parameter"） （如果 <span class="texhtml">&epsilon;</span>远大于<span class="texhtml"><i>x</i></span>, 则 <span class="texhtml"><i>x</i> + &epsilon;</span> 的值由 <span class="texhtml">&epsilon;</span> 主导，其平方根近似于<span class="texhtml">&epsilon;</span>）。在下文提及拓扑稀疏编码时，“平滑”会派上用场。 
 </p><p><br/>
 因此，最终的目标函数是：
 </p>
 <dl><dd><img class="tex" alt="
 J(A, s) = \lVert As - x \rVert_2^2 + \lambda \sqrt{s^2 + \epsilon} + \gamma \lVert A \rVert_2^2
-" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/5/a/f5a161dfa55cbc70b160e1e224134949.png"/>
+" src="/stanford-ufldl/archive/wiki/images/math/f/5/a/f5a161dfa55cbc70b160e1e224134949.png"/>
 </dd></dl>
-<p>（ <img class="tex" alt="\sqrt{s^2 + \epsilon}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/2/3/72354bd3dca1a2904b08730bc124fd8a.png"/> 是 <img class="tex" alt="\sum_k{\sqrt{s_k^2 + \epsilon}}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/7/f/57fb2d3245ec566af9ec7c9de4b4f172.png"/> 的简写）
+<p>（ <img class="tex" alt="\sqrt{s^2 + \epsilon}" src="/stanford-ufldl/archive/wiki/images/math/7/2/3/72354bd3dca1a2904b08730bc124fd8a.png"/> 是 <img class="tex" alt="\sum_k{\sqrt{s_k^2 + \epsilon}}" src="/stanford-ufldl/archive/wiki/images/math/5/7/f/57fb2d3245ec566af9ec7c9de4b4f172.png"/> 的简写）
 </p><p><br/>
 该目标函数可以通过以下过程迭代优化： 
 </p>
@@ -91,30 +91,30 @@ J(A, s) = \lVert As - x \rVert_2^2 + \lambda \sqrt{s^2 + \epsilon} + \gamma \lVe
     <li>根据上一步得到的<span class="texhtml"><i>s</i></span>，，求解能够最小化<span class="texhtml"><i>J</i>(<i>A</i>,<i>s</i>)</span>的<span class="texhtml"><i>A</i></span>  </ol>
 </ol>
 <p><br/>
-观察修改后的目标函数 <span class="texhtml"><i>J</i>(<i>A</i>,<i>s</i>)</span>，给定 <span class="texhtml"><i>s</i></span> 的条件下，目标函数可以简化为 <img class="tex" alt="J(A; s) = \lVert As - x \rVert_2^2 + \gamma \lVert A \rVert_2^2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/7/a/57a5b22ceffa2fbfcc2ca86bdc9372bd.png"/>（因为 <span class="texhtml"><i>s</i></span> 的 L1 范式不是 <span class="texhtml"><i>A</i></span> 的函数，所以可以忽略）。简化后的目标函数是一个关于 <span class="texhtml"><i>A</i></span> 的简单二次项式，因此对 <span class="texhtml"><i>A</i></span> 求导是很容易的。这种求导的一种快捷方法是矩阵微积分（<a href="/wayback-ufldl/stanford-ufldl/wiki/Useful_Links" title="Useful Links"> 相关链接</a>部分列出了跟矩阵演算有关的内容）。遗憾的是，在给定 <span class="texhtml"><i>A</i></span> 的条件下，目标函数却不具备这样的求导方法，因此目标函数的最小化步骤只能用梯度下降或其他类似的最优化方法。 
+观察修改后的目标函数 <span class="texhtml"><i>J</i>(<i>A</i>,<i>s</i>)</span>，给定 <span class="texhtml"><i>s</i></span> 的条件下，目标函数可以简化为 <img class="tex" alt="J(A; s) = \lVert As - x \rVert_2^2 + \gamma \lVert A \rVert_2^2" src="/stanford-ufldl/archive/wiki/images/math/5/7/a/57a5b22ceffa2fbfcc2ca86bdc9372bd.png"/>（因为 <span class="texhtml"><i>s</i></span> 的 L1 范式不是 <span class="texhtml"><i>A</i></span> 的函数，所以可以忽略）。简化后的目标函数是一个关于 <span class="texhtml"><i>A</i></span> 的简单二次项式，因此对 <span class="texhtml"><i>A</i></span> 求导是很容易的。这种求导的一种快捷方法是矩阵微积分（<a href="/stanford-ufldl/archive/wiki/Useful_Links" title="Useful Links"> 相关链接</a>部分列出了跟矩阵演算有关的内容）。遗憾的是，在给定 <span class="texhtml"><i>A</i></span> 的条件下，目标函数却不具备这样的求导方法，因此目标函数的最小化步骤只能用梯度下降或其他类似的最优化方法。 
 </p><p><br/>
-理论上，通过上述迭代方法求解目标函数的最优化问题最终得到的特征集（A 的基向量）与通过稀疏自编码学习得到的特征集是差不多的。但是实际上，为了获得更好的算法收敛性需要使用一些小技巧，后面的<a href="/wayback-ufldl/stanford-ufldl/wiki/Sparse_Coding__Autoencoder_Interpretation#Sparse_coding_in_practice" title="Sparse Coding: Autoencoder Interpretation"> 稀疏编码实践</a> 稀疏编码实践章节会详细介绍这些技巧。用梯度下降方法求解目标函数也略需技巧，另外使用矩阵演算或<a href="/wayback-ufldl/stanford-ufldl/wiki/Deriving_gradients_using_the_backpropagation_idea" title="Deriving gradients using the backpropagation idea"> 反向传播算法</a>则有助于解决此类问题。
+理论上，通过上述迭代方法求解目标函数的最优化问题最终得到的特征集（A 的基向量）与通过稀疏自编码学习得到的特征集是差不多的。但是实际上，为了获得更好的算法收敛性需要使用一些小技巧，后面的<a href="/stanford-ufldl/archive/wiki/Sparse_Coding__Autoencoder_Interpretation#Sparse_coding_in_practice" title="Sparse Coding: Autoencoder Interpretation"> 稀疏编码实践</a> 稀疏编码实践章节会详细介绍这些技巧。用梯度下降方法求解目标函数也略需技巧，另外使用矩阵演算或<a href="/stanford-ufldl/archive/wiki/Deriving_gradients_using_the_backpropagation_idea" title="Deriving gradients using the backpropagation idea"> 反向传播算法</a>则有助于解决此类问题。
 </p>
 <h2> <span class="mw-headline" id=".E6.8B.93.E6.89.91.E7.A8.80.E7.96.8F.E7.BC.96.E7.A0.81"> 拓扑稀疏编码 </span></h2>
 <p>通过稀疏编码，我们能够得到一组用于表示样本数据的特征集。不过，让我们来找些灵感，我们希望学习得到一组有某种“秩序”的特征集。举个例子，视觉特征，如前面所提到的，大脑皮层 V1 区神经元能够按特定的方向对边缘进行检测，同时，这些神经元（在生理上）被组织成超柱（hypercolumns），在超柱中，相邻神经元以相似的方向对边缘进行检测，一个神经元检测水平边缘，其相邻神经元检测到的边缘就稍微偏离水平方向，沿着超柱，神经元就可以检测到与水平方向相差更大的边缘了。 
 </p><p><br/>
 受该例子的启发，我们希望学习到的特征也具有这样“拓扑秩序”的性质。这对于我们要学习的特征意味着什么呢?直观的讲，如果“相邻”的特征是“相似”的，就意味着如果某个特征被激活，那么与之相邻的特征也将随之被激活。 
 </p><p><br/>
-具体而言，假设我们（随意地）将特征组织成一个方阵。我们就希望矩阵中相邻的特征是相似的。实现这一点的方法是将相邻特征按经过平滑的L1范式惩罚进行分组，如果按 3x3 方阵分组，则用 <img class="tex" alt="\sqrt{s_{1,1}^2 + s_{1,2}^2 + s_{1,3}^2 + s_{2,1}^2 + s_{2,2}^2 + s_{3,2}^2 + s_{3,1}^2 + s_{3,2}^2 + s_{3,3}^2 + \epsilon}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/d/9/0d9a543116996f237dcab61e5c78cbee.png"/> 代替 <img class="tex" alt="\sqrt{s_{1,1}^2 + \epsilon}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/3/9/3391a34bac754562a6e2d881627d324e.png"/>, 其分组通常是重合的，因此从第 1 行第 1 列开始的 3x3 区域是一个分组，从第 1 行第 2 列开始的 3x3 区域是另一个分组，以此类推。最终，这样的分组会形成环绕，就好像这个矩阵是个环形曲面，所以每个特征都以同样的次数进行了分组。
+具体而言，假设我们（随意地）将特征组织成一个方阵。我们就希望矩阵中相邻的特征是相似的。实现这一点的方法是将相邻特征按经过平滑的L1范式惩罚进行分组，如果按 3x3 方阵分组，则用 <img class="tex" alt="\sqrt{s_{1,1}^2 + s_{1,2}^2 + s_{1,3}^2 + s_{2,1}^2 + s_{2,2}^2 + s_{3,2}^2 + s_{3,1}^2 + s_{3,2}^2 + s_{3,3}^2 + \epsilon}" src="/stanford-ufldl/archive/wiki/images/math/0/d/9/0d9a543116996f237dcab61e5c78cbee.png"/> 代替 <img class="tex" alt="\sqrt{s_{1,1}^2 + \epsilon}" src="/stanford-ufldl/archive/wiki/images/math/3/3/9/3391a34bac754562a6e2d881627d324e.png"/>, 其分组通常是重合的，因此从第 1 行第 1 列开始的 3x3 区域是一个分组，从第 1 行第 2 列开始的 3x3 区域是另一个分组，以此类推。最终，这样的分组会形成环绕，就好像这个矩阵是个环形曲面，所以每个特征都以同样的次数进行了分组。
 于是，将经过平滑的所有分组的 L1 惩罚值之和代替经过平滑的 L1 惩罚值，得到新的目标函数如下：
 </p>
 <dl><dd><img class="tex" alt="
 J(A, s) = \lVert As - x \rVert_2^2 + \lambda \sum_{\text{all groups } g}{\sqrt{ \left( \sum_{\text{all } s \in g}{s^2} \right) + \epsilon} } + \gamma \lVert A \rVert_2^2
-" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/5/b/25b426de9a1b46c94839f5f9dd4801a3.png"/>
+" src="/stanford-ufldl/archive/wiki/images/math/2/5/b/25b426de9a1b46c94839f5f9dd4801a3.png"/>
 </dd></dl>
 <p><br/>
 实际上，“分组”可以通过“分组矩阵”<span class="texhtml"><i>V</i></span> 完成，于是矩阵 <span class="texhtml"><i>V</i></span> 的第 <span class="texhtml"><i>r</i></span> 行标识了哪些特征被分到第 <span class="texhtml"><i>r</i></span> 组中，即如果第 <span class="texhtml"><i>r</i></span> 组包含特征 <span class="texhtml"><i>c</i></span> 则 <span class="texhtml"><i>V</i><sub><i>r</i>,<i>c</i></sub> = 1</span>。通过分组矩阵实现分组使得梯度的计算更加直观，使用此分组矩阵，目标函数被重写为： 
 </p>
 <dl><dd><img class="tex" alt="
 J(A, s) = \lVert As - x \rVert_2^2 + \lambda \sum{ \sqrt{Vss^T + \epsilon} } + \gamma \lVert A \rVert_2^2
-" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/2/3/c23bf21d67df11fdbd7cc4ae9dc41c64.png"/>
+" src="/stanford-ufldl/archive/wiki/images/math/c/2/3/c23bf21d67df11fdbd7cc4ae9dc41c64.png"/>
 </dd></dl>
-<p>(令 <img class="tex" alt="D = \sqrt{Vss^T + \epsilon}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/8/4/9845dba65c5e5ff49ea4c134dc2c1bf0.png"/>，<img class="tex" alt="\sum{ \sqrt{Vss^T + \epsilon} }" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/c/d/ccd5a0f991db6bdba852b147ee42d91b.png"/> 等价于 <span class="texhtml">
+<p>(令 <img class="tex" alt="D = \sqrt{Vss^T + \epsilon}" src="/stanford-ufldl/archive/wiki/images/math/9/8/4/9845dba65c5e5ff49ea4c134dc2c1bf0.png"/>，<img class="tex" alt="\sum{ \sqrt{Vss^T + \epsilon} }" src="/stanford-ufldl/archive/wiki/images/math/c/c/d/ccd5a0f991db6bdba852b147ee42d91b.png"/> 等价于 <span class="texhtml">
 </p>
 <table>
 		<tr style="text-align: center;"><td><span style="font-size: x-large; font-family: serif;">&sum;</span></td><td><span style="font-size: x-large; font-family: serif;">&sum;</span></td><td><i>D</i><sub><i>r</i>,<i>c</i></sub></td></tr>
@@ -155,12 +155,12 @@ J(A, s) = \lVert As - x \rVert_2^2 + \lambda \sum{ \sqrt{Vss^T + \epsilon} } + \
 <p>另一个能获得更快速更优化收敛的重要技巧是：在给定 <span class="texhtml"><i>A</i></span> 的条件下，根据目标函数使用梯度下降（或其他方法）求解 <span class="texhtml"><i>s</i></span> 之前找到良好的特征矩阵 <span class="texhtml"><i>s</i></span> 的初始值。实际上，除非在优化 <span class="texhtml"><i>A</i></span> 的最优值前已找到一个最佳矩阵 <span class="texhtml"><i>s</i></span>，不然每次迭代过程中随机初始化 <span class="texhtml"><i>s</i></span> 值会导致很差的收敛效果。下面给出一个初始化 <span class="texhtml"><i>s</i></span> 的较好方法： 
 </p>
 <ol>
-<li>令<img class="tex" alt="s \leftarrow W^Tx" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/0/b/f0b36b91f5e791ff8a59c1216da9af2d.png"/> (<span class="texhtml"><i>x</i></span> 是迷你块中patches的矩阵表示)
+<li>令<img class="tex" alt="s \leftarrow W^Tx" src="/stanford-ufldl/archive/wiki/images/math/f/0/b/f0b36b91f5e791ff8a59c1216da9af2d.png"/> (<span class="texhtml"><i>x</i></span> 是迷你块中patches的矩阵表示)
 <li><span class="texhtml"><i>s</i></span>中的每个特征（<span class="texhtml"><i>s</i></span>的每一列），除以其在<span class="texhtml"><i>A</i></span>中对应基向量的范数。即，如果<span class="texhtml"><i>s</i><sub><i>r</i>,<i>c</i></sub></span>表示第<span class="texhtml"><i>c</i></span>个样本的第<span class="texhtml"><i>r</i></span>个特征，则<span class="texhtml"><i>A</i><sub><i>c</i></sub></span>表示<span class="texhtml"><i>A</i></span>中的第<span class="texhtml"><i>c</i></span>个基向量，则令
-<img class="tex" alt="s_{r, c} \leftarrow \frac{ s_{r, c} } { \lVert A_c \rVert }." src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/0/7/20773e6ff4a4a9d48b6c3769e7b50780.png"/>
+<img class="tex" alt="s_{r, c} \leftarrow \frac{ s_{r, c} } { \lVert A_c \rVert }." src="/stanford-ufldl/archive/wiki/images/math/2/0/7/20773e6ff4a4a9d48b6c3769e7b50780.png"/>
 </ol>
 <p><br/>
-无疑，这样的初始化有助于算法的改进，因为上述的第一步希望找到满足 <img class="tex" alt="Ws \approx x" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/4/0/84002fcaba86b0ad04772d33a6aa556d.png"/> 的矩阵 <span class="texhtml"><i>s</i></span>；第二步对 <span class="texhtml"><i>s</i></span> 作规范化处理是为了保持较小的稀疏惩罚值。这也表明，只采用上述步骤的某一步而不是两步对 <span class="texhtml"><i>s</i></span> 做初始化处理将严重影响算法性能。（<a href="" class="new" title="TODO (page does not exist)">TODO</a>: 此链接将会对为什么这样的初始化能改进算法作出更详细的解释）
+无疑，这样的初始化有助于算法的改进，因为上述的第一步希望找到满足 <img class="tex" alt="Ws \approx x" src="/stanford-ufldl/archive/wiki/images/math/8/4/0/84002fcaba86b0ad04772d33a6aa556d.png"/> 的矩阵 <span class="texhtml"><i>s</i></span>；第二步对 <span class="texhtml"><i>s</i></span> 作规范化处理是为了保持较小的稀疏惩罚值。这也表明，只采用上述步骤的某一步而不是两步对 <span class="texhtml"><i>s</i></span> 做初始化处理将严重影响算法性能。（<a href="" class="new" title="TODO (page does not exist)">TODO</a>: 此链接将会对为什么这样的初始化能改进算法作出更详细的解释）
 </p><p><br/>
 </p>
 <h3> <span class="mw-headline" id=".E5.8F.AF.E8.BF.90.E8.A1.8C.E7.AE.97.E6.B3.95"> 可运行算法 </span></h3>
@@ -203,13 +203,13 @@ J(A, s) = \lVert As - x \rVert_2^2 + \lambda \sum{ \sqrt{Vss^T + \epsilon} } + \
 </p><p><br/>
 </p>
 <div style="text-align: center;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
-<p><a href="/wayback-ufldl/stanford-ufldl/wiki/Neural_Networks" title="Neural Networks">Neural Networks</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Backpropagation_Algorithm" title="Backpropagation Algorithm">Backpropagation Algorithm</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Gradient_checking_and_advanced_optimization" title="Gradient checking and advanced optimization">Gradient checking and advanced optimization</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Autoencoders_and_Sparsity" title="Autoencoders and Sparsity">Autoencoders and Sparsity</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Visualizing_a_Trained_Autoencoder" title="Visualizing a Trained Autoencoder">Visualizing a Trained Autoencoder</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Sparse_Autoencoder_Notation_Summary" title="Sparse Autoencoder Notation Summary">Sparse Autoencoder Notation Summary</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Sparse_Autoencoder" title="Exercise:Sparse Autoencoder">Exercise:Sparse Autoencoder</a>
+<p><a href="/stanford-ufldl/archive/wiki/Neural_Networks" title="Neural Networks">Neural Networks</a> | <a href="/stanford-ufldl/archive/wiki/Backpropagation_Algorithm" title="Backpropagation Algorithm">Backpropagation Algorithm</a> | <a href="/stanford-ufldl/archive/wiki/Gradient_checking_and_advanced_optimization" title="Gradient checking and advanced optimization">Gradient checking and advanced optimization</a> | <a href="/stanford-ufldl/archive/wiki/Autoencoders_and_Sparsity" title="Autoencoders and Sparsity">Autoencoders and Sparsity</a> | <a href="/stanford-ufldl/archive/wiki/Visualizing_a_Trained_Autoencoder" title="Visualizing a Trained Autoencoder">Visualizing a Trained Autoencoder</a> | <a href="/stanford-ufldl/archive/wiki/Sparse_Autoencoder_Notation_Summary" title="Sparse Autoencoder Notation Summary">Sparse Autoencoder Notation Summary</a> | <a href="/stanford-ufldl/archive/wiki/Exercise_Sparse_Autoencoder" title="Exercise:Sparse Autoencoder">Exercise:Sparse Autoencoder</a>
 </p>
 </div>
 <p><br/>
 </p>
 <div style="text-align: left;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
-<p>Language&nbsp;: <a href="/wayback-ufldl/stanford-ufldl/wiki/Sparse_Coding__Autoencoder_Interpretation" title="Sparse Coding: Autoencoder Interpretation">English</a>
+<p>Language&nbsp;: <a href="/stanford-ufldl/archive/wiki/Sparse_Coding__Autoencoder_Interpretation" title="Sparse Coding: Autoencoder Interpretation">English</a>
 </p>
 </div>
 
@@ -231,7 +231,7 @@ Expensive parser function count: 0/100
 		<h5>Views</h5>
 		<div class="pBody">
 			<ul>
-				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/%E7%A8%80%E7%96%8F%E7%BC%96%E7%A0%81%E8%87%AA%E7%BC%96%E7%A0%81%E8%A1%A8%E8%BE%BE" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-nstab-main" class="selected"><a href="/stanford-ufldl/archive/wiki/%E7%A8%80%E7%96%8F%E7%BC%96%E7%A0%81%E8%87%AA%E7%BC%96%E7%A0%81%E8%A1%A8%E8%BE%BE" title="View the content page [c]" accesskey="c">Page</a></li>
 				 <li id="ca-talk" class="new"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
 				 <li id="ca-viewsource"><a href="" title="This page is protected.
 You can view its source [e]" accesskey="e">View source</a></li>
@@ -247,15 +247,15 @@ You can view its source [e]" accesskey="e">View source</a></li>
 		</div>
 	</div>
 	<div class="portlet" id="p-logo">
-		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+		<a style="background-image: url(/stanford-ufldl/archive/wiki/skins/common/images/dolphin-openclipart.png);" href="/stanford-ufldl/archive/wiki/Main_Page" title="Visit the main page"></a>
 	</div>
 	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
 	<div class="generated-sidebar portlet" id="p-ufldl_resources">
 		<h5>ufldl resources</h5>
 		<div class="pBody">
 			<ul>
-				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
-				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+				<li id="n-UFLDL-Tutorial"><a href="/stanford-ufldl/archive/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/stanford-ufldl/archive/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
 			</ul>
 		</div>
 	</div>
@@ -263,7 +263,7 @@ You can view its source [e]" accesskey="e">View source</a></li>
 		<h5>wiki</h5>
 		<div class="pBody">
 			<ul>
-				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-mainpage-description"><a href="/stanford-ufldl/archive/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
 				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
 				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
 				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
@@ -296,9 +296,9 @@ You can view its source [e]" accesskey="e">View source</a></li>
 <div id="footer">
 	<ul id="f-list">
 		<li id="lastmod"> This page was last modified on 14 May 2014, at 06:22.</li>
-		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
-		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
-		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+		<li id="privacy"><a href="/stanford-ufldl/archive/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/stanford-ufldl/archive/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/stanford-ufldl/archive/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
 	</ul>
 </div>
 </div>

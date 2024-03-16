@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>栈式自编码算法 - Ufldl</title>
-<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
-<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+<link rel="stylesheet" href="/stanford-ufldl/archive/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/stanford-ufldl/archive/wiki/skins/monobook/main.css" media="screen"/>
 
 </head>
 
@@ -33,14 +33,14 @@
 <h2> <span class="mw-headline" id=".E6.A6.82.E8.BF.B0">概述</span></h2>
 <p>逐层贪婪训练法依次训练网络的每一层，进而预训练整个深度神经网络。在本节中，我们将会学习如何将自编码器“栈化”到逐层贪婪训练法中，从而预训练（或者说初始化）深度神经网络的权重。
 </p><p><br/>
-栈式自编码神经网络是一个由多层稀疏自编码器组成的神经网络，其前一层自编码器的输出作为其后一层自编码器的输入。对于一个 <img class="tex" alt="\textstyle n" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/c/5/0c59de0fa75c1baa1c024aabfa43b2e3.png"/> 层栈式自编码神经网络，我们沿用自编码器一章的各种符号，假定用 <img class="tex" alt="\textstyle W^{(k, 1)}, W^{(k, 2)}, b^{(k, 1)}, b^{(k, 2)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/3/c/73c91abb05fbef0c2731db418c090600.png"/> 表示第 <img class="tex" alt="\textstyle k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> 个自编码器对应的 <img class="tex" alt="\textstyle W^{(1)}, W^{(2)}, b^{(1)}, b^{(2)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/c/9/3c93474c7682f6a4856939d4fa193bc6.png"/> 参数，那么该栈式自编码神经网络的编码过程就是，按照从前向后的顺序执行每一层自编码器的编码步骤：
+栈式自编码神经网络是一个由多层稀疏自编码器组成的神经网络，其前一层自编码器的输出作为其后一层自编码器的输入。对于一个 <img class="tex" alt="\textstyle n" src="/stanford-ufldl/archive/wiki/images/math/0/c/5/0c59de0fa75c1baa1c024aabfa43b2e3.png"/> 层栈式自编码神经网络，我们沿用自编码器一章的各种符号，假定用 <img class="tex" alt="\textstyle W^{(k, 1)}, W^{(k, 2)}, b^{(k, 1)}, b^{(k, 2)}" src="/stanford-ufldl/archive/wiki/images/math/7/3/c/73c91abb05fbef0c2731db418c090600.png"/> 表示第 <img class="tex" alt="\textstyle k" src="/stanford-ufldl/archive/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> 个自编码器对应的 <img class="tex" alt="\textstyle W^{(1)}, W^{(2)}, b^{(1)}, b^{(2)}" src="/stanford-ufldl/archive/wiki/images/math/3/c/9/3c93474c7682f6a4856939d4fa193bc6.png"/> 参数，那么该栈式自编码神经网络的编码过程就是，按照从前向后的顺序执行每一层自编码器的编码步骤：
 </p><p><br/>
 <img class="tex" alt="
 \begin{align}
 a^{(l)} = f(z^{(l)}) \\
 z^{(l + 1)} = W^{(l, 1)}a^{(l)} + b^{(l, 1)}
 \end{align}
-" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/4/5/c45be23c8a9c2d2836fa9c559b2e5254.png"/>
+" src="/stanford-ufldl/archive/wiki/images/math/c/4/5/c45be23c8a9c2d2836fa9c559b2e5254.png"/>
 </p><p><br/>
 同理，栈式神经网络的解码过程就是，按照从后向前的顺序执行每一层自编码器的解码步骤：
 </p><p><br/>
@@ -49,37 +49,37 @@ z^{(l + 1)} = W^{(l, 1)}a^{(l)} + b^{(l, 1)}
 a^{(n + l)} = f(z^{(n + l)}) \\
 z^{(n + l + 1)} = W^{(n - l, 2)}a^{(n + l)} + b^{(n - l, 2)}
 \end{align}
-" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/5/0/b502d47bfac781f8d16290436d891ddb.png"/>
+" src="/stanford-ufldl/archive/wiki/images/math/b/5/0/b502d47bfac781f8d16290436d891ddb.png"/>
 </p><p><br/>
-其中，<img class="tex" alt="\textstyle a^{(n)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/1/d/e1d8e6d013579f217c6a25d87d7ee531.png"/> 是最深层隐藏单元的激活值，其包含了我们感兴趣的信息，这个向量也是对输入值的更高阶的表示。
+其中，<img class="tex" alt="\textstyle a^{(n)}" src="/stanford-ufldl/archive/wiki/images/math/e/1/d/e1d8e6d013579f217c6a25d87d7ee531.png"/> 是最深层隐藏单元的激活值，其包含了我们感兴趣的信息，这个向量也是对输入值的更高阶的表示。
 </p><p><br/>
-通过将 <img class="tex" alt="\textstyle a^{(n)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/1/d/e1d8e6d013579f217c6a25d87d7ee531.png"/> 作为softmax分类器的输入特征，可以将栈式自编码神经网络中学到的特征用于分类问题。
+通过将 <img class="tex" alt="\textstyle a^{(n)}" src="/stanford-ufldl/archive/wiki/images/math/e/1/d/e1d8e6d013579f217c6a25d87d7ee531.png"/> 作为softmax分类器的输入特征，可以将栈式自编码神经网络中学到的特征用于分类问题。
 </p><p><br/>
 </p>
 <h2> <span class="mw-headline" id=".E8.AE.AD.E7.BB.83">训练</span></h2>
-<p>一种比较好的获取栈式自编码神经网络参数的方法是采用逐层贪婪训练法进行训练。即先利用原始输入来训练网络的第一层，得到其参数 <img class="tex" alt="\textstyle W^{(1,1)}, W^{(1,2)}, b^{(1,1)}, b^{(1,2)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/4/2/f/42fe8477d1ab7e4090f01b1caa5e6cdb.png"/>；然后网络第一层将原始输入转化成为由隐藏单元激活值组成的向量（假设该向量为A），接着把A作为第二层的输入，继续训练得到第二层的参数 <img class="tex" alt="\textstyle W^{(2,1)}, W^{(2,2)}, b^{(2,1)}, b^{(2,2)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/e/6/6e630937a176c48a27ba40f4656b23cc.png"/>；最后，对后面的各层同样采用的策略，即将前层的输出作为下一层输入的方式依次训练。
+<p>一种比较好的获取栈式自编码神经网络参数的方法是采用逐层贪婪训练法进行训练。即先利用原始输入来训练网络的第一层，得到其参数 <img class="tex" alt="\textstyle W^{(1,1)}, W^{(1,2)}, b^{(1,1)}, b^{(1,2)}" src="/stanford-ufldl/archive/wiki/images/math/4/2/f/42fe8477d1ab7e4090f01b1caa5e6cdb.png"/>；然后网络第一层将原始输入转化成为由隐藏单元激活值组成的向量（假设该向量为A），接着把A作为第二层的输入，继续训练得到第二层的参数 <img class="tex" alt="\textstyle W^{(2,1)}, W^{(2,2)}, b^{(2,1)}, b^{(2,2)}" src="/stanford-ufldl/archive/wiki/images/math/6/e/6/6e630937a176c48a27ba40f4656b23cc.png"/>；最后，对后面的各层同样采用的策略，即将前层的输出作为下一层输入的方式依次训练。
 </p><p><br/>
 对于上述训练方式，在训练每一层参数的时候，会固定其它各层参数保持不变。所以，如果想得到更好的结果，在上述预训练过程完成之后，可以通过反向传播算法同时调整所有层的参数以改善结果，这个过程一般被称作“微调（fine-tuning）”。
 </p><p><br/>
 实际上，使用逐层贪婪训练方法将参数训练到快要收敛时，应该使用微调。反之，如果直接在随机化的初始权重上使用微调，那么会得到不好的结果，因为参数会收敛到局部最优。
 </p><p><br/>
-如果你只对以分类为目的的微调感兴趣，那么惯用的做法是丢掉栈式自编码网络的“解码”层，直接把最后一个隐藏层的 <img class="tex" alt="\textstyle a^{(n)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/1/d/e1d8e6d013579f217c6a25d87d7ee531.png"/> 作为特征输入到softmax分类器进行分类，这样，分类器（softmax）的分类错误的梯度值就可以直接反向传播给编码层了。
+如果你只对以分类为目的的微调感兴趣，那么惯用的做法是丢掉栈式自编码网络的“解码”层，直接把最后一个隐藏层的 <img class="tex" alt="\textstyle a^{(n)}" src="/stanford-ufldl/archive/wiki/images/math/e/1/d/e1d8e6d013579f217c6a25d87d7ee531.png"/> 作为特征输入到softmax分类器进行分类，这样，分类器（softmax）的分类错误的梯度值就可以直接反向传播给编码层了。
 </p><p><br/>
 </p>
 <h2> <span class="mw-headline" id=".E5.85.B7.E4.BD.93.E5.AE.9E.E4.BE.8B">具体实例</span></h2>
 <p>让我们来看个具体的例子，假设你想要训练一个包含两个隐含层的栈式自编码网络，用来进行MNIST手写数字分类（这将会是你的下一个练习）。
-首先，你需要用原始输入 <img class="tex" alt="\textstyle x^{(k)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/1/5/71533af96133701428ec7ab8e77d4be1.png"/> 训练第一个自编码器，它能够学习得到原始输入的一阶特征表示<img class="tex" alt="\textstyle h^{(1)(k)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/7/1/f71770841f2a8b632fccfff10c15481a.png"/>（如下图所示）。
+首先，你需要用原始输入 <img class="tex" alt="\textstyle x^{(k)}" src="/stanford-ufldl/archive/wiki/images/math/7/1/5/71533af96133701428ec7ab8e77d4be1.png"/> 训练第一个自编码器，它能够学习得到原始输入的一阶特征表示<img class="tex" alt="\textstyle h^{(1)(k)}" src="/stanford-ufldl/archive/wiki/images/math/f/7/1/f71770841f2a8b632fccfff10c15481a.png"/>（如下图所示）。
 </p><p><br/>
-<a href="" class="image"><img alt="Stacked SparseAE Features1.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/0/0e/Stacked_SparseAE_Features1.png/400px-Stacked_SparseAE_Features1.png" width="400" height="547"/></a>
+<a href="" class="image"><img alt="Stacked SparseAE Features1.png" src="/stanford-ufldl/archive/wiki/images/thumb/0/0e/Stacked_SparseAE_Features1.png/400px-Stacked_SparseAE_Features1.png" width="400" height="547"/></a>
 </p><p><br/>
-接着，你需要把原始数据输入到上述训练好的稀疏自编码器中，对于每一个输入<img class="tex" alt="\textstyle x^{(k)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/1/5/71533af96133701428ec7ab8e77d4be1.png"/>，都可以得到它对应的一阶特征表示<img class="tex" alt="\textstyle h^{(1)(k)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/7/1/f71770841f2a8b632fccfff10c15481a.png"/>。然后你再用这些一阶特征作为另一个稀疏自编码器的输入，使用它们来学习二阶特征 <img class="tex" alt="\textstyle h^{(2)(k)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/2/9/c2943e3b130efe96f1e3ba56aa4676c1.png"/>。（如下图所示）
-</p><p><a href="" class="image"><img alt="Stacked SparseAE Features2.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/b/bf/Stacked_SparseAE_Features2.png/400px-Stacked_SparseAE_Features2.png" width="400" height="505"/></a>
+接着，你需要把原始数据输入到上述训练好的稀疏自编码器中，对于每一个输入<img class="tex" alt="\textstyle x^{(k)}" src="/stanford-ufldl/archive/wiki/images/math/7/1/5/71533af96133701428ec7ab8e77d4be1.png"/>，都可以得到它对应的一阶特征表示<img class="tex" alt="\textstyle h^{(1)(k)}" src="/stanford-ufldl/archive/wiki/images/math/f/7/1/f71770841f2a8b632fccfff10c15481a.png"/>。然后你再用这些一阶特征作为另一个稀疏自编码器的输入，使用它们来学习二阶特征 <img class="tex" alt="\textstyle h^{(2)(k)}" src="/stanford-ufldl/archive/wiki/images/math/c/2/9/c2943e3b130efe96f1e3ba56aa4676c1.png"/>。（如下图所示）
+</p><p><a href="" class="image"><img alt="Stacked SparseAE Features2.png" src="/stanford-ufldl/archive/wiki/images/thumb/b/bf/Stacked_SparseAE_Features2.png/400px-Stacked_SparseAE_Features2.png" width="400" height="505"/></a>
 </p><p><br/>
-同样，再把一阶特征输入到刚训练好的第二层稀疏自编码器中，得到每个 <img class="tex" alt="\textstyle h^{(1)(k)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/7/1/f71770841f2a8b632fccfff10c15481a.png"/> 对应的二阶特征激活值 <img class="tex" alt="\textstyle h^{(2)(k)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/2/9/c2943e3b130efe96f1e3ba56aa4676c1.png"/>。接下来，你可以把这些二阶特征作为softmax分类器的输入，训练得到一个能将二阶特征映射到数字标签的模型。
-</p><p><a href="" class="image"><img alt="Stacked Softmax Classifier.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/6/6b/Stacked_Softmax_Classifier.png/400px-Stacked_Softmax_Classifier.png" width="400" height="352"/></a>
+同样，再把一阶特征输入到刚训练好的第二层稀疏自编码器中，得到每个 <img class="tex" alt="\textstyle h^{(1)(k)}" src="/stanford-ufldl/archive/wiki/images/math/f/7/1/f71770841f2a8b632fccfff10c15481a.png"/> 对应的二阶特征激活值 <img class="tex" alt="\textstyle h^{(2)(k)}" src="/stanford-ufldl/archive/wiki/images/math/c/2/9/c2943e3b130efe96f1e3ba56aa4676c1.png"/>。接下来，你可以把这些二阶特征作为softmax分类器的输入，训练得到一个能将二阶特征映射到数字标签的模型。
+</p><p><a href="" class="image"><img alt="Stacked Softmax Classifier.png" src="/stanford-ufldl/archive/wiki/images/thumb/6/6b/Stacked_Softmax_Classifier.png/400px-Stacked_Softmax_Classifier.png" width="400" height="352"/></a>
 </p><p><br/>
 如下图所示，最终，你可以将这三层结合起来构建一个包含两个隐藏层和一个最终softmax分类器层的栈式自编码网络，这个网络能够如你所愿地对MNIST数字进行分类。
-</p><p><a href="" class="image"><img alt="Stacked Combined.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/5/5c/Stacked_Combined.png/500px-Stacked_Combined.png" width="500" height="434"/></a>
+</p><p><a href="" class="image"><img alt="Stacked Combined.png" src="/stanford-ufldl/archive/wiki/images/thumb/5/5c/Stacked_Combined.png/500px-Stacked_Combined.png" width="500" height="434"/></a>
 </p><p><br/>
 </p>
 <h2> <span class="mw-headline" id=".E8.AE.A8.E8.AE.BA">讨论</span></h2>
@@ -121,13 +121,13 @@ z^{(n + l + 1)} = W^{(n - l, 2)}a^{(n + l)} + b^{(n - l, 2)}
 </p><p><br/>
 </p>
 <div style="text-align: center;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
-<p><a href="/wayback-ufldl/stanford-ufldl/wiki/%E4%BB%8E%E8%87%AA%E6%88%91%E5%AD%A6%E4%B9%A0%E5%88%B0%E6%B7%B1%E5%B1%82%E7%BD%91%E7%BB%9C" title="从自我学习到深层网络">从自我学习到深层网络</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/%E6%B7%B1%E5%BA%A6%E7%BD%91%E7%BB%9C%E6%A6%82%E8%A7%88" title="深度网络概览">深度网络概览</a> | <strong class="selflink">栈式自编码算法</strong> | <a href="/wayback-ufldl/stanford-ufldl/wiki/%E5%BE%AE%E8%B0%83%E5%A4%9A%E5%B1%82%E8%87%AA%E7%BC%96%E7%A0%81%E7%AE%97%E6%B3%95" title="微调多层自编码算法">微调多层自编码算法</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise__Implement_deep_networks_for_digit_classification" title="Exercise: Implement deep networks for digit classification">Exercise: Implement deep networks for digit classification</a>
+<p><a href="/stanford-ufldl/archive/wiki/%E4%BB%8E%E8%87%AA%E6%88%91%E5%AD%A6%E4%B9%A0%E5%88%B0%E6%B7%B1%E5%B1%82%E7%BD%91%E7%BB%9C" title="从自我学习到深层网络">从自我学习到深层网络</a> | <a href="/stanford-ufldl/archive/wiki/%E6%B7%B1%E5%BA%A6%E7%BD%91%E7%BB%9C%E6%A6%82%E8%A7%88" title="深度网络概览">深度网络概览</a> | <strong class="selflink">栈式自编码算法</strong> | <a href="/stanford-ufldl/archive/wiki/%E5%BE%AE%E8%B0%83%E5%A4%9A%E5%B1%82%E8%87%AA%E7%BC%96%E7%A0%81%E7%AE%97%E6%B3%95" title="微调多层自编码算法">微调多层自编码算法</a> | <a href="/stanford-ufldl/archive/wiki/Exercise__Implement_deep_networks_for_digit_classification" title="Exercise: Implement deep networks for digit classification">Exercise: Implement deep networks for digit classification</a>
 </p>
 </div>
 <p><br/>
 </p>
 <div style="text-align: left;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
-<p>Language&nbsp;: <a href="/wayback-ufldl/stanford-ufldl/wiki/Stacked_Autoencoders" title="Stacked Autoencoders">English</a>
+<p>Language&nbsp;: <a href="/stanford-ufldl/archive/wiki/Stacked_Autoencoders" title="Stacked Autoencoders">English</a>
 </p>
 </div>
 
@@ -149,7 +149,7 @@ Expensive parser function count: 0/100
 		<h5>Views</h5>
 		<div class="pBody">
 			<ul>
-				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/%E6%A0%88%E5%BC%8F%E8%87%AA%E7%BC%96%E7%A0%81%E7%AE%97%E6%B3%95" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-nstab-main" class="selected"><a href="/stanford-ufldl/archive/wiki/%E6%A0%88%E5%BC%8F%E8%87%AA%E7%BC%96%E7%A0%81%E7%AE%97%E6%B3%95" title="View the content page [c]" accesskey="c">Page</a></li>
 				 <li id="ca-talk" class="new"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
 				 <li id="ca-viewsource"><a href="" title="This page is protected.
 You can view its source [e]" accesskey="e">View source</a></li>
@@ -165,15 +165,15 @@ You can view its source [e]" accesskey="e">View source</a></li>
 		</div>
 	</div>
 	<div class="portlet" id="p-logo">
-		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+		<a style="background-image: url(/stanford-ufldl/archive/wiki/skins/common/images/dolphin-openclipart.png);" href="/stanford-ufldl/archive/wiki/Main_Page" title="Visit the main page"></a>
 	</div>
 	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
 	<div class="generated-sidebar portlet" id="p-ufldl_resources">
 		<h5>ufldl resources</h5>
 		<div class="pBody">
 			<ul>
-				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
-				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+				<li id="n-UFLDL-Tutorial"><a href="/stanford-ufldl/archive/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/stanford-ufldl/archive/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
 			</ul>
 		</div>
 	</div>
@@ -181,7 +181,7 @@ You can view its source [e]" accesskey="e">View source</a></li>
 		<h5>wiki</h5>
 		<div class="pBody">
 			<ul>
-				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-mainpage-description"><a href="/stanford-ufldl/archive/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
 				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
 				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
 				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
@@ -214,9 +214,9 @@ You can view its source [e]" accesskey="e">View source</a></li>
 <div id="footer">
 	<ul id="f-list">
 		<li id="lastmod"> This page was last modified on 8 April 2013, at 05:15.</li>
-		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
-		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
-		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+		<li id="privacy"><a href="/stanford-ufldl/archive/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/stanford-ufldl/archive/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/stanford-ufldl/archive/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
 	</ul>
 </div>
 </div>

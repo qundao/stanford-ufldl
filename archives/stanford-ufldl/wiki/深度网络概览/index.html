@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>深度网络概览 - Ufldl</title>
-<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
-<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+<link rel="stylesheet" href="/stanford-ufldl/archive/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/stanford-ufldl/archive/wiki/skins/monobook/main.css" media="screen"/>
 
 </head>
 
@@ -42,17 +42,17 @@
 </ul>
 </td></tr></table><script>if (window.showTocToggle) { var tocShowText = "show"; var tocHideText = "hide"; showTocToggle(); } </script>
 <h2> <span class="mw-headline" id=".E6.A6.82.E8.BF.B0">概述</span></h2>
-<p>在之前的章节中，你已经构建了一个包括输入层、隐藏层以及输出层的三层神经网络。虽然该网络对于MNIST手写数字数据库非常有效，但是它还是一个非常“浅”的网络。这里的“浅”指的是特征（隐藏层的激活值 <img class="tex" alt="\textstyle {a}^{(2)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/6/1/6614a322549a030375b1a5d5f6bba968.png"/>）只使用一层计算单元（隐藏层）来得到的。
+<p>在之前的章节中，你已经构建了一个包括输入层、隐藏层以及输出层的三层神经网络。虽然该网络对于MNIST手写数字数据库非常有效，但是它还是一个非常“浅”的网络。这里的“浅”指的是特征（隐藏层的激活值 <img class="tex" alt="\textstyle {a}^{(2)}" src="/stanford-ufldl/archive/wiki/images/math/6/6/1/6614a322549a030375b1a5d5f6bba968.png"/>）只使用一层计算单元（隐藏层）来得到的。
 </p><p><br/>
 在本节中，我们开始讨论深度神经网络，即含有多个隐藏层的神经网络。通过引入深度网络，我们可以计算更多复杂的输入特征。因为每一个隐藏层可以对上一层的输出进行非线性变换，因此深度神经网络拥有比“浅层”网络更加优异的表达能力（例如可以学习到更加复杂的函数关系）。
 </p><p><br/>
-值得注意的是当训练深度网络的时候，每一层隐层应该使用非线性的激活函数 <img class="tex" alt="\textstyle f(x)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/8/a/e8ac9842481f2c78d1d351f35bcadeb4.png"/>。这是因为多层的线性函数组合在一起本质上也只有线性函数的表达能力（例如，将多个线性方程组合在一起仅仅产生另一个线性方程）。因此，在激活函数是线性的情况下，相比于单隐藏层神经网络，包含多隐藏层的深度网络并没有增加表达能力。
+值得注意的是当训练深度网络的时候，每一层隐层应该使用非线性的激活函数 <img class="tex" alt="\textstyle f(x)" src="/stanford-ufldl/archive/wiki/images/math/e/8/a/e8ac9842481f2c78d1d351f35bcadeb4.png"/>。这是因为多层的线性函数组合在一起本质上也只有线性函数的表达能力（例如，将多个线性方程组合在一起仅仅产生另一个线性方程）。因此，在激活函数是线性的情况下，相比于单隐藏层神经网络，包含多隐藏层的深度网络并没有增加表达能力。
 </p><p><br/>
 </p>
 <h2> <span class="mw-headline" id=".E6.B7.B1.E5.BA.A6.E7.BD.91.E7.BB.9C.E7.9A.84.E4.BC.98.E5.8A.BF">深度网络的优势</span></h2>
-<p>为什么我们要使用深度网络呢？使用深度网络最主要的优势在于，它能以更加紧凑简洁的方式来表达比浅层网络大得多的函数集合。正式点说，我们可以找到一些函数，这些函数可以用 <img class="tex" alt="\textstyle k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> 层网络简洁地表达出来（这里的简洁是指隐层单元的数目只需与输入单元数目呈多项式关系）。但是对于一个只有 <img class="tex" alt="\textstyle k-1 " src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/f/a/cfa33ecd624c1213e41d077b9b93980a.png"/> 层的网络而言，除非它使用与输入单元数目呈指数关系的隐层单元数目，否则不能简洁表达这些函数。
+<p>为什么我们要使用深度网络呢？使用深度网络最主要的优势在于，它能以更加紧凑简洁的方式来表达比浅层网络大得多的函数集合。正式点说，我们可以找到一些函数，这些函数可以用 <img class="tex" alt="\textstyle k" src="/stanford-ufldl/archive/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> 层网络简洁地表达出来（这里的简洁是指隐层单元的数目只需与输入单元数目呈多项式关系）。但是对于一个只有 <img class="tex" alt="\textstyle k-1 " src="/stanford-ufldl/archive/wiki/images/math/c/f/a/cfa33ecd624c1213e41d077b9b93980a.png"/> 层的网络而言，除非它使用与输入单元数目呈指数关系的隐层单元数目，否则不能简洁表达这些函数。
 </p><p><br/>
-举一个简单的例子，比如我们打算构建一个布尔网络来计算 <img class="tex" alt="\textstyle n" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/c/5/0c59de0fa75c1baa1c024aabfa43b2e3.png"/> 个输入比特的奇偶校验码（或者进行异或运算）。假设网络中的每一个节点都可以进行逻辑“或”运算（或者“与非”运算），亦或者逻辑“与”运算。如果我们拥有一个仅仅由一个输入层、一个隐层以及一个输出层构成的网络，那么该奇偶校验函数所需要的节点数目与输入层的规模 <img class="tex" alt="\textstyle n" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/c/5/0c59de0fa75c1baa1c024aabfa43b2e3.png"/> 呈指数关系。但是，如果我们构建一个更深点的网络，那么这个网络的规模就可做到仅仅是 <img class="tex" alt="\textstyle n" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/c/5/0c59de0fa75c1baa1c024aabfa43b2e3.png"/> 的多项式函数。
+举一个简单的例子，比如我们打算构建一个布尔网络来计算 <img class="tex" alt="\textstyle n" src="/stanford-ufldl/archive/wiki/images/math/0/c/5/0c59de0fa75c1baa1c024aabfa43b2e3.png"/> 个输入比特的奇偶校验码（或者进行异或运算）。假设网络中的每一个节点都可以进行逻辑“或”运算（或者“与非”运算），亦或者逻辑“与”运算。如果我们拥有一个仅仅由一个输入层、一个隐层以及一个输出层构成的网络，那么该奇偶校验函数所需要的节点数目与输入层的规模 <img class="tex" alt="\textstyle n" src="/stanford-ufldl/archive/wiki/images/math/0/c/5/0c59de0fa75c1baa1c024aabfa43b2e3.png"/> 呈指数关系。但是，如果我们构建一个更深点的网络，那么这个网络的规模就可做到仅仅是 <img class="tex" alt="\textstyle n" src="/stanford-ufldl/archive/wiki/images/math/0/c/5/0c59de0fa75c1baa1c024aabfa43b2e3.png"/> 的多项式函数。
 </p><p><br/>
 当处理对象是图像时，我们能够使用深度网络学习到“部分-整体”的分解关系。例如，第一层可以学习如何将图像中的像素组合在一起来检测边缘（正如我们在前面的练习中做的那样）。第二层可以将边缘组合起来检测更长的轮廓或者简单的“目标的部件”。在更深的层次上，可以将这些轮廓进一步组合起来以检测更为复杂的特征。
 </p><p><br/>
@@ -61,7 +61,7 @@
 </p>
 <h2> <span class="mw-headline" id=".E8.AE.AD.E7.BB.83.E6.B7.B1.E5.BA.A6.E7.BD.91.E7.BB.9C.E7.9A.84.E5.9B.B0.E9.9A.BE">训练深度网络的困难</span></h2>
 <p>虽然几十年前人们就发现了深度网络在理论上的简洁性和较强的表达能力，但是直到最近，研究者们也没有在训练深度网络方面取得多少进步。
-问题原因在于研究者们主要使用的学习算法是：首先随机初始化深度网络的权重，然后使用有监督的目标函数在有标签的训练集 <img class="tex" alt="\textstyle \left\{ \left( x_{l}^{\left( 1 \right)},{{y}^{\left( 1 \right)}} \right),...,\left( x_{l}^{\left( {{m}_{l}} \right)},{{y}^{\left( {{m}_{l}} \right)}} \right) \right\}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/e/0/1e03b240697bfca24cd62b411ffcb727.png"/> 上进行训练。例如通过使用梯度下降法来降低训练误差。然而，这种方法通常不是十分奏效。这其中有如下几方面原因：
+问题原因在于研究者们主要使用的学习算法是：首先随机初始化深度网络的权重，然后使用有监督的目标函数在有标签的训练集 <img class="tex" alt="\textstyle \left\{ \left( x_{l}^{\left( 1 \right)},{{y}^{\left( 1 \right)}} \right),...,\left( x_{l}^{\left( {{m}_{l}} \right)},{{y}^{\left( {{m}_{l}} \right)}} \right) \right\}" src="/stanford-ufldl/archive/wiki/images/math/1/e/0/1e03b240697bfca24cd62b411ffcb727.png"/> 上进行训练。例如通过使用梯度下降法来降低训练误差。然而，这种方法通常不是十分奏效。这其中有如下几方面原因：
 </p><p><br/>
 </p>
 <h3> <span class="mw-headline" id=".E6.95.B0.E6.8D.AE.E8.8E.B7.E5.8F.96.E9.97.AE.E9.A2.98">数据获取问题</span></h3>
@@ -69,7 +69,7 @@
 </p><p><br/>
 </p>
 <h3> <span class="mw-headline" id=".E5.B1.80.E9.83.A8.E6.9E.81.E5.80.BC.E9.97.AE.E9.A2.98">局部极值问题</span></h3>
-<p>使用监督学习方法来对浅层网络（只有一个隐藏层）进行训练通常能够使参数收敛到合理的范围内。但是当用这种方法来训练深度网络的时候，并不能取得很好的效果。特别的，使用监督学习方法训练神经网络时，通常会涉及到求解一个高度非凸的优化问题（例如最小化训练误差 <img class="tex" alt="\textstyle \sum\nolimits_{i}{||{{h}_{W}}\left( {{x}^{\left( i \right)}} \right)-{{y}^{\left( i \right)}}|{{|}^{2}}}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/e/1/1e1b3b913f642feae2732895c85e0918.png"/>，其中参数 <img class="tex" alt="\textstyle W" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/c/9/8c9cb254a5e388f2bcaf294e52d745a6.png"/> 是要优化的参数。对深度网络而言，这种非凸优化问题的搜索区域中充斥着大量“坏”的局部极值，因而使用梯度下降法（或者像共轭梯度下降法，L-BFGS等方法）效果并不好。
+<p>使用监督学习方法来对浅层网络（只有一个隐藏层）进行训练通常能够使参数收敛到合理的范围内。但是当用这种方法来训练深度网络的时候，并不能取得很好的效果。特别的，使用监督学习方法训练神经网络时，通常会涉及到求解一个高度非凸的优化问题（例如最小化训练误差 <img class="tex" alt="\textstyle \sum\nolimits_{i}{||{{h}_{W}}\left( {{x}^{\left( i \right)}} \right)-{{y}^{\left( i \right)}}|{{|}^{2}}}" src="/stanford-ufldl/archive/wiki/images/math/1/e/1/1e1b3b913f642feae2732895c85e0918.png"/>，其中参数 <img class="tex" alt="\textstyle W" src="/stanford-ufldl/archive/wiki/images/math/8/c/9/8c9cb254a5e388f2bcaf294e52d745a6.png"/> 是要优化的参数。对深度网络而言，这种非凸优化问题的搜索区域中充斥着大量“坏”的局部极值，因而使用梯度下降法（或者像共轭梯度下降法，L-BFGS等方法）效果并不好。
 </p>
 <h3> <span class="mw-headline" id=".E6.A2.AF.E5.BA.A6.E5.BC.A5.E6.95.A3.E9.97.AE.E9.A2.98">梯度弥散问题</span></h3>
 <p>梯度下降法（以及相关的L-BFGS算法等）在使用随机初始化权重的深度网络上效果不好的技术原因是：梯度会变得非常小。具体而言，当使用反向传播方法计算导数的时候，随着网络的深度的增加，反向传播的梯度（从输出层到网络的最初几层）的幅度值会急剧地减小。结果就造成了整体的损失函数相对于最初几层的权重的导数非常小。这样，当使用梯度下降法的时候，最初几层的权重变化非常缓慢，以至于它们不能够从样本中进行有效的学习。这种问题通常被称为“梯度的弥散”.
@@ -78,13 +78,13 @@
 </p><p><br/>
 </p>
 <h2> <span class="mw-headline" id=".E9.80.90.E5.B1.82.E8.B4.AA.E5.A9.AA.E8.AE.AD.E7.BB.83.E6.96.B9.E6.B3.95">逐层贪婪训练方法</span></h2>
-<p>那么，我们应该如何训练深度网络呢？逐层贪婪训练方法是取得一定成功的一种方法。我们会在后面的章节中详细阐述这种方法的细节。简单来说，逐层贪婪算法的主要思路是每次只训练网络中的一层，即我们首先训练一个只含一个隐藏层的网络，仅当这层网络训练结束之后才开始训练一个有两个隐藏层的网络，以此类推。在每一步中，我们把已经训练好的前 <img class="tex" alt="\textstyle k-1 " src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/f/a/cfa33ecd624c1213e41d077b9b93980a.png"/> 层固定，然后增加第 <img class="tex" alt="\textstyle k " src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> 层（也就是将我们已经训练好的前 <img class="tex" alt="\textstyle k-1 " src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/f/a/cfa33ecd624c1213e41d077b9b93980a.png"/> 的输出作为输入）。每一层的训练可以是有监督的（例如，将每一步的分类误差作为目标函数），但更通常使用无监督方法（例如自动编码器，我们会在后边的章节中给出细节）。这些各层单独训练所得到的权重被用来初始化最终（或者说全部）的深度网络的权重，然后对整个网络进行“微调”（即把所有层放在一起来优化有标签训练集上的训练误差）.
+<p>那么，我们应该如何训练深度网络呢？逐层贪婪训练方法是取得一定成功的一种方法。我们会在后面的章节中详细阐述这种方法的细节。简单来说，逐层贪婪算法的主要思路是每次只训练网络中的一层，即我们首先训练一个只含一个隐藏层的网络，仅当这层网络训练结束之后才开始训练一个有两个隐藏层的网络，以此类推。在每一步中，我们把已经训练好的前 <img class="tex" alt="\textstyle k-1 " src="/stanford-ufldl/archive/wiki/images/math/c/f/a/cfa33ecd624c1213e41d077b9b93980a.png"/> 层固定，然后增加第 <img class="tex" alt="\textstyle k " src="/stanford-ufldl/archive/wiki/images/math/b/0/0/b0066e761791cae480158b649e5f5a69.png"/> 层（也就是将我们已经训练好的前 <img class="tex" alt="\textstyle k-1 " src="/stanford-ufldl/archive/wiki/images/math/c/f/a/cfa33ecd624c1213e41d077b9b93980a.png"/> 的输出作为输入）。每一层的训练可以是有监督的（例如，将每一步的分类误差作为目标函数），但更通常使用无监督方法（例如自动编码器，我们会在后边的章节中给出细节）。这些各层单独训练所得到的权重被用来初始化最终（或者说全部）的深度网络的权重，然后对整个网络进行“微调”（即把所有层放在一起来优化有标签训练集上的训练误差）.
 </p><p><br/>
 逐层贪婪的训练方法取得成功要归功于以下几方面：
 </p><p><br/>
 </p>
 <h3> <span class="mw-headline" id=".E6.95.B0.E6.8D.AE.E8.8E.B7.E5.8F.96">数据获取</span></h3>
-<p>虽然获取有标签数据的代价是昂贵的，但获取大量的无标签数据是容易的。自学习方法（self-taught learning）的潜力在于它能通过使用大量的无标签数据来学习到更好的模型。具体而言，该方法使用无标签数据来学习得到所有层（不包括用于预测标签的最终分类层）<img class="tex" alt="\textstyle {{W}^{\left( l \right)}}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/e/2/7e21b7f27d6a45d3698f5a59f71efdc7.png"/> 的最佳初始权重。相比纯监督学习方法，这种自学习方法能够利用多得多的数据，并且能够学习和发现数据中存在的模式。因此该方法通常能够提高分类器的性能。
+<p>虽然获取有标签数据的代价是昂贵的，但获取大量的无标签数据是容易的。自学习方法（self-taught learning）的潜力在于它能通过使用大量的无标签数据来学习到更好的模型。具体而言，该方法使用无标签数据来学习得到所有层（不包括用于预测标签的最终分类层）<img class="tex" alt="\textstyle {{W}^{\left( l \right)}}" src="/stanford-ufldl/archive/wiki/images/math/7/e/2/7e21b7f27d6a45d3698f5a59f71efdc7.png"/> 的最佳初始权重。相比纯监督学习方法，这种自学习方法能够利用多得多的数据，并且能够学习和发现数据中存在的模式。因此该方法通常能够提高分类器的性能。
 </p><p><br/>
 </p>
 <h3> <span class="mw-headline" id=".E6.9B.B4.E5.A5.BD.E7.9A.84.E5.B1.80.E9.83.A8.E6.9E.81.E5.80.BC">更好的局部极值</span></h3>
@@ -129,13 +129,13 @@
 </p><p><br/>
 </p>
 <div style="text-align: center;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
-<p><a href="/wayback-ufldl/stanford-ufldl/wiki/%E4%BB%8E%E8%87%AA%E6%88%91%E5%AD%A6%E4%B9%A0%E5%88%B0%E6%B7%B1%E5%B1%82%E7%BD%91%E7%BB%9C" title="从自我学习到深层网络">从自我学习到深层网络</a> | <strong class="selflink">深度网络概览</strong> | <a href="/wayback-ufldl/stanford-ufldl/wiki/%E6%A0%88%E5%BC%8F%E8%87%AA%E7%BC%96%E7%A0%81%E7%AE%97%E6%B3%95" title="栈式自编码算法">栈式自编码算法</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/%E5%BE%AE%E8%B0%83%E5%A4%9A%E5%B1%82%E8%87%AA%E7%BC%96%E7%A0%81%E7%AE%97%E6%B3%95" title="微调多层自编码算法">微调多层自编码算法</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise__Implement_deep_networks_for_digit_classification" title="Exercise: Implement deep networks for digit classification">Exercise: Implement deep networks for digit classification</a>
+<p><a href="/stanford-ufldl/archive/wiki/%E4%BB%8E%E8%87%AA%E6%88%91%E5%AD%A6%E4%B9%A0%E5%88%B0%E6%B7%B1%E5%B1%82%E7%BD%91%E7%BB%9C" title="从自我学习到深层网络">从自我学习到深层网络</a> | <strong class="selflink">深度网络概览</strong> | <a href="/stanford-ufldl/archive/wiki/%E6%A0%88%E5%BC%8F%E8%87%AA%E7%BC%96%E7%A0%81%E7%AE%97%E6%B3%95" title="栈式自编码算法">栈式自编码算法</a> | <a href="/stanford-ufldl/archive/wiki/%E5%BE%AE%E8%B0%83%E5%A4%9A%E5%B1%82%E8%87%AA%E7%BC%96%E7%A0%81%E7%AE%97%E6%B3%95" title="微调多层自编码算法">微调多层自编码算法</a> | <a href="/stanford-ufldl/archive/wiki/Exercise__Implement_deep_networks_for_digit_classification" title="Exercise: Implement deep networks for digit classification">Exercise: Implement deep networks for digit classification</a>
 </p>
 </div>
 <p><br/>
 </p>
 <div style="text-align: left;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
-<p>Language&nbsp;: <a href="/wayback-ufldl/stanford-ufldl/wiki/Deep_Networks__Overview" title="Deep Networks: Overview">English</a>
+<p>Language&nbsp;: <a href="/stanford-ufldl/archive/wiki/Deep_Networks__Overview" title="Deep Networks: Overview">English</a>
 </p>
 </div>
 
@@ -157,7 +157,7 @@ Expensive parser function count: 0/100
 		<h5>Views</h5>
 		<div class="pBody">
 			<ul>
-				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/%E6%B7%B1%E5%BA%A6%E7%BD%91%E7%BB%9C%E6%A6%82%E8%A7%88" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-nstab-main" class="selected"><a href="/stanford-ufldl/archive/wiki/%E6%B7%B1%E5%BA%A6%E7%BD%91%E7%BB%9C%E6%A6%82%E8%A7%88" title="View the content page [c]" accesskey="c">Page</a></li>
 				 <li id="ca-talk" class="new"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
 				 <li id="ca-viewsource"><a href="" title="This page is protected.
 You can view its source [e]" accesskey="e">View source</a></li>
@@ -173,15 +173,15 @@ You can view its source [e]" accesskey="e">View source</a></li>
 		</div>
 	</div>
 	<div class="portlet" id="p-logo">
-		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+		<a style="background-image: url(/stanford-ufldl/archive/wiki/skins/common/images/dolphin-openclipart.png);" href="/stanford-ufldl/archive/wiki/Main_Page" title="Visit the main page"></a>
 	</div>
 	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
 	<div class="generated-sidebar portlet" id="p-ufldl_resources">
 		<h5>ufldl resources</h5>
 		<div class="pBody">
 			<ul>
-				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
-				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+				<li id="n-UFLDL-Tutorial"><a href="/stanford-ufldl/archive/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/stanford-ufldl/archive/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
 			</ul>
 		</div>
 	</div>
@@ -189,7 +189,7 @@ You can view its source [e]" accesskey="e">View source</a></li>
 		<h5>wiki</h5>
 		<div class="pBody">
 			<ul>
-				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-mainpage-description"><a href="/stanford-ufldl/archive/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
 				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
 				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
 				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
@@ -222,9 +222,9 @@ You can view its source [e]" accesskey="e">View source</a></li>
 <div id="footer">
 	<ul id="f-list">
 		<li id="lastmod"> This page was last modified on 17 April 2013, at 14:30.</li>
-		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
-		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
-		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+		<li id="privacy"><a href="/stanford-ufldl/archive/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/stanford-ufldl/archive/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/stanford-ufldl/archive/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
 	</ul>
 </div>
 </div>

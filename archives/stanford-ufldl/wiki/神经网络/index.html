@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>神经网络 - Ufldl</title>
-<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
-<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+<link rel="stylesheet" href="/stanford-ufldl/archive/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/stanford-ufldl/archive/wiki/skins/monobook/main.css" media="screen"/>
 
 </head>
 
@@ -29,17 +29,17 @@
 </ul>
 </td></tr></table><script>if (window.showTocToggle) { var tocShowText = "show"; var tocHideText = "hide"; showTocToggle(); } </script>
 <h2> <span class="mw-headline" id=".E6.A6.82.E8.BF.B0">概述</span></h2>
-<p>以监督学习为例，假设我们有训练样本集  <img class="tex" alt="\textstyle (x(^ i),y(^ i))" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/0/e/70ebbf3d401302b5d148530b986f0602.png"/> ，那么神经网络算法能够提供一种复杂且非线性的假设模型 <img class="tex" alt="\textstyle h_{W,b}(x)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/8/d/58d3a4fe4ad68b333b180071dd46db82.png"/> ，它具有参数 <img class="tex" alt="\textstyle W, b" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/c/9/7c9aa03f5258ecf79556ba374d7eb2cd.png"/> ，可以以此参数来拟合我们的数据。
+<p>以监督学习为例，假设我们有训练样本集  <img class="tex" alt="\textstyle (x(^ i),y(^ i))" src="/stanford-ufldl/archive/wiki/images/math/7/0/e/70ebbf3d401302b5d148530b986f0602.png"/> ，那么神经网络算法能够提供一种复杂且非线性的假设模型 <img class="tex" alt="\textstyle h_{W,b}(x)" src="/stanford-ufldl/archive/wiki/images/math/5/8/d/58d3a4fe4ad68b333b180071dd46db82.png"/> ，它具有参数 <img class="tex" alt="\textstyle W, b" src="/stanford-ufldl/archive/wiki/images/math/7/c/9/7c9aa03f5258ecf79556ba374d7eb2cd.png"/> ，可以以此参数来拟合我们的数据。
 </p><p><br/>
 为了描述神经网络，我们先从最简单的神经网络讲起，这个神经网络仅由一个“神经元”构成，以下即是这个“神经元”的图示：
 </p>
-<div class="center"><div class="floatnone"><a href="" class="image"><img alt="SingleNeuron.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/3/3d/SingleNeuron.png/300px-SingleNeuron.png" width="300" height="148"/></a></div></div>
+<div class="center"><div class="floatnone"><a href="" class="image"><img alt="SingleNeuron.png" src="/stanford-ufldl/archive/wiki/images/thumb/3/3d/SingleNeuron.png/300px-SingleNeuron.png" width="300" height="148"/></a></div></div>
 <p><br/>
-这个“神经元”是一个以 <img class="tex" alt="\textstyle x_1, x_2, x_3" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/c/b/3cb2ab026a8bb3279a30485c2220a5a4.png"/> 及截距 <img class="tex" alt="\textstyle +1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/c/b/dcb8dd3d14a2c0aa9b06ec6ce4ec0d59.png"/> 为输入值的运算单元，其输出为 <img class="tex" alt="\textstyle  h_{W,b}(x) = f(W^Tx) = f(\sum_{i=1}^3 W_{i}x_i +b)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/9/f/89f1f9e549b908834d9fedca36d07bd4.png"/> ，其中函数 <img class="tex" alt="\textstyle f : \Re \mapsto \Re" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/d/f/5df2a707a6b2421afcb345f96051297e.png"/> 被称为“激活函数”。在本教程中，我们选用sigmoid函数作为<b>激活函数</b> <img class="tex" alt="\textstyle f(\cdot)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/3/0/0303dd697c0e1b72185d7939f9870784.png"/> 
+这个“神经元”是一个以 <img class="tex" alt="\textstyle x_1, x_2, x_3" src="/stanford-ufldl/archive/wiki/images/math/3/c/b/3cb2ab026a8bb3279a30485c2220a5a4.png"/> 及截距 <img class="tex" alt="\textstyle +1" src="/stanford-ufldl/archive/wiki/images/math/d/c/b/dcb8dd3d14a2c0aa9b06ec6ce4ec0d59.png"/> 为输入值的运算单元，其输出为 <img class="tex" alt="\textstyle  h_{W,b}(x) = f(W^Tx) = f(\sum_{i=1}^3 W_{i}x_i +b)" src="/stanford-ufldl/archive/wiki/images/math/8/9/f/89f1f9e549b908834d9fedca36d07bd4.png"/> ，其中函数 <img class="tex" alt="\textstyle f : \Re \mapsto \Re" src="/stanford-ufldl/archive/wiki/images/math/5/d/f/5df2a707a6b2421afcb345f96051297e.png"/> 被称为“激活函数”。在本教程中，我们选用sigmoid函数作为<b>激活函数</b> <img class="tex" alt="\textstyle f(\cdot)" src="/stanford-ufldl/archive/wiki/images/math/0/3/0/0303dd697c0e1b72185d7939f9870784.png"/> 
 </p>
 <dl><dd><img class="tex" alt="
 f(z) = \frac{1}{1+\exp(-z)}.
-" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/e/5/ce5df10952ab30aa868f44db2f77486b.png"/> 
+" src="/stanford-ufldl/archive/wiki/images/math/c/e/5/ce5df10952ab30aa868f44db2f77486b.png"/> 
 </dd></dl>
 <p>可以看出，这个单一“神经元”的输入－输出映射关系其实就是一个逻辑回归（logistic regression）。
 </p><p><br/>
@@ -48,31 +48,31 @@ f(z) = \frac{1}{1+\exp(-z)}.
 </p>
 <dl><dd><img class="tex" alt="
 f(z) = \tanh(z) = \frac{e^z - e^{-z}}{e^z + e^{-z}},  
-" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/9/0/a9025d0884453bd5898c9681e871b3fb.png"/> 
+" src="/stanford-ufldl/archive/wiki/images/math/a/9/0/a9025d0884453bd5898c9681e871b3fb.png"/> 
 </dd></dl>
 <p>以下分别是sigmoid及tanh的函数图像
 </p>
 <div align="center">
-<p><a href="" class="image" title="Sigmoid activation function."><img alt="Sigmoid activation function." src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/c/ca/Sigmoid_Function.png/400px-Sigmoid_Function.png" width="400" height="300" style="vertical-align: top"/></a>
-<a href="" class="image" title="Tanh activation function."><img alt="Tanh activation function." src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/a/aa/Tanh_Function.png/400px-Tanh_Function.png" width="400" height="300" style="vertical-align: top"/></a>
+<p><a href="" class="image" title="Sigmoid activation function."><img alt="Sigmoid activation function." src="/stanford-ufldl/archive/wiki/images/thumb/c/ca/Sigmoid_Function.png/400px-Sigmoid_Function.png" width="400" height="300" style="vertical-align: top"/></a>
+<a href="" class="image" title="Tanh activation function."><img alt="Tanh activation function." src="/stanford-ufldl/archive/wiki/images/thumb/a/aa/Tanh_Function.png/400px-Tanh_Function.png" width="400" height="300" style="vertical-align: top"/></a>
 </p>
 </div>
-<p><img class="tex" alt="\textstyle \tanh(z)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/7/e/87e9b5fc0869fae518eed4b75536334f.png"/>  函数是sigmoid函数的一种变体，它的取值范围为 <img class="tex" alt="\textstyle [-1,1]" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/5/a/85a1c5a07f21a9eebbfb1dca380f8d38.png"/> ，而不是sigmoid函数的 <img class="tex" alt="\textstyle [0,1]" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/4/2/84235d31ac83fe764546463aba7acc0e.png"/> 。
+<p><img class="tex" alt="\textstyle \tanh(z)" src="/stanford-ufldl/archive/wiki/images/math/8/7/e/87e9b5fc0869fae518eed4b75536334f.png"/>  函数是sigmoid函数的一种变体，它的取值范围为 <img class="tex" alt="\textstyle [-1,1]" src="/stanford-ufldl/archive/wiki/images/math/8/5/a/85a1c5a07f21a9eebbfb1dca380f8d38.png"/> ，而不是sigmoid函数的 <img class="tex" alt="\textstyle [0,1]" src="/stanford-ufldl/archive/wiki/images/math/8/4/2/84235d31ac83fe764546463aba7acc0e.png"/> 。
 </p><p><br/>
-注意，与其它地方（包括OpenClassroom公开课以及斯坦福大学CS229课程）不同的是，这里我们不再令 <img class="tex" alt="\textstyle x_0=1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/5/8/c582053ce9cb63d69ae80acb53ded0d3.png"/> 。取而代之，我们用单独的参数 <img class="tex" alt="\textstyle b" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/2/5/5254b90d248051980262672a1bbc2433.png"/> 来表示截距。
+注意，与其它地方（包括OpenClassroom公开课以及斯坦福大学CS229课程）不同的是，这里我们不再令 <img class="tex" alt="\textstyle x_0=1" src="/stanford-ufldl/archive/wiki/images/math/c/5/8/c582053ce9cb63d69ae80acb53ded0d3.png"/> 。取而代之，我们用单独的参数 <img class="tex" alt="\textstyle b" src="/stanford-ufldl/archive/wiki/images/math/5/2/5/5254b90d248051980262672a1bbc2433.png"/> 来表示截距。
 </p><p><br/>
-最后要说明的是，有一个等式我们以后会经常用到：如果选择 <img class="tex" alt="\textstyle f(z) = 1/(1+\exp(-z))" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/c/6/ec62a4df6800f8c9ea680a08003df5c3.png"/> ，也就是sigmoid函数，那么它的导数就是 <img class="tex" alt="\textstyle f'(z) = f(z) (1-f(z))" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/9/4/994ac235e9478c8f465a4acdd8aae017.png"/> （如果选择tanh函数，那它的导数就是 <img class="tex" alt="\textstyle f'(z) = 1- (f(z))^2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/7/d/e7deb0493f3858b59b86181afe368fec.png"/> ，你可以根据sigmoid（或tanh）函数的定义自行推导这个等式。
+最后要说明的是，有一个等式我们以后会经常用到：如果选择 <img class="tex" alt="\textstyle f(z) = 1/(1+\exp(-z))" src="/stanford-ufldl/archive/wiki/images/math/e/c/6/ec62a4df6800f8c9ea680a08003df5c3.png"/> ，也就是sigmoid函数，那么它的导数就是 <img class="tex" alt="\textstyle f'(z) = f(z) (1-f(z))" src="/stanford-ufldl/archive/wiki/images/math/9/9/4/994ac235e9478c8f465a4acdd8aae017.png"/> （如果选择tanh函数，那它的导数就是 <img class="tex" alt="\textstyle f'(z) = 1- (f(z))^2" src="/stanford-ufldl/archive/wiki/images/math/e/7/d/e7deb0493f3858b59b86181afe368fec.png"/> ，你可以根据sigmoid（或tanh）函数的定义自行推导这个等式。
 </p><p><br/>
 </p>
 <h2> <span class="mw-headline" id=".E7.A5.9E.E7.BB.8F.E7.BD.91.E7.BB.9C.E6.A8.A1.E5.9E.8B">神经网络模型</span></h2>
 <p>所谓神经网络就是将许多个单一“神经元”联结在一起，这样，一个“神经元”的输出就可以是另一个“神经元”的输入。例如，下图就是一个简单的神经网络：
 </p>
-<div class="center"><div class="floatnone"><a href="" class="image"><img alt="Network331.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/9/99/Network331.png/400px-Network331.png" width="400" height="282"/></a></div></div>
-<p>我们使用圆圈来表示神经网络的输入，标上“<img class="tex" alt="\textstyle +1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/c/b/dcb8dd3d14a2c0aa9b06ec6ce4ec0d59.png"/>”的圆圈被称为<b>偏置节点</b>，也就是截距项。神经网络最左边的一层叫做<b>输入层</b>，最右的一层叫做<b>输出层</b>（本例中，输出层只有一个节点）。中间所有节点组成的一层叫做<b>隐藏层</b>，因为我们不能在训练样本集中观测到它们的值。同时可以看到，以上神经网络的例子中有3个<b>输入单元</b>（偏置单元不计在内），3个<b>隐藏单元</b>及一个<b>输出单元</b>。
+<div class="center"><div class="floatnone"><a href="" class="image"><img alt="Network331.png" src="/stanford-ufldl/archive/wiki/images/thumb/9/99/Network331.png/400px-Network331.png" width="400" height="282"/></a></div></div>
+<p>我们使用圆圈来表示神经网络的输入，标上“<img class="tex" alt="\textstyle +1" src="/stanford-ufldl/archive/wiki/images/math/d/c/b/dcb8dd3d14a2c0aa9b06ec6ce4ec0d59.png"/>”的圆圈被称为<b>偏置节点</b>，也就是截距项。神经网络最左边的一层叫做<b>输入层</b>，最右的一层叫做<b>输出层</b>（本例中，输出层只有一个节点）。中间所有节点组成的一层叫做<b>隐藏层</b>，因为我们不能在训练样本集中观测到它们的值。同时可以看到，以上神经网络的例子中有3个<b>输入单元</b>（偏置单元不计在内），3个<b>隐藏单元</b>及一个<b>输出单元</b>。
 </p><p><br/>
-我们用 <img class="tex" alt="\textstyle {n}_l" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/4/6/546158a6d0082614d47e7f8a63225b0b.png"/> 来表示网络的层数，本例中 <img class="tex" alt="\textstyle n_l=3" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/c/8/3c89b5db1e49221343428af57c90e44a.png"/> ，我们将第 <img class="tex" alt="\textstyle l" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/a/0/ba0593b3db2fa8535b077516f4b0d70b.png"/> 层记为 <img class="tex" alt="\textstyle L_l" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/5/e/55ea36127aa64b92b071c269cd1e3990.png"/> ，于是 <img class="tex" alt="\textstyle L_1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/3/e/13e0887b9e716279d9a7b8bc8e6ad63b.png"/> 是输入层，输出层是 <img class="tex" alt="\textstyle L_{n_l}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/2/1/221a7296664022427d488fdb9b14b19b.png"/> 。本例神经网络有参数 <img class="tex" alt="\textstyle (W,b) = (W^{(1)}, b^{(1)}, W^{(2)}, b^{(2)})" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/a/3/aa3d6ed3c577d41a791324008558efbe.png"/> ，其中 <img class="tex" alt="\textstyle W^{(l)}_{ij}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/f/e/dfe43c64e3c42ea4ff1774fc82b87805.png"/> （下面的式子中用到）是第 <img class="tex" alt="\textstyle l" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/a/0/ba0593b3db2fa8535b077516f4b0d70b.png"/> 层第 <img class="tex" alt="\textstyle j" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/3/5/235c5146ab110558897640c34dad7d97.png"/> 单元与第 <img class="tex" alt="\textstyle l+1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/0/6/9068105ec8ebb97277c937bfa61b606d.png"/> 层第 <img class="tex" alt="\textstyle i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/> 单元之间的联接参数（其实就是连接线上的权重，注意标号顺序）， <img class="tex" alt="\textstyle b^{(l)}_i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/4/c/7/4c786c16575b63bbb554254725b6b648.png"/> 是第 <img class="tex" alt="\textstyle l+1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/0/6/9068105ec8ebb97277c937bfa61b606d.png"/> 层第 <img class="tex" alt="\textstyle i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/> 单元的偏置项。因此在本例中， <img class="tex" alt="\textstyle W^{(1)} \in \Re^{3\times 3}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/c/a/5ca0efbb17e86cb00091f6a528e0ab0e.png"/> ， <img class="tex" alt="\textstyle W^{(2)} \in \Re^{1\times 3}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/4/3/1/431cf6f298e4106efb5bff4495aa3c6d.png"/> 。注意，没有其他单元连向偏置单元(即偏置单元没有输入)，因为它们总是输出 <img class="tex" alt="\textstyle +1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/c/b/dcb8dd3d14a2c0aa9b06ec6ce4ec0d59.png"/>。同时，我们用 <img class="tex" alt="\textstyle s_l" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/a/f/8afb62ac69ccb2911bb24795ff052a07.png"/> 表示第 <img class="tex" alt="\textstyle l" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/a/0/ba0593b3db2fa8535b077516f4b0d70b.png"/> 层的节点数（偏置单元不计在内）。
+我们用 <img class="tex" alt="\textstyle {n}_l" src="/stanford-ufldl/archive/wiki/images/math/5/4/6/546158a6d0082614d47e7f8a63225b0b.png"/> 来表示网络的层数，本例中 <img class="tex" alt="\textstyle n_l=3" src="/stanford-ufldl/archive/wiki/images/math/3/c/8/3c89b5db1e49221343428af57c90e44a.png"/> ，我们将第 <img class="tex" alt="\textstyle l" src="/stanford-ufldl/archive/wiki/images/math/b/a/0/ba0593b3db2fa8535b077516f4b0d70b.png"/> 层记为 <img class="tex" alt="\textstyle L_l" src="/stanford-ufldl/archive/wiki/images/math/5/5/e/55ea36127aa64b92b071c269cd1e3990.png"/> ，于是 <img class="tex" alt="\textstyle L_1" src="/stanford-ufldl/archive/wiki/images/math/1/3/e/13e0887b9e716279d9a7b8bc8e6ad63b.png"/> 是输入层，输出层是 <img class="tex" alt="\textstyle L_{n_l}" src="/stanford-ufldl/archive/wiki/images/math/2/2/1/221a7296664022427d488fdb9b14b19b.png"/> 。本例神经网络有参数 <img class="tex" alt="\textstyle (W,b) = (W^{(1)}, b^{(1)}, W^{(2)}, b^{(2)})" src="/stanford-ufldl/archive/wiki/images/math/a/a/3/aa3d6ed3c577d41a791324008558efbe.png"/> ，其中 <img class="tex" alt="\textstyle W^{(l)}_{ij}" src="/stanford-ufldl/archive/wiki/images/math/d/f/e/dfe43c64e3c42ea4ff1774fc82b87805.png"/> （下面的式子中用到）是第 <img class="tex" alt="\textstyle l" src="/stanford-ufldl/archive/wiki/images/math/b/a/0/ba0593b3db2fa8535b077516f4b0d70b.png"/> 层第 <img class="tex" alt="\textstyle j" src="/stanford-ufldl/archive/wiki/images/math/2/3/5/235c5146ab110558897640c34dad7d97.png"/> 单元与第 <img class="tex" alt="\textstyle l+1" src="/stanford-ufldl/archive/wiki/images/math/9/0/6/9068105ec8ebb97277c937bfa61b606d.png"/> 层第 <img class="tex" alt="\textstyle i" src="/stanford-ufldl/archive/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/> 单元之间的联接参数（其实就是连接线上的权重，注意标号顺序）， <img class="tex" alt="\textstyle b^{(l)}_i" src="/stanford-ufldl/archive/wiki/images/math/4/c/7/4c786c16575b63bbb554254725b6b648.png"/> 是第 <img class="tex" alt="\textstyle l+1" src="/stanford-ufldl/archive/wiki/images/math/9/0/6/9068105ec8ebb97277c937bfa61b606d.png"/> 层第 <img class="tex" alt="\textstyle i" src="/stanford-ufldl/archive/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/> 单元的偏置项。因此在本例中， <img class="tex" alt="\textstyle W^{(1)} \in \Re^{3\times 3}" src="/stanford-ufldl/archive/wiki/images/math/5/c/a/5ca0efbb17e86cb00091f6a528e0ab0e.png"/> ， <img class="tex" alt="\textstyle W^{(2)} \in \Re^{1\times 3}" src="/stanford-ufldl/archive/wiki/images/math/4/3/1/431cf6f298e4106efb5bff4495aa3c6d.png"/> 。注意，没有其他单元连向偏置单元(即偏置单元没有输入)，因为它们总是输出 <img class="tex" alt="\textstyle +1" src="/stanford-ufldl/archive/wiki/images/math/d/c/b/dcb8dd3d14a2c0aa9b06ec6ce4ec0d59.png"/>。同时，我们用 <img class="tex" alt="\textstyle s_l" src="/stanford-ufldl/archive/wiki/images/math/8/a/f/8afb62ac69ccb2911bb24795ff052a07.png"/> 表示第 <img class="tex" alt="\textstyle l" src="/stanford-ufldl/archive/wiki/images/math/b/a/0/ba0593b3db2fa8535b077516f4b0d70b.png"/> 层的节点数（偏置单元不计在内）。
 </p><p><br/>
-我们用 <img class="tex" alt="\textstyle a^{(l)}_i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/9/b/c9b144e0a6735fafb01b3615a2a0dc05.png"/> 表示第 <img class="tex" alt="\textstyle l" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/a/0/ba0593b3db2fa8535b077516f4b0d70b.png"/> 层第 <img class="tex" alt="\textstyle i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/> 单元的<b>激活值</b>（输出值）。当 <img class="tex" alt="\textstyle l=1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/4/a/4/4a4725e295806f22b26342fe3cd3338f.png"/> 时， <img class="tex" alt="\textstyle a^{(1)}_i = x_i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/5/c/f5c1979e94318aee674de68348b96557.png"/> ，也就是第 <img class="tex" alt="\textstyle i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/> 个输入值（输入值的第 <img class="tex" alt="\textstyle i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/> 个特征）。对于给定参数集合 <img class="tex" alt="\textstyle W,b" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/c/9/7c9aa03f5258ecf79556ba374d7eb2cd.png"/> ，我们的神经网络就可以按照函数 <img class="tex" alt="\textstyle h_{W,b}(x)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/8/d/58d3a4fe4ad68b333b180071dd46db82.png"/>  来计算输出结果。本例神经网络的计算步骤如下：
+我们用 <img class="tex" alt="\textstyle a^{(l)}_i" src="/stanford-ufldl/archive/wiki/images/math/c/9/b/c9b144e0a6735fafb01b3615a2a0dc05.png"/> 表示第 <img class="tex" alt="\textstyle l" src="/stanford-ufldl/archive/wiki/images/math/b/a/0/ba0593b3db2fa8535b077516f4b0d70b.png"/> 层第 <img class="tex" alt="\textstyle i" src="/stanford-ufldl/archive/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/> 单元的<b>激活值</b>（输出值）。当 <img class="tex" alt="\textstyle l=1" src="/stanford-ufldl/archive/wiki/images/math/4/a/4/4a4725e295806f22b26342fe3cd3338f.png"/> 时， <img class="tex" alt="\textstyle a^{(1)}_i = x_i" src="/stanford-ufldl/archive/wiki/images/math/f/5/c/f5c1979e94318aee674de68348b96557.png"/> ，也就是第 <img class="tex" alt="\textstyle i" src="/stanford-ufldl/archive/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/> 个输入值（输入值的第 <img class="tex" alt="\textstyle i" src="/stanford-ufldl/archive/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/> 个特征）。对于给定参数集合 <img class="tex" alt="\textstyle W,b" src="/stanford-ufldl/archive/wiki/images/math/7/c/9/7c9aa03f5258ecf79556ba374d7eb2cd.png"/> ，我们的神经网络就可以按照函数 <img class="tex" alt="\textstyle h_{W,b}(x)" src="/stanford-ufldl/archive/wiki/images/math/5/8/d/58d3a4fe4ad68b333b180071dd46db82.png"/>  来计算输出结果。本例神经网络的计算步骤如下：
 </p><p><br/>
 </p>
 <dl><dd><img class="tex" alt=" 
@@ -82,12 +82,12 @@ a_2^{(2)} &amp;= f(W_{21}^{(1)}x_1 + W_{22}^{(1)} x_2 + W_{23}^{(1)} x_3 + b_2^{
 a_3^{(2)} &amp;= f(W_{31}^{(1)}x_1 + W_{32}^{(1)} x_2 + W_{33}^{(1)} x_3 + b_3^{(1)})  \\
 h_{W,b}(x) &amp;= a_1^{(3)} =  f(W_{11}^{(2)}a_1^{(2)} + W_{12}^{(2)} a_2^{(2)} + W_{13}^{(2)} a_3^{(2)} + b_1^{(2)}) 
 \end{align}
-" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/d/e/fde22a388f607f526f03644c71a72f92.png"/> 
+" src="/stanford-ufldl/archive/wiki/images/math/f/d/e/fde22a388f607f526f03644c71a72f92.png"/> 
 </dd></dl>
 <p><br/>
-我们用 <img class="tex" alt="\textstyle z^{(l)}_i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/d/d/3dd5c56e0949e76de86690e1b868cdcf.png"/> 表示第 <img class="tex" alt="\textstyle l" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/a/0/ba0593b3db2fa8535b077516f4b0d70b.png"/> 层第 <img class="tex" alt="\textstyle i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/> 单元输入加权和（包括偏置单元），比如， <img class="tex" alt="\textstyle  z_i^{(2)} = \sum_{j=1}^n W^{(1)}_{ij} x_j + b^{(1)}_i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/a/e/aae7340fe1eb75c824b8abc107c3db27.png"/> ，则 <img class="tex" alt="\textstyle a^{(l)}_i = f(z^{(l)}_i)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/f/8/cf8cb56750f5aaca7dc59480a53d9676.png"/> 。
+我们用 <img class="tex" alt="\textstyle z^{(l)}_i" src="/stanford-ufldl/archive/wiki/images/math/3/d/d/3dd5c56e0949e76de86690e1b868cdcf.png"/> 表示第 <img class="tex" alt="\textstyle l" src="/stanford-ufldl/archive/wiki/images/math/b/a/0/ba0593b3db2fa8535b077516f4b0d70b.png"/> 层第 <img class="tex" alt="\textstyle i" src="/stanford-ufldl/archive/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/> 单元输入加权和（包括偏置单元），比如， <img class="tex" alt="\textstyle  z_i^{(2)} = \sum_{j=1}^n W^{(1)}_{ij} x_j + b^{(1)}_i" src="/stanford-ufldl/archive/wiki/images/math/a/a/e/aae7340fe1eb75c824b8abc107c3db27.png"/> ，则 <img class="tex" alt="\textstyle a^{(l)}_i = f(z^{(l)}_i)" src="/stanford-ufldl/archive/wiki/images/math/c/f/8/cf8cb56750f5aaca7dc59480a53d9676.png"/> 。
 </p><p><br/>
-这样我们就可以得到一种更简洁的表示法。这里我们将激活函数 <img class="tex" alt="\textstyle f(\cdot)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/3/0/0303dd697c0e1b72185d7939f9870784.png"/> 扩展为用向量（分量的形式）来表示，即 <img class="tex" alt="\textstyle f([z_1, z_2, z_3]) = [f(z_1), f(z_2), f(z_3)]" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/b/8/db84346dcd6187f0fbb0f6c1a72eecf8.png"/> ，那么，上面的等式可以更简洁地表示为：
+这样我们就可以得到一种更简洁的表示法。这里我们将激活函数 <img class="tex" alt="\textstyle f(\cdot)" src="/stanford-ufldl/archive/wiki/images/math/0/3/0/0303dd697c0e1b72185d7939f9870784.png"/> 扩展为用向量（分量的形式）来表示，即 <img class="tex" alt="\textstyle f([z_1, z_2, z_3]) = [f(z_1), f(z_2), f(z_3)]" src="/stanford-ufldl/archive/wiki/images/math/d/b/8/db84346dcd6187f0fbb0f6c1a72eecf8.png"/> ，那么，上面的等式可以更简洁地表示为：
 </p><p><br/>
 </p>
 <dl><dd><img class="tex" alt="\begin{align}
@@ -95,28 +95,28 @@ z^{(2)} &amp;= W^{(1)} x + b^{(1)} \\
 a^{(2)} &amp;= f(z^{(2)}) \\
 z^{(3)} &amp;= W^{(2)} a^{(2)} + b^{(2)} \\
 h_{W,b}(x) &amp;= a^{(3)} = f(z^{(3)})
-\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/6/9/9690acc03c1e5133b0509257b532b4f7.png"/> 
+\end{align}" src="/stanford-ufldl/archive/wiki/images/math/9/6/9/9690acc03c1e5133b0509257b532b4f7.png"/> 
 </dd></dl>
 <p><br/>
-我们将上面的计算步骤叫作<b>前向传播</b>。回想一下，之前我们用 <img class="tex" alt="\textstyle a^{(1)} = x" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/e/0/de0b51a7e4a2b2047d52a165419ac048.png"/>  表示输入层的激活值，那么给定第 <img class="tex" alt="\textstyle l" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/a/0/ba0593b3db2fa8535b077516f4b0d70b.png"/> 层的激活值 <img class="tex" alt="\textstyle a^{(l)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/d/2/bd2728b5337ccec5b5729756d5796b20.png"/> 后，第 <img class="tex" alt="\textstyle l+1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/0/6/9068105ec8ebb97277c937bfa61b606d.png"/> 层的激活值 <img class="tex" alt="\textstyle a^{(l+1)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/b/8/eb8a863a7b57397bf06a0532d4f1daf1.png"/> 就可以按照下面步骤计算得到：
+我们将上面的计算步骤叫作<b>前向传播</b>。回想一下，之前我们用 <img class="tex" alt="\textstyle a^{(1)} = x" src="/stanford-ufldl/archive/wiki/images/math/d/e/0/de0b51a7e4a2b2047d52a165419ac048.png"/>  表示输入层的激活值，那么给定第 <img class="tex" alt="\textstyle l" src="/stanford-ufldl/archive/wiki/images/math/b/a/0/ba0593b3db2fa8535b077516f4b0d70b.png"/> 层的激活值 <img class="tex" alt="\textstyle a^{(l)}" src="/stanford-ufldl/archive/wiki/images/math/b/d/2/bd2728b5337ccec5b5729756d5796b20.png"/> 后，第 <img class="tex" alt="\textstyle l+1" src="/stanford-ufldl/archive/wiki/images/math/9/0/6/9068105ec8ebb97277c937bfa61b606d.png"/> 层的激活值 <img class="tex" alt="\textstyle a^{(l+1)}" src="/stanford-ufldl/archive/wiki/images/math/e/b/8/eb8a863a7b57397bf06a0532d4f1daf1.png"/> 就可以按照下面步骤计算得到：
 </p><p><br/>
 </p>
 <dl><dd><img class="tex" alt=" \begin{align}
 z^{(l+1)} &amp;= W^{(l)} a^{(l)} + b^{(l)}   \\
 a^{(l+1)} &amp;= f(z^{(l+1)})
-\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/c/f/5cfcbbe6d55b6c882f56a85a57eafe6e.png"/> 
+\end{align}" src="/stanford-ufldl/archive/wiki/images/math/5/c/f/5cfcbbe6d55b6c882f56a85a57eafe6e.png"/> 
 </dd></dl>
 <p><br/>
 将参数矩阵化，使用矩阵－向量运算方式，我们就可以利用线性代数的优势对神经网络进行快速求解。
 </p><p><br/>
-目前为止，我们讨论了一种神经网络，我们也可以构建另一种<b>结构</b>的神经网络（这里结构指的是神经元之间的联接模式），也就是包含多个隐藏层的神经网络。最常见的一个例子是 <img class="tex" alt="\textstyle  n_l" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/b/7/5b7a0657fdea25f29866c8e1d6e884ac.png"/> 层的神经网络，第 <img class="tex" alt="\textstyle  1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/e/9/6e924e04b5c9d4c5be131609a038b821.png"/> 层是输入层，第 <img class="tex" alt="\textstyle  n_l" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/b/7/5b7a0657fdea25f29866c8e1d6e884ac.png"/> 层是输出层，中间的每个层 <img class="tex" alt="\textstyle  l" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/a/0/ba0593b3db2fa8535b077516f4b0d70b.png"/> 与层 <img class="tex" alt="\textstyle  l+1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/0/6/9068105ec8ebb97277c937bfa61b606d.png"/> 紧密相联。这种模式下，要计算神经网络的输出结果，我们可以按照之前描述的等式，按部就班，进行前向传播，逐一计算第 <img class="tex" alt="\textstyle  L_2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/f/7/cf7d186efd913f4fb9ceb939bf5135c4.png"/> 层的所有激活值，然后是第 <img class="tex" alt="\textstyle  L_3" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/9/b/d9b949d768ca8bab18830d9efc3fa441.png"/> 层的激活值，以此类推，直到第 <img class="tex" alt="\textstyle  L_{n_l}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/2/1/221a7296664022427d488fdb9b14b19b.png"/> 层。这是一个<b>前馈</b>神经网络的例子，因为这种联接图没有闭环或回路。
+目前为止，我们讨论了一种神经网络，我们也可以构建另一种<b>结构</b>的神经网络（这里结构指的是神经元之间的联接模式），也就是包含多个隐藏层的神经网络。最常见的一个例子是 <img class="tex" alt="\textstyle  n_l" src="/stanford-ufldl/archive/wiki/images/math/5/b/7/5b7a0657fdea25f29866c8e1d6e884ac.png"/> 层的神经网络，第 <img class="tex" alt="\textstyle  1" src="/stanford-ufldl/archive/wiki/images/math/6/e/9/6e924e04b5c9d4c5be131609a038b821.png"/> 层是输入层，第 <img class="tex" alt="\textstyle  n_l" src="/stanford-ufldl/archive/wiki/images/math/5/b/7/5b7a0657fdea25f29866c8e1d6e884ac.png"/> 层是输出层，中间的每个层 <img class="tex" alt="\textstyle  l" src="/stanford-ufldl/archive/wiki/images/math/b/a/0/ba0593b3db2fa8535b077516f4b0d70b.png"/> 与层 <img class="tex" alt="\textstyle  l+1" src="/stanford-ufldl/archive/wiki/images/math/9/0/6/9068105ec8ebb97277c937bfa61b606d.png"/> 紧密相联。这种模式下，要计算神经网络的输出结果，我们可以按照之前描述的等式，按部就班，进行前向传播，逐一计算第 <img class="tex" alt="\textstyle  L_2" src="/stanford-ufldl/archive/wiki/images/math/c/f/7/cf7d186efd913f4fb9ceb939bf5135c4.png"/> 层的所有激活值，然后是第 <img class="tex" alt="\textstyle  L_3" src="/stanford-ufldl/archive/wiki/images/math/d/9/b/d9b949d768ca8bab18830d9efc3fa441.png"/> 层的激活值，以此类推，直到第 <img class="tex" alt="\textstyle  L_{n_l}" src="/stanford-ufldl/archive/wiki/images/math/2/2/1/221a7296664022427d488fdb9b14b19b.png"/> 层。这是一个<b>前馈</b>神经网络的例子，因为这种联接图没有闭环或回路。
 </p><p><br/>
-神经网络也可以有多个输出单元。比如，下面的神经网络有两层隐藏层： <img class="tex" alt="\textstyle L_2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/f/7/cf7d186efd913f4fb9ceb939bf5135c4.png"/>  及 <img class="tex" alt="\textstyle L_3" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/9/b/d9b949d768ca8bab18830d9efc3fa441.png"/> ，输出层 <img class="tex" alt="\textstyle L_4" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/b/0/ab05e0667abe37f2e3cbc05735573034.png"/> 有两个输出单元。
+神经网络也可以有多个输出单元。比如，下面的神经网络有两层隐藏层： <img class="tex" alt="\textstyle L_2" src="/stanford-ufldl/archive/wiki/images/math/c/f/7/cf7d186efd913f4fb9ceb939bf5135c4.png"/>  及 <img class="tex" alt="\textstyle L_3" src="/stanford-ufldl/archive/wiki/images/math/d/9/b/d9b949d768ca8bab18830d9efc3fa441.png"/> ，输出层 <img class="tex" alt="\textstyle L_4" src="/stanford-ufldl/archive/wiki/images/math/a/b/0/ab05e0667abe37f2e3cbc05735573034.png"/> 有两个输出单元。
 </p><p><br/>
 </p>
-<div class="center"><div class="floatnone"><a href="" class="image"><img alt="Network3322.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/4/40/Network3322.png/500px-Network3322.png" width="500" height="274"/></a></div></div>
+<div class="center"><div class="floatnone"><a href="" class="image"><img alt="Network3322.png" src="/stanford-ufldl/archive/wiki/images/thumb/4/40/Network3322.png/500px-Network3322.png" width="500" height="274"/></a></div></div>
 <p><br/>
-要求解这样的神经网络，需要样本集  <img class="tex" alt="\textstyle (x^{(i)}, y^{(i)})" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/1/7/f178249571382c3921d2c46f7abd47da.png"/>  ，其中 <img class="tex" alt="\textstyle y^{(i)} \in \Re^2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/e/d/9edce3bff2898e4b7f084ad3a2bbf494.png"/> 。如果你想预测的输出是多个的，那这种神经网络很适用。（比如，在医疗诊断应用中，患者的体征指标就可以作为向量的输入值，而不同的输出值 <img class="tex" alt="\textstyle y_i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/a/5/7a5d164f3df0329a8032cda67d95d9d4.png"/> 可以表示不同的疾病存在与否。）
+要求解这样的神经网络，需要样本集  <img class="tex" alt="\textstyle (x^{(i)}, y^{(i)})" src="/stanford-ufldl/archive/wiki/images/math/f/1/7/f178249571382c3921d2c46f7abd47da.png"/>  ，其中 <img class="tex" alt="\textstyle y^{(i)} \in \Re^2" src="/stanford-ufldl/archive/wiki/images/math/9/e/d/9edce3bff2898e4b7f084ad3a2bbf494.png"/> 。如果你想预测的输出是多个的，那这种神经网络很适用。（比如，在医疗诊断应用中，患者的体征指标就可以作为向量的输入值，而不同的输出值 <img class="tex" alt="\textstyle y_i" src="/stanford-ufldl/archive/wiki/images/math/7/a/5/7a5d164f3df0329a8032cda67d95d9d4.png"/> 可以表示不同的疾病存在与否。）
 </p><p><br/>
 </p>
 <h2> <span class="mw-headline" id=".E4.B8.AD.E8.8B.B1.E6.96.87.E5.AF.B9.E7.85.A7">中英文对照</span></h2>
@@ -134,13 +134,13 @@ a^{(l+1)} &amp;= f(z^{(l+1)})
 </p><p><br/>
 </p>
 <div style="text-align: center;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
-<p><strong class="selflink">神经网络</strong> | <a href="/wayback-ufldl/stanford-ufldl/wiki/%E5%8F%8D%E5%90%91%E4%BC%A0%E5%AF%BC%E7%AE%97%E6%B3%95" title="反向传导算法">反向传导算法</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/%E6%A2%AF%E5%BA%A6%E6%A3%80%E9%AA%8C%E4%B8%8E%E9%AB%98%E7%BA%A7%E4%BC%98%E5%8C%96" title="梯度检验与高级优化">梯度检验与高级优化</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/%E8%87%AA%E7%BC%96%E7%A0%81%E7%AE%97%E6%B3%95%E4%B8%8E%E7%A8%80%E7%96%8F%E6%80%A7" title="自编码算法与稀疏性">自编码算法与稀疏性</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/%E5%8F%AF%E8%A7%86%E5%8C%96%E8%87%AA%E7%BC%96%E7%A0%81%E5%99%A8%E8%AE%AD%E7%BB%83%E7%BB%93%E6%9E%9C" title="可视化自编码器训练结果">可视化自编码器训练结果</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/%E7%A8%80%E7%96%8F%E8%87%AA%E7%BC%96%E7%A0%81%E5%99%A8%E7%AC%A6%E5%8F%B7%E4%B8%80%E8%A7%88%E8%A1%A8" title="稀疏自编码器符号一览表">稀疏自编码器符号一览表</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Sparse_Autoencoder" title="Exercise:Sparse Autoencoder">Exercise:Sparse_Autoencoder</a>
+<p><strong class="selflink">神经网络</strong> | <a href="/stanford-ufldl/archive/wiki/%E5%8F%8D%E5%90%91%E4%BC%A0%E5%AF%BC%E7%AE%97%E6%B3%95" title="反向传导算法">反向传导算法</a> | <a href="/stanford-ufldl/archive/wiki/%E6%A2%AF%E5%BA%A6%E6%A3%80%E9%AA%8C%E4%B8%8E%E9%AB%98%E7%BA%A7%E4%BC%98%E5%8C%96" title="梯度检验与高级优化">梯度检验与高级优化</a> | <a href="/stanford-ufldl/archive/wiki/%E8%87%AA%E7%BC%96%E7%A0%81%E7%AE%97%E6%B3%95%E4%B8%8E%E7%A8%80%E7%96%8F%E6%80%A7" title="自编码算法与稀疏性">自编码算法与稀疏性</a> | <a href="/stanford-ufldl/archive/wiki/%E5%8F%AF%E8%A7%86%E5%8C%96%E8%87%AA%E7%BC%96%E7%A0%81%E5%99%A8%E8%AE%AD%E7%BB%83%E7%BB%93%E6%9E%9C" title="可视化自编码器训练结果">可视化自编码器训练结果</a> | <a href="/stanford-ufldl/archive/wiki/%E7%A8%80%E7%96%8F%E8%87%AA%E7%BC%96%E7%A0%81%E5%99%A8%E7%AC%A6%E5%8F%B7%E4%B8%80%E8%A7%88%E8%A1%A8" title="稀疏自编码器符号一览表">稀疏自编码器符号一览表</a> | <a href="/stanford-ufldl/archive/wiki/Exercise_Sparse_Autoencoder" title="Exercise:Sparse Autoencoder">Exercise:Sparse_Autoencoder</a>
 </p>
 </div>
 <p><br/>
 </p>
 <div style="text-align: left;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
-<p>Language&nbsp;: <a href="/wayback-ufldl/stanford-ufldl/wiki/Neural_Networks" title="Neural Networks">English</a>
+<p>Language&nbsp;: <a href="/stanford-ufldl/archive/wiki/Neural_Networks" title="Neural Networks">English</a>
 </p>
 </div>
 
@@ -162,7 +162,7 @@ Expensive parser function count: 0/100
 		<h5>Views</h5>
 		<div class="pBody">
 			<ul>
-				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-nstab-main" class="selected"><a href="/stanford-ufldl/archive/wiki/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C" title="View the content page [c]" accesskey="c">Page</a></li>
 				 <li id="ca-talk" class="new"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
 				 <li id="ca-viewsource"><a href="" title="This page is protected.
 You can view its source [e]" accesskey="e">View source</a></li>
@@ -178,15 +178,15 @@ You can view its source [e]" accesskey="e">View source</a></li>
 		</div>
 	</div>
 	<div class="portlet" id="p-logo">
-		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+		<a style="background-image: url(/stanford-ufldl/archive/wiki/skins/common/images/dolphin-openclipart.png);" href="/stanford-ufldl/archive/wiki/Main_Page" title="Visit the main page"></a>
 	</div>
 	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
 	<div class="generated-sidebar portlet" id="p-ufldl_resources">
 		<h5>ufldl resources</h5>
 		<div class="pBody">
 			<ul>
-				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
-				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+				<li id="n-UFLDL-Tutorial"><a href="/stanford-ufldl/archive/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/stanford-ufldl/archive/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
 			</ul>
 		</div>
 	</div>
@@ -194,7 +194,7 @@ You can view its source [e]" accesskey="e">View source</a></li>
 		<h5>wiki</h5>
 		<div class="pBody">
 			<ul>
-				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-mainpage-description"><a href="/stanford-ufldl/archive/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
 				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
 				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
 				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
@@ -227,9 +227,9 @@ You can view its source [e]" accesskey="e">View source</a></li>
 <div id="footer">
 	<ul id="f-list">
 		<li id="lastmod"> This page was last modified on 7 April 2013, at 12:34.</li>
-		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
-		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
-		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+		<li id="privacy"><a href="/stanford-ufldl/archive/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/stanford-ufldl/archive/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/stanford-ufldl/archive/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
 	</ul>
 </div>
 </div>

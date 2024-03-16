@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Exercise:Self-Taught Learning - Ufldl</title>
-<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
-<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+<link rel="stylesheet" href="/stanford-ufldl/archive/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/stanford-ufldl/archive/wiki/skins/monobook/main.css" media="screen"/>
 
 </head>
 
@@ -34,7 +34,7 @@
 <h3> <span class="mw-headline" id="Overview">Overview</span></h3>
 <p>In this exercise, we will use the self-taught learning paradigm with the sparse autoencoder and softmax classifier to build a classifier for handwritten digits.
 </p><p>You will be building upon your code from the earlier exercises. First, you will train your sparse autoencoder on an "unlabeled" training dataset of handwritten digits. This produces feature that are penstroke-like. We then extract these learned features from a labeled dataset of handwritten digits. These features will then be used as inputs to the softmax classifier that you wrote in the previous exercise. 
-</p><p>Concretely, for each example in the the labeled training dataset <img class="tex" alt="\textstyle x_l" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/c/7/7c723db4a829ae13f2f923f5ec79b74a.png"/>, we forward propagate the example to obtain the activation of the hidden units <img class="tex" alt="\textstyle a^{(2)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/0/8/508ab2d078f4ae9119185741659021dd.png"/>.  We now represent this example using <img class="tex" alt="\textstyle a^{(2)}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/0/8/508ab2d078f4ae9119185741659021dd.png"/> (the "replacement" representation), and use this to as the new feature representation with which to train the softmax classifier. 
+</p><p>Concretely, for each example in the the labeled training dataset <img class="tex" alt="\textstyle x_l" src="/stanford-ufldl/archive/wiki/images/math/7/c/7/7c723db4a829ae13f2f923f5ec79b74a.png"/>, we forward propagate the example to obtain the activation of the hidden units <img class="tex" alt="\textstyle a^{(2)}" src="/stanford-ufldl/archive/wiki/images/math/5/0/8/508ab2d078f4ae9119185741659021dd.png"/>.  We now represent this example using <img class="tex" alt="\textstyle a^{(2)}" src="/stanford-ufldl/archive/wiki/images/math/5/0/8/508ab2d078f4ae9119185741659021dd.png"/> (the "replacement" representation), and use this to as the new feature representation with which to train the softmax classifier. 
 </p><p>Finally, we also extract the same features from the test data to obtain predictions.
 </p><p>In this exercise, our goal is to distinguish between the digits from 0 to 4.  We will use the digits 5 to 9 as our 
 "unlabeled" dataset which which to learn the features; we will then use a labeled dataset with the digits 0 to 4 with
@@ -45,14 +45,14 @@ which to train the softmax classifier.
 <p>The following additional files are required for this exercise:
 </p>
 <ul><li> <a href="http://yann.lecun.com/exdb/mnist/" class="external text" rel="nofollow">MNIST Dataset</a>
-</li><li> <a href="/wayback-ufldl/stanford-ufldl/wiki/Using_the_MNIST_Dataset" title="Using the MNIST Dataset"> Support functions for loading MNIST in Matlab </a>
+</li><li> <a href="/stanford-ufldl/archive/wiki/Using_the_MNIST_Dataset" title="Using the MNIST Dataset"> Support functions for loading MNIST in Matlab </a>
 </li><li> <a href="http://ufldl.stanford.edu/wiki/resources/stl_exercise.zip" class="external text" rel="nofollow">Starter Code (stl_exercise.zip)</a>
 </li></ul>
 <p>You will also need your code from the following exercises:
 </p>
-<ul><li> <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Sparse_Autoencoder" title="Exercise:Sparse Autoencoder">Exercise:Sparse Autoencoder</a>
-</li><li> <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Vectorization" title="Exercise:Vectorization">Exercise:Vectorization</a>
-</li><li> <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Softmax_Regression" title="Exercise:Softmax Regression">Exercise:Softmax Regression</a>
+<ul><li> <a href="/stanford-ufldl/archive/wiki/Exercise_Sparse_Autoencoder" title="Exercise:Sparse Autoencoder">Exercise:Sparse Autoencoder</a>
+</li><li> <a href="/stanford-ufldl/archive/wiki/Exercise_Vectorization" title="Exercise:Vectorization">Exercise:Vectorization</a>
+</li><li> <a href="/stanford-ufldl/archive/wiki/Exercise_Softmax_Regression" title="Exercise:Softmax Regression">Exercise:Softmax Regression</a>
 </li></ul>
 <p><i>If you have not completed the exercises listed above, we strongly suggest you complete them first.</i>
 </p>
@@ -61,7 +61,7 @@ which to train the softmax classifier.
 </p>
 <h3> <span class="mw-headline" id="Step_2:_Train_the_sparse_autoencoder">Step 2: Train the sparse autoencoder</span></h3>
 <p>Next, use the unlabeled data (the digits from 5 to 9) to train a sparse autoencoder, using the same <tt>sparseAutoencoderCost.m</tt> function as you had written in  the previous exercise.  (From the earlier exercise, you should have a working and vectorized implementation of the sparse autoencoder.) For us, the training step took less than 25 minutes on a fast desktop.  When training is complete, you should get a visualization of pen strokes like the image shown below: 
-</p><p><a href="" class="image"><img alt="SelfTaughtFeatures.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/8/84/SelfTaughtFeatures.png" width="342" height="342"/></a>
+</p><p><a href="" class="image"><img alt="SelfTaughtFeatures.png" src="/stanford-ufldl/archive/wiki/images/8/84/SelfTaughtFeatures.png" width="342" height="342"/></a>
 </p><p>Informally, the features learned by the sparse autoencoder should correspond to penstrokes.
 </p>
 <h3> <span class="mw-headline" id="Step_3:_Extracting_features">Step 3: Extracting features</span></h3>
@@ -78,7 +78,7 @@ which to train the softmax classifier.
 </p><p><br/>
 </p>
 <div style="text-align: center;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
-<p><a href="/wayback-ufldl/stanford-ufldl/wiki/Self-Taught_Learning" title="Self-Taught Learning">Self-Taught Learning</a> | <strong class="selflink">Exercise:Self-Taught Learning</strong>
+<p><a href="/stanford-ufldl/archive/wiki/Self-Taught_Learning" title="Self-Taught Learning">Self-Taught Learning</a> | <strong class="selflink">Exercise:Self-Taught Learning</strong>
 </p>
 </div>
 
@@ -100,7 +100,7 @@ Expensive parser function count: 0/100
 		<h5>Views</h5>
 		<div class="pBody">
 			<ul>
-				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Self-Taught_Learning" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-nstab-main" class="selected"><a href="/stanford-ufldl/archive/wiki/Exercise_Self-Taught_Learning" title="View the content page [c]" accesskey="c">Page</a></li>
 				 <li id="ca-talk" class="new"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
 				 <li id="ca-viewsource"><a href="" title="This page is protected.
 You can view its source [e]" accesskey="e">View source</a></li>
@@ -116,15 +116,15 @@ You can view its source [e]" accesskey="e">View source</a></li>
 		</div>
 	</div>
 	<div class="portlet" id="p-logo">
-		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+		<a style="background-image: url(/stanford-ufldl/archive/wiki/skins/common/images/dolphin-openclipart.png);" href="/stanford-ufldl/archive/wiki/Main_Page" title="Visit the main page"></a>
 	</div>
 	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
 	<div class="generated-sidebar portlet" id="p-ufldl_resources">
 		<h5>ufldl resources</h5>
 		<div class="pBody">
 			<ul>
-				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
-				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+				<li id="n-UFLDL-Tutorial"><a href="/stanford-ufldl/archive/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/stanford-ufldl/archive/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
 			</ul>
 		</div>
 	</div>
@@ -132,7 +132,7 @@ You can view its source [e]" accesskey="e">View source</a></li>
 		<h5>wiki</h5>
 		<div class="pBody">
 			<ul>
-				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-mainpage-description"><a href="/stanford-ufldl/archive/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
 				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
 				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
 				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
@@ -165,9 +165,9 @@ You can view its source [e]" accesskey="e">View source</a></li>
 <div id="footer">
 	<ul id="f-list">
 		<li id="lastmod"> This page was last modified on 26 May 2011, at 11:02.</li>
-		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
-		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
-		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+		<li id="privacy"><a href="/stanford-ufldl/archive/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/stanford-ufldl/archive/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/stanford-ufldl/archive/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
 	</ul>
 </div>
 </div>

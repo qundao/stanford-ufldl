@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stacked Autoencoders - Ufldl</title>
-<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
-<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+<link rel="stylesheet" href="/stanford-ufldl/archive/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/stanford-ufldl/archive/wiki/skins/monobook/main.css" media="screen"/>
 
 </head>
 
@@ -36,20 +36,20 @@
 a^{(l)} = f(z^{(l)}) \\
 z^{(l + 1)} = W^{(l, 1)}a^{(l)} + b^{(l, 1)}
 \end{align}
-" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/4/5/c45be23c8a9c2d2836fa9c559b2e5254.png"/>
+" src="/stanford-ufldl/archive/wiki/images/math/c/4/5/c45be23c8a9c2d2836fa9c559b2e5254.png"/>
 </p><p>The decoding step is given by running the decoding stack of each autoencoder in reverse order:
 </p><p><img class="tex" alt="
 \begin{align}
 a^{(n + l)} = f(z^{(n + l)}) \\
 z^{(n + l + 1)} = W^{(n - l, 2)}a^{(n + l)} + b^{(n - l, 2)}
 \end{align}
-" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/5/0/b502d47bfac781f8d16290436d891ddb.png"/>
+" src="/stanford-ufldl/archive/wiki/images/math/b/5/0/b502d47bfac781f8d16290436d891ddb.png"/>
 </p><p>The information of interest is contained within <span class="texhtml"><i>a</i><sup>(<i>n</i>)</sup></span>, which is the activation of the deepest layer of hidden units. This vector gives us a representation of the input in terms of higher-order features. 
 </p><p>The features from the stacked autoencoder can be used for classification problems by feeding <span class="texhtml"><i>a</i>(<i>n</i>)</span> to a softmax classifier.
 </p>
 <h3> <span class="mw-headline" id="Training">Training</span></h3>
 <p>A good way to obtain good parameters for a stacked autoencoder is to use greedy layer-wise training. To do this, first train the first layer on raw input to obtain parameters <span class="texhtml"><i>W</i><sup>(1,1)</sup>,<i>W</i><sup>(1,2)</sup>,<i>b</i><sup>(1,1)</sup>,<i>b</i><sup>(1,2)</sup></span>. Use the first layer to transform the raw input into a vector consisting of activation of the hidden units, A. Train the second layer on this vector to obtain parameters <span class="texhtml"><i>W</i><sup>(2,1)</sup>,<i>W</i><sup>(2,2)</sup>,<i>b</i><sup>(2,1)</sup>,<i>b</i><sup>(2,2)</sup></span>. Repeat for subsequent layers, using the output of each layer as input for the subsequent layer.
-</p><p>This method trains the parameters of each layer individually while freezing parameters for the remainder of the model. To produce better results, after this phase of training is complete, <a href="/wayback-ufldl/stanford-ufldl/wiki/Fine-tuning_Stacked_AEs" title="Fine-tuning Stacked AEs"> fine-tuning</a> using backpropagation can be used to improve the results by tuning the parameters of all layers are changed at the same time. 
+</p><p>This method trains the parameters of each layer individually while freezing parameters for the remainder of the model. To produce better results, after this phase of training is complete, <a href="/stanford-ufldl/archive/wiki/Fine-tuning_Stacked_AEs" title="Fine-tuning Stacked AEs"> fine-tuning</a> using backpropagation can be used to improve the results by tuning the parameters of all layers are changed at the same time. 
 </p><p><br/>
 </p>
 <div style="background-color: #eeeeee; border-style: dotted; padding: 5px">
@@ -57,15 +57,15 @@ z^{(n + l + 1)} = W^{(n - l, 2)}a^{(n + l)} + b^{(n - l, 2)}
 </p>
 </div>
 <h3> <span class="mw-headline" id="Concrete_example">Concrete example</span></h3>
-<p>To give a concrete example, suppose you wished to train a stacked autoencoder with 2 hidden layers for classification of MNIST digits, as you will be doing in <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise__Implement_deep_networks_for_digit_classification" title="Exercise: Implement deep networks for digit classification"> the next exercise</a>. 
+<p>To give a concrete example, suppose you wished to train a stacked autoencoder with 2 hidden layers for classification of MNIST digits, as you will be doing in <a href="/stanford-ufldl/archive/wiki/Exercise__Implement_deep_networks_for_digit_classification" title="Exercise: Implement deep networks for digit classification"> the next exercise</a>. 
 </p><p>First, you would train a sparse autoencoder on the raw inputs <span class="texhtml"><i>x</i><sup>(<i>k</i>)</sup></span> to learn primary features <span class="texhtml"><i>h</i><sup>(1)(<i>k</i>)</sup></span> on the raw input.
-</p><p><a href="" class="image"><img alt="Stacked SparseAE Features1.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/0/0e/Stacked_SparseAE_Features1.png/400px-Stacked_SparseAE_Features1.png" width="400" height="547"/></a>
+</p><p><a href="" class="image"><img alt="Stacked SparseAE Features1.png" src="/stanford-ufldl/archive/wiki/images/thumb/0/0e/Stacked_SparseAE_Features1.png/400px-Stacked_SparseAE_Features1.png" width="400" height="547"/></a>
 </p><p>Next, you would feed the raw input into this trained sparse autoencoder, obtaining the primary feature activations <span class="texhtml"><i>h</i><sup>(1)(<i>k</i>)</sup></span> for each of the inputs <span class="texhtml"><i>x</i><sup>(<i>k</i>)</sup></span>. You would then use these primary features as the "raw input" to another sparse autoencoder to learn secondary features <span class="texhtml"><i>h</i><sup>(2)(<i>k</i>)</sup></span> on these primary features.
-</p><p><a href="" class="image"><img alt="Stacked SparseAE Features2.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/b/bf/Stacked_SparseAE_Features2.png/400px-Stacked_SparseAE_Features2.png" width="400" height="505"/></a>
+</p><p><a href="" class="image"><img alt="Stacked SparseAE Features2.png" src="/stanford-ufldl/archive/wiki/images/thumb/b/bf/Stacked_SparseAE_Features2.png/400px-Stacked_SparseAE_Features2.png" width="400" height="505"/></a>
 </p><p>Following this, you would feed the primary features into the second sparse autoencoder to obtain the secondary feature activations <span class="texhtml"><i>h</i><sup>(2)(<i>k</i>)</sup></span> for each of the primary features <span class="texhtml"><i>h</i><sup>(1)(<i>k</i>)</sup></span> (which correspond to the primary features of the corresponding inputs <span class="texhtml"><i>x</i><sup>(<i>k</i>)</sup></span>). You would then treat these secondary features as "raw input" to a softmax classifier, training it to map secondary features to digit labels.
-</p><p><a href="" class="image"><img alt="Stacked Softmax Classifier.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/6/6b/Stacked_Softmax_Classifier.png/400px-Stacked_Softmax_Classifier.png" width="400" height="352"/></a>
+</p><p><a href="" class="image"><img alt="Stacked Softmax Classifier.png" src="/stanford-ufldl/archive/wiki/images/thumb/6/6b/Stacked_Softmax_Classifier.png/400px-Stacked_Softmax_Classifier.png" width="400" height="352"/></a>
 </p><p>Finally, you would combine all three layers together to form a stacked autoencoder with 2 hidden layers and a final softmax classifier layer capable of classifying the MNIST digits as desired.
-</p><p><a href="" class="image"><img alt="Stacked Combined.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/5/5c/Stacked_Combined.png/500px-Stacked_Combined.png" width="500" height="434"/></a>
+</p><p><a href="" class="image"><img alt="Stacked Combined.png" src="/stanford-ufldl/archive/wiki/images/thumb/5/5c/Stacked_Combined.png/500px-Stacked_Combined.png" width="500" height="434"/></a>
 </p>
 <h3> <span class="mw-headline" id="Discussion">Discussion</span></h3>
 <p>A stacked autoencoder enjoys all the benefits of any deep network of greater expressive power.  
@@ -73,13 +73,13 @@ z^{(n + l + 1)} = W^{(n - l, 2)}a^{(n + l)} + b^{(n - l, 2)}
 </p><p><br/>
 </p>
 <div style="text-align: center;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
-<p><a href="/wayback-ufldl/stanford-ufldl/wiki/Self-Taught_Learning_to_Deep_Networks" title="Self-Taught Learning to Deep Networks"> From Self-Taught Learning to Deep Networks</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Deep_Networks__Overview" title="Deep Networks: Overview">Deep Networks: Overview</a> | <strong class="selflink">Stacked Autoencoders</strong> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Fine-tuning_Stacked_AEs" title="Fine-tuning Stacked AEs">Fine-tuning Stacked AEs</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise__Implement_deep_networks_for_digit_classification" title="Exercise: Implement deep networks for digit classification">Exercise: Implement deep networks for digit classification</a>
+<p><a href="/stanford-ufldl/archive/wiki/Self-Taught_Learning_to_Deep_Networks" title="Self-Taught Learning to Deep Networks"> From Self-Taught Learning to Deep Networks</a> | <a href="/stanford-ufldl/archive/wiki/Deep_Networks__Overview" title="Deep Networks: Overview">Deep Networks: Overview</a> | <strong class="selflink">Stacked Autoencoders</strong> | <a href="/stanford-ufldl/archive/wiki/Fine-tuning_Stacked_AEs" title="Fine-tuning Stacked AEs">Fine-tuning Stacked AEs</a> | <a href="/stanford-ufldl/archive/wiki/Exercise__Implement_deep_networks_for_digit_classification" title="Exercise: Implement deep networks for digit classification">Exercise: Implement deep networks for digit classification</a>
 </p>
 </div>
 <p><br/>
 </p>
 <div style="text-align: left;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
-<p>Language&nbsp;: <a href="/wayback-ufldl/stanford-ufldl/wiki/%E6%A0%88%E5%BC%8F%E8%87%AA%E7%BC%96%E7%A0%81%E7%AE%97%E6%B3%95" title="栈式自编码算法">中文</a>
+<p>Language&nbsp;: <a href="/stanford-ufldl/archive/wiki/%E6%A0%88%E5%BC%8F%E8%87%AA%E7%BC%96%E7%A0%81%E7%AE%97%E6%B3%95" title="栈式自编码算法">中文</a>
 </p>
 </div>
 
@@ -101,7 +101,7 @@ Expensive parser function count: 0/100
 		<h5>Views</h5>
 		<div class="pBody">
 			<ul>
-				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/Stacked_Autoencoders" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-nstab-main" class="selected"><a href="/stanford-ufldl/archive/wiki/Stacked_Autoencoders" title="View the content page [c]" accesskey="c">Page</a></li>
 				 <li id="ca-talk"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
 				 <li id="ca-viewsource"><a href="" title="This page is protected.
 You can view its source [e]" accesskey="e">View source</a></li>
@@ -117,15 +117,15 @@ You can view its source [e]" accesskey="e">View source</a></li>
 		</div>
 	</div>
 	<div class="portlet" id="p-logo">
-		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+		<a style="background-image: url(/stanford-ufldl/archive/wiki/skins/common/images/dolphin-openclipart.png);" href="/stanford-ufldl/archive/wiki/Main_Page" title="Visit the main page"></a>
 	</div>
 	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
 	<div class="generated-sidebar portlet" id="p-ufldl_resources">
 		<h5>ufldl resources</h5>
 		<div class="pBody">
 			<ul>
-				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
-				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+				<li id="n-UFLDL-Tutorial"><a href="/stanford-ufldl/archive/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/stanford-ufldl/archive/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
 			</ul>
 		</div>
 	</div>
@@ -133,7 +133,7 @@ You can view its source [e]" accesskey="e">View source</a></li>
 		<h5>wiki</h5>
 		<div class="pBody">
 			<ul>
-				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-mainpage-description"><a href="/stanford-ufldl/archive/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
 				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
 				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
 				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
@@ -166,9 +166,9 @@ You can view its source [e]" accesskey="e">View source</a></li>
 <div id="footer">
 	<ul id="f-list">
 		<li id="lastmod"> This page was last modified on 7 April 2013, at 13:33.</li>
-		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
-		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
-		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+		<li id="privacy"><a href="/stanford-ufldl/archive/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/stanford-ufldl/archive/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/stanford-ufldl/archive/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
 	</ul>
 </div>
 </div>

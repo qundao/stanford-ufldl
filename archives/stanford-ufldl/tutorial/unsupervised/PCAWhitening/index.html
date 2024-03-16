@@ -5,9 +5,9 @@
     <title>Unsupervised Feature Learning and Deep Learning Tutorial</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
-    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/bootstrap_readable.min.css" rel="stylesheet">
-    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/pygments/default.css" rel="stylesheet">
-    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/custom.css" rel="stylesheet">
+    <link href="/stanford-ufldl/archive/tutorial/css/bootstrap_readable.min.css" rel="stylesheet">
+    <link href="/stanford-ufldl/archive/tutorial/css/pygments/default.css" rel="stylesheet">
+    <link href="/stanford-ufldl/archive/tutorial/css/custom.css" rel="stylesheet">
     <script type="text/javascript"
           src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
     </script>
@@ -27,7 +27,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/wayback-ufldl/stanford-ufldl/tutorial/">UFLDL Tutorial</a>
+          <a class="navbar-brand" href="/stanford-ufldl/archive/tutorial/">UFLDL Tutorial</a>
         </div>
         <!---
         <div class="collapse navbar-collapse">
@@ -59,7 +59,7 @@
 
 <p>For our running example, we will use a dataset <m>\textstyle \{x^{(1)}, x^{(2)}, \ldots, x^{(m)}\}</m> with <m>\textstyle n=2</m> dimensional inputs, so that <m>\textstyle x^{(i)} \in \Re^2</m>. Suppose we want to reduce the data from 2 dimensions to 1. (In practice, we might want to reduce data from 256 to 50 dimensions, say; but using lower dimensional data in our example allows us to visualize the algorithms better.) Here is our dataset:</p>
 
-<p><img src='/wayback-ufldl/stanford-ufldl/tutorial/images/PCA-rawdata.png' width='100%' /></p>
+<p><img src='/stanford-ufldl/archive/tutorial/images/PCA-rawdata.png' width='100%' /></p>
 
 <p>This data has already been pre-processed so that each of the features <m>\textstyle x_1</m> and <m>\textstyle x_2</m> have about the same mean (zero) and variance.</p>
 
@@ -67,7 +67,7 @@
 
 <p>PCA will find a lower-dimensional subspace onto which to project our data.<br />From visually examining the data, it appears that <m>\textstyle u_1</m> is the principal direction of variation of the data, and <m>\textstyle u_2</m> the secondary direction of variation:</p>
 
-<p><img src='/wayback-ufldl/stanford-ufldl/tutorial/images/PCA-u1.png' width='100%' /></p>
+<p><img src='/stanford-ufldl/archive/tutorial/images/PCA-u1.png' width='100%' /></p>
 
 <p>I.e., the data varies much more in the direction <m>\textstyle u_1</m> than <m>\textstyle u_2</m>. To more formally find the directions <m>\textstyle u_1</m> and <m>\textstyle u_2</m>, we first compute the matrix <m>\textstyle \Sigma</m> as follows:</p>
 <m>\begin{align}
@@ -103,7 +103,7 @@ x_{\rm rot} = U^Tx = \begin{bmatrix} u_1^Tx \\ u_2^Tx \end{bmatrix}
 \end{align}</m>
 <p>(The subscript “rot” comes from the observation that this corresponds to a rotation (and possibly reflection) of the original data.) Lets take the entire training set, and compute <m>\textstyle x_{\rm rot}^{(i)} = U^Tx^{(i)}</m> for every <m>\textstyle i</m>. Plotting this transformed data <m>\textstyle x_{\rm rot}</m>, we get:</p>
 
-<p><img src='/wayback-ufldl/stanford-ufldl/tutorial/images/PCA-rotated.png' width='100%' /></p>
+<p><img src='/stanford-ufldl/archive/tutorial/images/PCA-rotated.png' width='100%' /></p>
 
 <p>This is the training set rotated into the <m>\textstyle u_1</m>,<m>\textstyle u_2</m> basis. In the general case, <m>\textstyle U^Tx</m> will be the training set rotated into the basis <m>\textstyle u_1</m>,<m>\textstyle u_2</m>, …,<m>\textstyle u_n</m>.</p>
 
@@ -145,7 +145,7 @@ x_{\rm rot,n}
 \end{align}</m>
 <p>In our example, this gives us the following plot of <m>\textstyle \tilde{x}</m> (using <m>\textstyle n=2, k=1</m>):</p>
 
-<p><img src='/wayback-ufldl/stanford-ufldl/tutorial/images/PCA-xtilde.png' width='100%' /></p>
+<p><img src='/stanford-ufldl/archive/tutorial/images/PCA-xtilde.png' width='100%' /></p>
 
 <p>However, since the final <m>\textstyle n-k</m> components of <m>\textstyle \tilde{x}</m> as defined above would always be zero, there is no need to keep these zeros around, and so we define <m>\textstyle \tilde{x}</m> as a <m>\textstyle k</m>-dimensional vector with just the first <m>\textstyle k</m> (non-zero) components.</p>
 
@@ -160,7 +160,7 @@ x_{\rm rot,n}
 \end{align}</m>
 <p>The final equality above comes from the definition of <m>\textstyle U</m> given earlier. (In a practical implementation, we wouldn’t actually zero pad <m>\textstyle \tilde{x}</m> and then multiply by <m>\textstyle U</m>, since that would mean multiplying a lot of things by zeros; instead, we’d just multiply <m>\textstyle \tilde{x} \in \Re^k</m> with the first <m>\textstyle k</m> columns of <m>\textstyle U</m> as in the final expression above.) Applying this to our dataset, we get the following plot for <m>\textstyle \hat{x}</m>:</p>
 
-<p><img src='/wayback-ufldl/stanford-ufldl/tutorial/images/PCA-xhat.png' width='100%' /></p>
+<p><img src='/stanford-ufldl/archive/tutorial/images/PCA-xhat.png' width='100%' /></p>
 
 <p>We are thus using a 1 dimensional approximation to the original dataset.</p>
 
@@ -217,7 +217,7 @@ x_{\rm rot,n}
 
 <p>How can we make our input features uncorrelated with each other? We had already done this when computing <m>\textstyle x_{\rm rot}^{(i)} = U^Tx^{(i)}</m>.<br />Repeating our previous figure, our plot for <m>\textstyle x_{\rm rot}</m> was:</p>
 
-<p><img src='/wayback-ufldl/stanford-ufldl/tutorial/images/PCA-rotated.png' width='100%' /></p>
+<p><img src='/stanford-ufldl/archive/tutorial/images/PCA-rotated.png' width='100%' /></p>
 
 <p>The covariance matrix of this data is given by:</p>
 <m>\begin{align}
@@ -236,7 +236,7 @@ x_{\rm PCAwhite,i} = \frac{x_{\rm rot,i} }{\sqrt{\lambda_i}}.
 \end{align}</m>
 <p>Plotting <m>\textstyle x_{\rm PCAwhite}</m>, we get:</p>
 
-<p><img src='/wayback-ufldl/stanford-ufldl/tutorial/images/PCA-whitened.png' width='100%' /></p>
+<p><img src='/stanford-ufldl/archive/tutorial/images/PCA-whitened.png' width='100%' /></p>
 
 <p>This data now has covariance equal to the identity matrix <m>\textstyle I</m>. We say that <m>\textstyle x_{\rm PCAwhite}</m> is our <strong>PCA whitened</strong> version of the data: The different components of <m>\textstyle x_{\rm PCAwhite}</m> are uncorrelated and have unit variance.</p>
 
@@ -252,7 +252,7 @@ x_{\rm ZCAwhite} = U x_{\rm PCAwhite}
 \end{align}</m>
 <p>Plotting <m>\textstyle x_{\rm ZCAwhite}</m>, we get:</p>
 
-<p><img src='/wayback-ufldl/stanford-ufldl/tutorial/images/ZCA-whitened.png' width='100%' /></p>
+<p><img src='/stanford-ufldl/archive/tutorial/images/ZCA-whitened.png' width='100%' /></p>
 
 <p>It can be shown that out of all possible choices for <m>\textstyle R</m>, this choice of rotation causes <m>\textstyle x_{\rm ZCAwhite}</m> to be as close as possible to the original input data <m>\textstyle x</m>.</p>
 
@@ -318,13 +318,13 @@ x_{\rm PCAwhite,i} = \frac{x_{\rm rot,i} }{\sqrt{\lambda_i + \epsilon}}.
     </div>
 
     <!-- Generate sidebar --->
-    <script src='/wayback-ufldl/stanford-ufldl/tutorial/sidebar/sidebar.js'></script>
+    <script src='/stanford-ufldl/archive/tutorial/sidebar/sidebar.js'></script>
     <script>
       function renderHeading(name) {
         return '<div class = "panel-heading">' + name + '</div>';
       };
       function renderItem(name, link) { 
-        return '<a href="/wayback-ufldl/stanford-ufldl/tutorial/' + link + '" class="list-group-item nav">' + name +
+        return '<a href="/stanford-ufldl/archive/tutorial/' + link + '" class="list-group-item nav">' + name +
           '</a>';
       };
       renderedHtml = '<div class = "panel panel-default">';
@@ -342,7 +342,7 @@ x_{\rm PCAwhite,i} = \frac{x_{\rm rot,i} }{\sqrt{\lambda_i + \epsilon}}.
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="//code.jquery.com/jquery.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="/wayback-ufldl/stanford-ufldl/tutorial/js/bootstrap.min.js"></script>
+    <script src="/stanford-ufldl/archive/tutorial/js/bootstrap.min.js"></script>
     <script>
       var inputs = document.getElementsByTagName("m");
       for (var i = 0; i < inputs.length; i++) { 

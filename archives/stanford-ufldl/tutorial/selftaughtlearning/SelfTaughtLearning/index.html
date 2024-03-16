@@ -5,9 +5,9 @@
     <title>Unsupervised Feature Learning and Deep Learning Tutorial</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
-    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/bootstrap_readable.min.css" rel="stylesheet">
-    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/pygments/default.css" rel="stylesheet">
-    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/custom.css" rel="stylesheet">
+    <link href="/stanford-ufldl/archive/tutorial/css/bootstrap_readable.min.css" rel="stylesheet">
+    <link href="/stanford-ufldl/archive/tutorial/css/pygments/default.css" rel="stylesheet">
+    <link href="/stanford-ufldl/archive/tutorial/css/custom.css" rel="stylesheet">
     <script type="text/javascript"
           src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
     </script>
@@ -27,7 +27,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/wayback-ufldl/stanford-ufldl/tutorial/">UFLDL Tutorial</a>
+          <a class="navbar-brand" href="/stanford-ufldl/archive/tutorial/">UFLDL Tutorial</a>
         </div>
         <!---
         <div class="collapse navbar-collapse">
@@ -62,11 +62,11 @@
 
 <p>We have already seen how RICA can be used to learn features from unlabeled data. Concretely, suppose we have an unlabeled training set <m>\textstyle \{ x_u^{(1)}, x_u^{(2)}, \ldots, x_u^{(m_u)}\}</m> with <m>\textstyle m_u</m> unlabeled examples. (The subscript “u” stands for “unlabeled.”) We can then train an RICA on this data (perhaps with appropriate whitening or other pre-processing):</p>
 
-<p><img src='/wayback-ufldl/stanford-ufldl/tutorial/images/STL_SparseAE.png' width='300px' /></p>
+<p><img src='/stanford-ufldl/archive/tutorial/images/STL_SparseAE.png' width='300px' /></p>
 
 <p>Having trained the parameters <m>\textstyle W^{(1)}</m> of this model, given any new input <m>\textstyle x</m>, we can now compute the corresponding vector of activations <m>\textstyle a</m> of the hidden units. As we saw previously, this often gives a better representation of the input than the original raw input <m>\textstyle x</m>. We can also visualize the algorithm for computing the features/activations <m>\textstyle a</m> as the following neural network:</p>
 
-<p><img src='/wayback-ufldl/stanford-ufldl/tutorial/images/STL_SparseAE_Features.png' width='300px' /></p>
+<p><img src='/stanford-ufldl/archive/tutorial/images/STL_SparseAE_Features.png' width='300px' /></p>
 
 <p>This is just the RICA that we previously had, with with the final layer removed.</p>
 
@@ -102,13 +102,13 @@ a_l^{(1)}), y^{(m_l)}) \}</m> (if we use the concatenated representation). In pr
     </div>
 
     <!-- Generate sidebar --->
-    <script src='/wayback-ufldl/stanford-ufldl/tutorial/sidebar/sidebar.js'></script>
+    <script src='/stanford-ufldl/archive/tutorial/sidebar/sidebar.js'></script>
     <script>
       function renderHeading(name) {
         return '<div class = "panel-heading">' + name + '</div>';
       };
       function renderItem(name, link) { 
-        return '<a href="/wayback-ufldl/stanford-ufldl/tutorial/' + link + '" class="list-group-item nav">' + name +
+        return '<a href="/stanford-ufldl/archive/tutorial/' + link + '" class="list-group-item nav">' + name +
           '</a>';
       };
       renderedHtml = '<div class = "panel panel-default">';
@@ -126,7 +126,7 @@ a_l^{(1)}), y^{(m_l)}) \}</m> (if we use the concatenated representation). In pr
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="//code.jquery.com/jquery.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="/wayback-ufldl/stanford-ufldl/tutorial/js/bootstrap.min.js"></script>
+    <script src="/stanford-ufldl/archive/tutorial/js/bootstrap.min.js"></script>
     <script>
       var inputs = document.getElementsByTagName("m");
       for (var i = 0; i < inputs.length; i++) { 

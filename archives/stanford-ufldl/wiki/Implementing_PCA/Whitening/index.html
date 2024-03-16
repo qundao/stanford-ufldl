@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Implementing PCA/Whitening - Ufldl</title>
-<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
-<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+<link rel="stylesheet" href="/stanford-ufldl/archive/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/stanford-ufldl/archive/wiki/skins/monobook/main.css" media="screen"/>
 
 </head>
 
@@ -28,52 +28,52 @@ and also describe how you can implement them using efficient linear algebra libr
 <pre>avg = mean(x, 1);    &nbsp;% Compute the mean pixel intensity value separately for each patch. 
 x = x - repmat(avg, size(x, 1), 1);
 </pre>
-<p>Next, we need to compute <img class="tex" alt="\textstyle \Sigma = \frac{1}{m} \sum_{i=1}^m (x^{(i)})(x^{(i)})^T" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/1/2/f12024bb76487f8a050f92a84b09278c.png"/>.  If you're implementing this in Matlab (or even if you're implementing this in C++, Java, etc., but have access to an efficient linear algebra library), doing it as an explicit sum is inefficient. Instead, we can compute this in one fell swoop as 
+<p>Next, we need to compute <img class="tex" alt="\textstyle \Sigma = \frac{1}{m} \sum_{i=1}^m (x^{(i)})(x^{(i)})^T" src="/stanford-ufldl/archive/wiki/images/math/f/1/2/f12024bb76487f8a050f92a84b09278c.png"/>.  If you're implementing this in Matlab (or even if you're implementing this in C++, Java, etc., but have access to an efficient linear algebra library), doing it as an explicit sum is inefficient. Instead, we can compute this in one fell swoop as 
 </p>
 <pre>sigma = x * x' / size(x, 2);
 </pre>
 <p>(Check the math yourself for correctness.) 
-Here, we assume that <span class="texhtml"><i>x</i></span> is a data structure that contains one training example per column (so, <span class="texhtml"><i>x</i></span> is a <img class="tex" alt="\textstyle n" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/c/5/0c59de0fa75c1baa1c024aabfa43b2e3.png"/>-by-<img class="tex" alt="\textstyle m" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/5/e/25e97e8a905fc2cb05d76cd4872a8567.png"/> matrix). 
+Here, we assume that <span class="texhtml"><i>x</i></span> is a data structure that contains one training example per column (so, <span class="texhtml"><i>x</i></span> is a <img class="tex" alt="\textstyle n" src="/stanford-ufldl/archive/wiki/images/math/0/c/5/0c59de0fa75c1baa1c024aabfa43b2e3.png"/>-by-<img class="tex" alt="\textstyle m" src="/stanford-ufldl/archive/wiki/images/math/2/5/e/25e97e8a905fc2cb05d76cd4872a8567.png"/> matrix). 
 </p><p>Next, PCA computes the eigenvectors of <span class="texhtml">&Sigma;</span>.  One could do this using the Matlab <tt>eig</tt> function.  However, because <span class="texhtml">&Sigma;</span> is a symmetric positive semi-definite matrix, it is more numerically reliable to do this using the <tt>svd</tt> function. Concretely, if you implement 
 </p>
 <pre>[U,S,V] = svd(sigma);
 </pre>
 <p>then the matrix <span class="texhtml"><i>U</i></span> will contain the eigenvectors of <span class="texhtml"><i>S</i><i>i</i><i>g</i><i>m</i><i>a</i></span> (one eigenvector per column,  sorted in order from top to bottom eigenvector), and the diagonal entries of the matrix <span class="texhtml"><i>S</i></span> will contain the corresponding eigenvalues (also sorted in decreasing order).  The matrix <span class="texhtml"><i>V</i></span> will be equal to transpose of <span class="texhtml"><i>U</i></span>, and can be safely ignored.
 </p><p>(Note: The <tt>svd</tt> function actually computes the singular vectors and singular values of a matrix, which for the special case of a symmetric positive semi-definite matrix---which is all that we're concerned with here---is equal to its eigenvectors and eigenvalues.  A full discussion of singular vectors vs. eigenvectors is beyond the scope of these notes.)
-</p><p>Finally, you can compute <img class="tex" alt="\textstyle x_{\rm rot}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/7/0/170047e804738636731477291969d554.png"/> and <img class="tex" alt="\textstyle \tilde{x}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/a/6/1a62e33dcf57261829692126a4dcd02d.png"/> as follows:
+</p><p>Finally, you can compute <img class="tex" alt="\textstyle x_{\rm rot}" src="/stanford-ufldl/archive/wiki/images/math/1/7/0/170047e804738636731477291969d554.png"/> and <img class="tex" alt="\textstyle \tilde{x}" src="/stanford-ufldl/archive/wiki/images/math/1/a/6/1a62e33dcf57261829692126a4dcd02d.png"/> as follows:
 </p>
 <pre>xRot = U' * x;         &nbsp;% rotated version of the data. 
 xTilde = U(:,1:k)' * x;&nbsp;% reduced dimension representation of the data, 
                        &nbsp;% where k is the number of eigenvectors to keep
 </pre>
-<p>This gives your PCA representation of the data in terms of <img class="tex" alt="\textstyle \tilde{x} \in \Re^k" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/1/3/21337248295f42f7fe18d9a9b3da57b1.png"/>. 
-Incidentally, if <span class="texhtml"><i>x</i></span> is a <img class="tex" alt="\textstyle n" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/c/5/0c59de0fa75c1baa1c024aabfa43b2e3.png"/>-by-<img class="tex" alt="\textstyle m" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/5/e/25e97e8a905fc2cb05d76cd4872a8567.png"/> matrix containing all your training data, this is a vectorized
+<p>This gives your PCA representation of the data in terms of <img class="tex" alt="\textstyle \tilde{x} \in \Re^k" src="/stanford-ufldl/archive/wiki/images/math/2/1/3/21337248295f42f7fe18d9a9b3da57b1.png"/>. 
+Incidentally, if <span class="texhtml"><i>x</i></span> is a <img class="tex" alt="\textstyle n" src="/stanford-ufldl/archive/wiki/images/math/0/c/5/0c59de0fa75c1baa1c024aabfa43b2e3.png"/>-by-<img class="tex" alt="\textstyle m" src="/stanford-ufldl/archive/wiki/images/math/2/5/e/25e97e8a905fc2cb05d76cd4872a8567.png"/> matrix containing all your training data, this is a vectorized
 implementation, and the expressions
-above work too for computing <span class="texhtml"><i>x</i><sub>rot</sub></span> and <img class="tex" alt="\tilde{x}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/1/8/51883bb93a4ebf4069a08b311c8bed76.png"/> for your entire training set
+above work too for computing <span class="texhtml"><i>x</i><sub>rot</sub></span> and <img class="tex" alt="\tilde{x}" src="/stanford-ufldl/archive/wiki/images/math/5/1/8/51883bb93a4ebf4069a08b311c8bed76.png"/> for your entire training set
 all in one go.  The resulting 
-<span class="texhtml"><i>x</i><sub>rot</sub></span> and <img class="tex" alt="\tilde{x}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/1/8/51883bb93a4ebf4069a08b311c8bed76.png"/> will have one column corresponding to each training example. 
-</p><p>To compute the PCA whitened data <img class="tex" alt="\textstyle x_{\rm PCAwhite}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/9/a/c9a6829ec8736d78ef1fb62a77564b53.png"/>, use 
+<span class="texhtml"><i>x</i><sub>rot</sub></span> and <img class="tex" alt="\tilde{x}" src="/stanford-ufldl/archive/wiki/images/math/5/1/8/51883bb93a4ebf4069a08b311c8bed76.png"/> will have one column corresponding to each training example. 
+</p><p>To compute the PCA whitened data <img class="tex" alt="\textstyle x_{\rm PCAwhite}" src="/stanford-ufldl/archive/wiki/images/math/c/9/a/c9a6829ec8736d78ef1fb62a77564b53.png"/>, use 
 </p>
 <pre>xPCAwhite = diag(1./sqrt(diag(S) + epsilon)) * U' * x;
 </pre>
-<p>Since <span class="texhtml"><i>S</i></span>'s diagonal contains the eigenvalues <img class="tex" alt="\textstyle \lambda_i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/3/5/23536ce45f0ee57fffa389163f8437bd.png"/>, 
+<p>Since <span class="texhtml"><i>S</i></span>'s diagonal contains the eigenvalues <img class="tex" alt="\textstyle \lambda_i" src="/stanford-ufldl/archive/wiki/images/math/2/3/5/23536ce45f0ee57fffa389163f8437bd.png"/>, 
 this turns out to be a compact way 
-of computing <img class="tex" alt="\textstyle x_{{\rm PCAwhite},i} = \frac{x_{{\rm rot},i} }{\sqrt{\lambda_i}}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/4/a/0/4a0f44026d3d8598a69070eb52e64698.png"/>
-simultaneously for all <img class="tex" alt="\textstyle i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/>.  
-</p><p>Finally, you can also compute the ZCA whitened data <img class="tex" alt="\textstyle x_{\rm ZCAwhite}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/6/6/a668553308d25ae0f796a9f92c807931.png"/> as:
+of computing <img class="tex" alt="\textstyle x_{{\rm PCAwhite},i} = \frac{x_{{\rm rot},i} }{\sqrt{\lambda_i}}" src="/stanford-ufldl/archive/wiki/images/math/4/a/0/4a0f44026d3d8598a69070eb52e64698.png"/>
+simultaneously for all <img class="tex" alt="\textstyle i" src="/stanford-ufldl/archive/wiki/images/math/0/b/3/0b36ee693126b34b58f77dba7ed23987.png"/>.  
+</p><p>Finally, you can also compute the ZCA whitened data <img class="tex" alt="\textstyle x_{\rm ZCAwhite}" src="/stanford-ufldl/archive/wiki/images/math/a/6/6/a668553308d25ae0f796a9f92c807931.png"/> as:
 </p>
 <pre>xZCAwhite = U * diag(1./sqrt(diag(S) + epsilon)) * U' * x;
 </pre>
 <p><br/>
 </p>
 <div style="text-align: center;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
-<p><a href="/wayback-ufldl/stanford-ufldl/wiki/PCA" title="PCA">PCA</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Whitening" title="Whitening">Whitening</a> | <strong class="selflink">Implementing PCA/Whitening</strong> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_PCA_in_2D" title="Exercise:PCA in 2D">Exercise:PCA in 2D</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_PCA_and_Whitening" title="Exercise:PCA and Whitening">Exercise:PCA and Whitening</a>
+<p><a href="/stanford-ufldl/archive/wiki/PCA" title="PCA">PCA</a> | <a href="/stanford-ufldl/archive/wiki/Whitening" title="Whitening">Whitening</a> | <strong class="selflink">Implementing PCA/Whitening</strong> | <a href="/stanford-ufldl/archive/wiki/Exercise_PCA_in_2D" title="Exercise:PCA in 2D">Exercise:PCA in 2D</a> | <a href="/stanford-ufldl/archive/wiki/Exercise_PCA_and_Whitening" title="Exercise:PCA and Whitening">Exercise:PCA and Whitening</a>
 </p>
 </div>
 <p><br/>
 </p>
 <div style="text-align: left;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
-<p>Language&nbsp;: <a href="/wayback-ufldl/stanford-ufldl/wiki/%E5%AE%9E%E7%8E%B0%E4%B8%BB%E6%88%90%E5%88%86%E5%88%86%E6%9E%90%E5%92%8C%E7%99%BD%E5%8C%96" title="实现主成分分析和白化">中文</a>
+<p>Language&nbsp;: <a href="/stanford-ufldl/archive/wiki/%E5%AE%9E%E7%8E%B0%E4%B8%BB%E6%88%90%E5%88%86%E5%88%86%E6%9E%90%E5%92%8C%E7%99%BD%E5%8C%96" title="实现主成分分析和白化">中文</a>
 </p>
 </div>
 
@@ -95,7 +95,7 @@ Expensive parser function count: 0/100
 		<h5>Views</h5>
 		<div class="pBody">
 			<ul>
-				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/Implementing_PCA/Whitening" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-nstab-main" class="selected"><a href="/stanford-ufldl/archive/wiki/Implementing_PCA/Whitening" title="View the content page [c]" accesskey="c">Page</a></li>
 				 <li id="ca-talk"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
 				 <li id="ca-viewsource"><a href="" title="This page is protected.
 You can view its source [e]" accesskey="e">View source</a></li>
@@ -111,15 +111,15 @@ You can view its source [e]" accesskey="e">View source</a></li>
 		</div>
 	</div>
 	<div class="portlet" id="p-logo">
-		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+		<a style="background-image: url(/stanford-ufldl/archive/wiki/skins/common/images/dolphin-openclipart.png);" href="/stanford-ufldl/archive/wiki/Main_Page" title="Visit the main page"></a>
 	</div>
 	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
 	<div class="generated-sidebar portlet" id="p-ufldl_resources">
 		<h5>ufldl resources</h5>
 		<div class="pBody">
 			<ul>
-				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
-				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+				<li id="n-UFLDL-Tutorial"><a href="/stanford-ufldl/archive/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/stanford-ufldl/archive/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
 			</ul>
 		</div>
 	</div>
@@ -127,7 +127,7 @@ You can view its source [e]" accesskey="e">View source</a></li>
 		<h5>wiki</h5>
 		<div class="pBody">
 			<ul>
-				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-mainpage-description"><a href="/stanford-ufldl/archive/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
 				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
 				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
 				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
@@ -160,9 +160,9 @@ You can view its source [e]" accesskey="e">View source</a></li>
 <div id="footer">
 	<ul id="f-list">
 		<li id="lastmod"> This page was last modified on 7 April 2013, at 13:22.</li>
-		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
-		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
-		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+		<li id="privacy"><a href="/stanford-ufldl/archive/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/stanford-ufldl/archive/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/stanford-ufldl/archive/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
 	</ul>
 </div>
 </div>

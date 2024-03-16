@@ -5,9 +5,9 @@
     <title>Unsupervised Feature Learning and Deep Learning Tutorial</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
-    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/bootstrap_readable.min.css" rel="stylesheet">
-    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/pygments/default.css" rel="stylesheet">
-    <link href="/wayback-ufldl/stanford-ufldl/tutorial/css/custom.css" rel="stylesheet">
+    <link href="/stanford-ufldl/archive/tutorial/css/bootstrap_readable.min.css" rel="stylesheet">
+    <link href="/stanford-ufldl/archive/tutorial/css/pygments/default.css" rel="stylesheet">
+    <link href="/stanford-ufldl/archive/tutorial/css/custom.css" rel="stylesheet">
     <script type="text/javascript"
           src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
     </script>
@@ -27,7 +27,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/wayback-ufldl/stanford-ufldl/tutorial/">UFLDL Tutorial</a>
+          <a class="navbar-brand" href="/stanford-ufldl/archive/tutorial/">UFLDL Tutorial</a>
         </div>
         <!---
         <div class="collapse navbar-collapse">
@@ -50,17 +50,17 @@
 <div class="post">
 <h3 id="overview">Overview</h3>
 
-<p>A Convolutional Neural Network (CNN) is comprised of one or more convolutional layers (often with a subsampling step) and then followed by one or more fully connected layers as in a standard <a href="/wayback-ufldl/stanford-ufldl/tutorial/supervised/MultiLayerNeuralNetworks">multilayer neural network</a>. The architecture of a CNN is designed to take advantage of the 2D structure of an input image (or other 2D input such as a speech signal). This is achieved with local connections and tied weights followed by some form of pooling which results in translation invariant features. Another benefit of CNNs is that they are easier to train and have many fewer parameters than fully connected networks with the same number of hidden units. In this article we will discuss the architecture of a CNN and the back propagation algorithm to compute the gradient with respect to the parameters of the model in order to use gradient based optimization. See the respective tutorials on <a href="/wayback-ufldl/stanford-ufldl/tutorial/supervised/FeatureExtractionUsingConvolution">convolution</a> and <a href="/wayback-ufldl/stanford-ufldl/tutorial/supervised/Pooling">pooling</a> for more details on those specific operations.</p>
+<p>A Convolutional Neural Network (CNN) is comprised of one or more convolutional layers (often with a subsampling step) and then followed by one or more fully connected layers as in a standard <a href="/stanford-ufldl/archive/tutorial/supervised/MultiLayerNeuralNetworks">multilayer neural network</a>. The architecture of a CNN is designed to take advantage of the 2D structure of an input image (or other 2D input such as a speech signal). This is achieved with local connections and tied weights followed by some form of pooling which results in translation invariant features. Another benefit of CNNs is that they are easier to train and have many fewer parameters than fully connected networks with the same number of hidden units. In this article we will discuss the architecture of a CNN and the back propagation algorithm to compute the gradient with respect to the parameters of the model in order to use gradient based optimization. See the respective tutorials on <a href="/stanford-ufldl/archive/tutorial/supervised/FeatureExtractionUsingConvolution">convolution</a> and <a href="/stanford-ufldl/archive/tutorial/supervised/Pooling">pooling</a> for more details on those specific operations.</p>
 
 <h3 id="architecture">Architecture</h3>
 
 <p>A CNN consists of a number of convolutional and subsampling layers optionally followed by fully connected layers. The input to a convolutional layer is a <m>m \text{ x } m \text{ x } r</m> image where <m>m</m> is the height and width of the image and <m>r</m> is the number of channels, e.g. an RGB image has <m>r=3</m>. The convolutional layer will have <m>k</m> filters (or kernels) of size <m>n \text{ x } n \text{ x } q</m> where <m>n</m> is smaller than the dimension of the image and <m>q</m> can either be the same as the number of channels <m>r</m> or smaller and may vary for each kernel. The size of the filters gives rise to the locally connected structure which are each convolved with the image to produce <m>k</m> feature maps of size <m>m-n+1</m>. Each map is then subsampled typically with mean or max pooling over <m>p \text{ x } p</m> contiguous regions where p ranges between 2 for small images (e.g. MNIST) and is usually not more than 5 for larger inputs. Either before or after the subsampling layer an additive bias and sigmoidal nonlinearity is applied to each feature map. The figure below illustrates a full layer in a CNN consisting of convolutional and subsampling sublayers. Units of the same color have tied weights.</p>
 <center>
-<img src='/wayback-ufldl/stanford-ufldl/tutorial/images/Cnn_layer.png' />
+<img src='/stanford-ufldl/archive/tutorial/images/Cnn_layer.png' />
 </center><center>
 <p style='width:600px'>Fig 1: First layer of a convolutional neural network with pooling. Units of the same color have tied weights and units of different color represent different filter maps.</p>
 </center>
-<p>After the convolutional layers there may be any number of fully connected layers. The densely connected layers are identical to the layers in a standard <a href="/wayback-ufldl/stanford-ufldl/tutorial/supervised/MultiLayerNeuralNetworks">multilayer neural network</a>.</p>
+<p>After the convolutional layers there may be any number of fully connected layers. The densely connected layers are identical to the layers in a standard <a href="/stanford-ufldl/archive/tutorial/supervised/MultiLayerNeuralNetworks">multilayer neural network</a>.</p>
 
 <h3 id="back_propagation">Back Propagation</h3>
 
@@ -85,7 +85,7 @@
 </m>
 <p>Where <m>k</m> indexes the filter number and <m>f'(z_k^{(l)})</m> is the derivative of the activation function. The <code>upsample</code> operation has to propagate the error through the pooling layer by calculating the error w.r.t to each unit incoming to the pooling layer. For example, if we have mean pooling then <code>upsample</code> simply uniformly distributes the error for a single pooling unit among the units which feed into it in the previous layer. In max pooling the unit which was chosen as the max receives all the error since very small changes in input would perturb the result only through that unit.</p>
 
-<p>Finally, to calculate the gradient w.r.t to the filter maps, we rely on the border handling convolution operation again and flip the error matrix <m>\delta_k^{(l)}</m> the same way we flip the filters in the <a href="/wayback-ufldl/stanford-ufldl/tutorial/supervised/FeatureExtractionUsingConvolution">convolutional layer</a>.</p>
+<p>Finally, to calculate the gradient w.r.t to the filter maps, we rely on the border handling convolution operation again and flip the error matrix <m>\delta_k^{(l)}</m> the same way we flip the filters in the <a href="/stanford-ufldl/archive/tutorial/supervised/FeatureExtractionUsingConvolution">convolutional layer</a>.</p>
 <m>
    \begin{align}
      \nabla_{W_k^{(l)}} J(W,b;x,y) &amp;= \sum_{i=1}^m (a_i^{(l)}) \ast \text{rot90}(\delta_k^{(l+1)},2), \\
@@ -104,13 +104,13 @@
     </div>
 
     <!-- Generate sidebar --->
-    <script src='/wayback-ufldl/stanford-ufldl/tutorial/sidebar/sidebar.js'></script>
+    <script src='/stanford-ufldl/archive/tutorial/sidebar/sidebar.js'></script>
     <script>
       function renderHeading(name) {
         return '<div class = "panel-heading">' + name + '</div>';
       };
       function renderItem(name, link) { 
-        return '<a href="/wayback-ufldl/stanford-ufldl/tutorial/' + link + '" class="list-group-item nav">' + name +
+        return '<a href="/stanford-ufldl/archive/tutorial/' + link + '" class="list-group-item nav">' + name +
           '</a>';
       };
       renderedHtml = '<div class = "panel panel-default">';
@@ -128,7 +128,7 @@
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="//code.jquery.com/jquery.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="/wayback-ufldl/stanford-ufldl/tutorial/js/bootstrap.min.js"></script>
+    <script src="/stanford-ufldl/archive/tutorial/js/bootstrap.min.js"></script>
     <script>
       var inputs = document.getElementsByTagName("m");
       for (var i = 0; i < inputs.length; i++) { 

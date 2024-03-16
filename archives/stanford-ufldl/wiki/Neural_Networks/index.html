@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Neural Networks - Ufldl</title>
-<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
-<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+<link rel="stylesheet" href="/stanford-ufldl/archive/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/stanford-ufldl/archive/wiki/skins/monobook/main.css" media="screen"/>
 
 </head>
 
@@ -28,15 +28,15 @@ fit to our data.
 neural network, one which comprises a single "neuron."  We will use the following
 diagram to denote a single neuron:
 </p>
-<div class="center"><div class="floatnone"><a href="" class="image"><img alt="SingleNeuron.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/3/3d/SingleNeuron.png/300px-SingleNeuron.png" width="300" height="148"/></a></div></div>
+<div class="center"><div class="floatnone"><a href="" class="image"><img alt="SingleNeuron.png" src="/stanford-ufldl/archive/wiki/images/thumb/3/3d/SingleNeuron.png/300px-SingleNeuron.png" width="300" height="148"/></a></div></div>
 <p>This "neuron" is a computational unit that takes as input <span class="texhtml"><i>x</i><sub>1</sub>,<i>x</i><sub>2</sub>,<i>x</i><sub>3</sub></span> (and a +1 intercept term), and
-outputs <img class="tex" alt="\textstyle h_{W,b}(x) = f(W^Tx) = f(\sum_{i=1}^3 W_{i}x_i +b)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/9/f/89f1f9e549b908834d9fedca36d07bd4.png"/>, where <img class="tex" alt="f : \Re \mapsto \Re" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/b/4/1b46053bca8c30163f849554243a6061.png"/> is
+outputs <img class="tex" alt="\textstyle h_{W,b}(x) = f(W^Tx) = f(\sum_{i=1}^3 W_{i}x_i +b)" src="/stanford-ufldl/archive/wiki/images/math/8/9/f/89f1f9e549b908834d9fedca36d07bd4.png"/>, where <img class="tex" alt="f : \Re \mapsto \Re" src="/stanford-ufldl/archive/wiki/images/math/1/b/4/1b46053bca8c30163f849554243a6061.png"/> is
 called the <b>activation function</b>.  In these notes, we will choose
-<img class="tex" alt="f(\cdot)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/1/0/a1044326f95cfbf46f9859c97cf280be.png"/> to be the sigmoid function:
+<img class="tex" alt="f(\cdot)" src="/stanford-ufldl/archive/wiki/images/math/a/1/0/a1044326f95cfbf46f9859c97cf280be.png"/> to be the sigmoid function:
 </p>
 <dl><dd><img class="tex" alt="
 f(z) = \frac{1}{1+\exp(-z)}.
-" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/e/5/ce5df10952ab30aa868f44db2f77486b.png"/>
+" src="/stanford-ufldl/archive/wiki/images/math/c/e/5/ce5df10952ab30aa868f44db2f77486b.png"/>
 </dd></dl>
 <p>Thus, our single
 neuron corresponds exactly to the input-output mapping defined by logistic regression.
@@ -45,14 +45,14 @@ another common choice for <span class="texhtml"><i>f</i></span> is the hyperboli
 </p>
 <dl><dd><img class="tex" alt="
 f(z) = \tanh(z) = \frac{e^z - e^{-z}}{e^z + e^{-z}},  
-" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/9/0/a9025d0884453bd5898c9681e871b3fb.png"/>
+" src="/stanford-ufldl/archive/wiki/images/math/a/9/0/a9025d0884453bd5898c9681e871b3fb.png"/>
 </dd></dl>
 <p>Here are plots of the sigmoid and <span class="texhtml">tanh</span> functions:
 </p><p><br/>
 </p>
 <div align="center">
-<p><a href="" class="image" title="Sigmoid activation function."><img alt="Sigmoid activation function." src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/c/ca/Sigmoid_Function.png/400px-Sigmoid_Function.png" width="400" height="300" style="vertical-align: top"/></a>
-<a href="" class="image" title="Tanh activation function."><img alt="Tanh activation function." src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/a/aa/Tanh_Function.png/400px-Tanh_Function.png" width="400" height="300" style="vertical-align: top"/></a>
+<p><a href="" class="image" title="Sigmoid activation function."><img alt="Sigmoid activation function." src="/stanford-ufldl/archive/wiki/images/thumb/c/ca/Sigmoid_Function.png/400px-Sigmoid_Function.png" width="400" height="300" style="vertical-align: top"/></a>
+<a href="" class="image" title="Tanh activation function."><img alt="Tanh activation function." src="/stanford-ufldl/archive/wiki/images/thumb/a/aa/Tanh_Function.png/400px-Tanh_Function.png" width="400" height="300" style="vertical-align: top"/></a>
 </p>
 </div>
 <p>The <span class="texhtml">tanh(<i>z</i>)</span> function is a rescaled version of the sigmoid, and its output range is
@@ -71,7 +71,7 @@ the sigmoid (or tanh) function.
 "neurons," so that the output of a neuron can be the input of another.  For
 example, here is a small neural network:
 </p>
-<div class="center"><div class="floatnone"><a href="" class="image"><img alt="Network331.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/9/99/Network331.png/400px-Network331.png" width="400" height="282"/></a></div></div>
+<div class="center"><div class="floatnone"><a href="" class="image"><img alt="Network331.png" src="/stanford-ufldl/archive/wiki/images/thumb/9/99/Network331.png/400px-Network331.png" width="400" height="282"/></a></div></div>
 <p>In this figure, we have used circles to also denote the inputs to the network.  The circles
 labeled "+1" are called <b>bias units</b>, and correspond to the intercept term.
 The leftmost layer of the network is called the <b>input layer</b>, and the
@@ -82,17 +82,17 @@ neural network has 3 <b>input units</b> (not counting the bias unit), 3
 <b>hidden units</b>, and 1 <b>output unit</b>.
 </p><p>We will let <span class="texhtml"><i>n</i><sub><i>l</i></sub></span>
 denote the number of layers in our network; thus <span class="texhtml"><i>n</i><sub><i>l</i></sub> = 3</span> in our example.  We label layer <span class="texhtml"><i>l</i></span> as
-<span class="texhtml"><i>L</i><sub><i>l</i></sub></span>, so layer <span class="texhtml"><i>L</i><sub>1</sub></span> is the input layer, and layer <img class="tex" alt="L_{n_l}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/6/3/763f726de36c3e92b1ac9b84e9f7f778.png"/> the output layer.
+<span class="texhtml"><i>L</i><sub><i>l</i></sub></span>, so layer <span class="texhtml"><i>L</i><sub>1</sub></span> is the input layer, and layer <img class="tex" alt="L_{n_l}" src="/stanford-ufldl/archive/wiki/images/math/7/6/3/763f726de36c3e92b1ac9b84e9f7f778.png"/> the output layer.
 Our neural network has parameters <span class="texhtml">(<i>W</i>,<i>b</i>) = (<i>W</i><sup>(1)</sup>,<i>b</i><sup>(1)</sup>,<i>W</i><sup>(2)</sup>,<i>b</i><sup>(2)</sup>)</span>, where
 we write
-<img class="tex" alt="W^{(l)}_{ij}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/1/8/9183f327132cdf5ca9876aa4038f6e2f.png"/> to denote the parameter (or weight) associated with the connection
+<img class="tex" alt="W^{(l)}_{ij}" src="/stanford-ufldl/archive/wiki/images/math/9/1/8/9183f327132cdf5ca9876aa4038f6e2f.png"/> to denote the parameter (or weight) associated with the connection
 between unit <span class="texhtml"><i>j</i></span> in layer <span class="texhtml"><i>l</i></span>, and unit <span class="texhtml"><i>i</i></span> in layer <span class="texhtml"><i>l</i> + 1</span>.  (Note the order of the indices.)
-Also, <img class="tex" alt="b^{(l)}_i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/e/a/6ea0ff7533b239d7ad97668ee35c259d.png"/> is the bias associated with unit <span class="texhtml"><i>i</i></span> in layer <span class="texhtml"><i>l</i> + 1</span>.
-Thus, in our example, we have <img class="tex" alt="W^{(1)} \in \Re^{3\times 3}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/1/b/f1b59a0d1b84461c5d4055909c08a4c9.png"/>, and <img class="tex" alt="W^{(2)} \in \Re^{1\times 3}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/5/2/552e1f3f4374b17f80228e0ecc8b9762.png"/>.
+Also, <img class="tex" alt="b^{(l)}_i" src="/stanford-ufldl/archive/wiki/images/math/6/e/a/6ea0ff7533b239d7ad97668ee35c259d.png"/> is the bias associated with unit <span class="texhtml"><i>i</i></span> in layer <span class="texhtml"><i>l</i> + 1</span>.
+Thus, in our example, we have <img class="tex" alt="W^{(1)} \in \Re^{3\times 3}" src="/stanford-ufldl/archive/wiki/images/math/f/1/b/f1b59a0d1b84461c5d4055909c08a4c9.png"/>, and <img class="tex" alt="W^{(2)} \in \Re^{1\times 3}" src="/stanford-ufldl/archive/wiki/images/math/5/5/2/552e1f3f4374b17f80228e0ecc8b9762.png"/>.
 Note that bias units don't have inputs or connections going into them, since they always output
 the value +1.  We also let <span class="texhtml"><i>s</i><sub><i>l</i></sub></span> denote the number of nodes in layer <span class="texhtml"><i>l</i></span> (not counting the bias unit).
-</p><p>We will write <img class="tex" alt="a^{(l)}_i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/f/1/2f12132475b24d761ca573173962be9b.png"/> to denote the <b>activation</b> (meaning output value) of
-unit <span class="texhtml"><i>i</i></span> in layer <span class="texhtml"><i>l</i></span>.  For <span class="texhtml"><i>l</i> = 1</span>, we also use <img class="tex" alt="a^{(1)}_i = x_i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/6/f/66f2ade33e4ad1fcfb34f814545193d7.png"/> to denote the <span class="texhtml"><i>i</i></span>-th input.
+</p><p>We will write <img class="tex" alt="a^{(l)}_i" src="/stanford-ufldl/archive/wiki/images/math/2/f/1/2f12132475b24d761ca573173962be9b.png"/> to denote the <b>activation</b> (meaning output value) of
+unit <span class="texhtml"><i>i</i></span> in layer <span class="texhtml"><i>l</i></span>.  For <span class="texhtml"><i>l</i> = 1</span>, we also use <img class="tex" alt="a^{(1)}_i = x_i" src="/stanford-ufldl/archive/wiki/images/math/6/6/f/66f2ade33e4ad1fcfb34f814545193d7.png"/> to denote the <span class="texhtml"><i>i</i></span>-th input.
 Given a fixed setting of
 the parameters <span class="texhtml"><i>W</i>,<i>b</i></span>, our neural
 network defines a hypothesis <span class="texhtml"><i>h</i><sub><i>W</i>,<i>b</i></sub>(<i>x</i>)</span> that outputs a real number.  Specifically, the
@@ -105,13 +105,13 @@ a_2^{(2)} &amp;= f(W_{21}^{(1)}x_1 + W_{22}^{(1)} x_2 + W_{23}^{(1)} x_3 + b_2^{
 a_3^{(2)} &amp;= f(W_{31}^{(1)}x_1 + W_{32}^{(1)} x_2 + W_{33}^{(1)} x_3 + b_3^{(1)})  \\
 h_{W,b}(x) &amp;= a_1^{(3)} =  f(W_{11}^{(2)}a_1^{(2)} + W_{12}^{(2)} a_2^{(2)} + W_{13}^{(2)} a_3^{(2)} + b_1^{(2)}) 
 \end{align}
-" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/d/e/fde22a388f607f526f03644c71a72f92.png"/>
+" src="/stanford-ufldl/archive/wiki/images/math/f/d/e/fde22a388f607f526f03644c71a72f92.png"/>
 </dd></dl>
-<p>In the sequel, we also let <img class="tex" alt="z^{(l)}_i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/0/5/3/053932a35e5e7923d66bfd5cbc15b280.png"/> denote the total weighted sum of inputs to unit <span class="texhtml"><i>i</i></span> in layer <span class="texhtml"><i>l</i></span>,
-including the bias term (e.g., <img class="tex" alt="\textstyle z_i^{(2)} = \sum_{j=1}^n W^{(1)}_{ij} x_j + b^{(1)}_i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/a/e/aae7340fe1eb75c824b8abc107c3db27.png"/>), so that
-<img class="tex" alt="a^{(l)}_i = f(z^{(l)}_i)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/4/9/0/49021bbf2ba72dad62e1e785a8f44d14.png"/>.
+<p>In the sequel, we also let <img class="tex" alt="z^{(l)}_i" src="/stanford-ufldl/archive/wiki/images/math/0/5/3/053932a35e5e7923d66bfd5cbc15b280.png"/> denote the total weighted sum of inputs to unit <span class="texhtml"><i>i</i></span> in layer <span class="texhtml"><i>l</i></span>,
+including the bias term (e.g., <img class="tex" alt="\textstyle z_i^{(2)} = \sum_{j=1}^n W^{(1)}_{ij} x_j + b^{(1)}_i" src="/stanford-ufldl/archive/wiki/images/math/a/a/e/aae7340fe1eb75c824b8abc107c3db27.png"/>), so that
+<img class="tex" alt="a^{(l)}_i = f(z^{(l)}_i)" src="/stanford-ufldl/archive/wiki/images/math/4/9/0/49021bbf2ba72dad62e1e785a8f44d14.png"/>.
 </p><p>Note that this easily lends itself to a more compact notation.  Specifically, if we extend the
-activation function <img class="tex" alt="f(\cdot)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/1/0/a1044326f95cfbf46f9859c97cf280be.png"/>
+activation function <img class="tex" alt="f(\cdot)" src="/stanford-ufldl/archive/wiki/images/math/a/1/0/a1044326f95cfbf46f9859c97cf280be.png"/>
 to apply to vectors in an element-wise fashion (i.e.,
 <span class="texhtml"><i>f</i>([<i>z</i><sub>1</sub>,<i>z</i><sub>2</sub>,<i>z</i><sub>3</sub>]) = [<i>f</i>(<i>z</i><sub>1</sub>),<i>f</i>(<i>z</i><sub>2</sub>),<i>f</i>(<i>z</i><sub>3</sub>)]</span>), then we can write
 the equations above more
@@ -122,7 +122,7 @@ z^{(2)} &amp;= W^{(1)} x + b^{(1)} \\
 a^{(2)} &amp;= f(z^{(2)}) \\
 z^{(3)} &amp;= W^{(2)} a^{(2)} + b^{(2)} \\
 h_{W,b}(x) &amp;= a^{(3)} = f(z^{(3)})
-\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/6/9/9690acc03c1e5133b0509257b532b4f7.png"/>
+\end{align}" src="/stanford-ufldl/archive/wiki/images/math/9/6/9/9690acc03c1e5133b0509257b532b4f7.png"/>
 </dd></dl>
 <p>We call this step <b>forward propagation.</b>  More generally, recalling that we also use <span class="texhtml"><i>a</i><sup>(1)</sup> = <i>x</i></span> to also denote the values from the input layer,
 then given layer <span class="texhtml"><i>l</i></span>'s activations <span class="texhtml"><i>a</i><sup>(<i>l</i>)</sup></span>, we can compute layer <span class="texhtml"><i>l</i> + 1</span>'s activations <span class="texhtml"><i>a</i><sup>(<i>l</i> + 1)</sup></span> as:
@@ -130,27 +130,27 @@ then given layer <span class="texhtml"><i>l</i></span>'s activations <span class
 <dl><dd><img class="tex" alt="\begin{align}
 z^{(l+1)} &amp;= W^{(l)} a^{(l)} + b^{(l)}   \\
 a^{(l+1)} &amp;= f(z^{(l+1)})
-\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/c/f/5cfcbbe6d55b6c882f56a85a57eafe6e.png"/>
+\end{align}" src="/stanford-ufldl/archive/wiki/images/math/5/c/f/5cfcbbe6d55b6c882f56a85a57eafe6e.png"/>
 </dd></dl>
 <p>By organizing our parameters in matrices and using matrix-vector operations, we can take
 advantage of fast linear algebra routines to quickly perform calculations in our network.
 </p><p><br/>
 We have so far focused on one example neural network, but one can also build neural
 networks with other <b>architectures</b> (meaning patterns of connectivity between neurons), including ones with multiple hidden layers.
-The most common choice is a <img class="tex" alt="\textstyle n_l" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/b/7/5b7a0657fdea25f29866c8e1d6e884ac.png"/>-layered network
-where layer <img class="tex" alt="\textstyle 1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/e/9/6e924e04b5c9d4c5be131609a038b821.png"/> is the input layer, layer <img class="tex" alt="\textstyle n_l" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/5/b/7/5b7a0657fdea25f29866c8e1d6e884ac.png"/> is the output layer, and each
-layer <img class="tex" alt="\textstyle l" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/a/0/ba0593b3db2fa8535b077516f4b0d70b.png"/> is densely connected to layer <img class="tex" alt="\textstyle l+1" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/0/6/9068105ec8ebb97277c937bfa61b606d.png"/>.  In this setting, to compute the
+The most common choice is a <img class="tex" alt="\textstyle n_l" src="/stanford-ufldl/archive/wiki/images/math/5/b/7/5b7a0657fdea25f29866c8e1d6e884ac.png"/>-layered network
+where layer <img class="tex" alt="\textstyle 1" src="/stanford-ufldl/archive/wiki/images/math/6/e/9/6e924e04b5c9d4c5be131609a038b821.png"/> is the input layer, layer <img class="tex" alt="\textstyle n_l" src="/stanford-ufldl/archive/wiki/images/math/5/b/7/5b7a0657fdea25f29866c8e1d6e884ac.png"/> is the output layer, and each
+layer <img class="tex" alt="\textstyle l" src="/stanford-ufldl/archive/wiki/images/math/b/a/0/ba0593b3db2fa8535b077516f4b0d70b.png"/> is densely connected to layer <img class="tex" alt="\textstyle l+1" src="/stanford-ufldl/archive/wiki/images/math/9/0/6/9068105ec8ebb97277c937bfa61b606d.png"/>.  In this setting, to compute the
 output of the network, we can successively compute all the activations in layer
-<img class="tex" alt="\textstyle L_2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/f/7/cf7d186efd913f4fb9ceb939bf5135c4.png"/>, then layer <img class="tex" alt="\textstyle L_3" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/9/b/d9b949d768ca8bab18830d9efc3fa441.png"/>, and so on, up to layer <img class="tex" alt="\textstyle L_{n_l}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/2/2/1/221a7296664022427d488fdb9b14b19b.png"/>, using the equations above that describe the forward propagation step.  This is one
+<img class="tex" alt="\textstyle L_2" src="/stanford-ufldl/archive/wiki/images/math/c/f/7/cf7d186efd913f4fb9ceb939bf5135c4.png"/>, then layer <img class="tex" alt="\textstyle L_3" src="/stanford-ufldl/archive/wiki/images/math/d/9/b/d9b949d768ca8bab18830d9efc3fa441.png"/>, and so on, up to layer <img class="tex" alt="\textstyle L_{n_l}" src="/stanford-ufldl/archive/wiki/images/math/2/2/1/221a7296664022427d488fdb9b14b19b.png"/>, using the equations above that describe the forward propagation step.  This is one
 example of a <b>feedforward</b> neural network, since the connectivity graph
 does not have any directed loops or cycles.
 </p><p><br/>
 Neural networks can also have multiple output units.  For example, here is a network
 with two hidden layers layers <span class="texhtml"><i>L</i><sub>2</sub></span> and <span class="texhtml"><i>L</i><sub>3</sub></span> and two output units in layer <span class="texhtml"><i>L</i><sub>4</sub></span>:
 </p>
-<div class="center"><div class="floatnone"><a href="" class="image"><img alt="Network3322.png" src="/wayback-ufldl/stanford-ufldl/wiki/images/thumb/4/40/Network3322.png/500px-Network3322.png" width="500" height="274"/></a></div></div>
+<div class="center"><div class="floatnone"><a href="" class="image"><img alt="Network3322.png" src="/stanford-ufldl/archive/wiki/images/thumb/4/40/Network3322.png/500px-Network3322.png" width="500" height="274"/></a></div></div>
 <p>To train this network, we would need training examples <span class="texhtml">(<i>x</i><sup>(<i>i</i>)</sup>,<i>y</i><sup>(<i>i</i>)</sup>)</span>
-where <img class="tex" alt="y^{(i)} \in \Re^2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/d/7/cd7718ae0161c845e716767f06285af0.png"/>.  This sort of network is useful if there're multiple
+where <img class="tex" alt="y^{(i)} \in \Re^2" src="/stanford-ufldl/archive/wiki/images/math/c/d/7/cd7718ae0161c845e716767f06285af0.png"/>.  This sort of network is useful if there're multiple
 outputs that you're interested in predicting.  (For example, in a medical
 diagnosis application, the vector <span class="texhtml"><i>x</i></span> might give the input features of a
 patient, and the different outputs <span class="texhtml"><i>y</i><sub><i>i</i></sub></span>'s might indicate presence or absence
@@ -158,13 +158,13 @@ of different diseases.)
 </p><p><br/>
 </p>
 <div style="text-align: center;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
-<p><strong class="selflink">Neural Networks</strong> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Backpropagation_Algorithm" title="Backpropagation Algorithm">Backpropagation Algorithm</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Gradient_checking_and_advanced_optimization" title="Gradient checking and advanced optimization">Gradient checking and advanced optimization</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Autoencoders_and_Sparsity" title="Autoencoders and Sparsity">Autoencoders and Sparsity</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Visualizing_a_Trained_Autoencoder" title="Visualizing a Trained Autoencoder">Visualizing a Trained Autoencoder</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Sparse_Autoencoder_Notation_Summary" title="Sparse Autoencoder Notation Summary">Sparse Autoencoder Notation Summary</a> | <a href="/wayback-ufldl/stanford-ufldl/wiki/Exercise_Sparse_Autoencoder" title="Exercise:Sparse Autoencoder">Exercise:Sparse Autoencoder</a>
+<p><strong class="selflink">Neural Networks</strong> | <a href="/stanford-ufldl/archive/wiki/Backpropagation_Algorithm" title="Backpropagation Algorithm">Backpropagation Algorithm</a> | <a href="/stanford-ufldl/archive/wiki/Gradient_checking_and_advanced_optimization" title="Gradient checking and advanced optimization">Gradient checking and advanced optimization</a> | <a href="/stanford-ufldl/archive/wiki/Autoencoders_and_Sparsity" title="Autoencoders and Sparsity">Autoencoders and Sparsity</a> | <a href="/stanford-ufldl/archive/wiki/Visualizing_a_Trained_Autoencoder" title="Visualizing a Trained Autoencoder">Visualizing a Trained Autoencoder</a> | <a href="/stanford-ufldl/archive/wiki/Sparse_Autoencoder_Notation_Summary" title="Sparse Autoencoder Notation Summary">Sparse Autoencoder Notation Summary</a> | <a href="/stanford-ufldl/archive/wiki/Exercise_Sparse_Autoencoder" title="Exercise:Sparse Autoencoder">Exercise:Sparse Autoencoder</a>
 </p>
 </div>
 <p><br/>
 </p>
 <div style="text-align: left;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
-<p>Language&nbsp;: <a href="/wayback-ufldl/stanford-ufldl/wiki/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C" title="神经网络">中文</a>
+<p>Language&nbsp;: <a href="/stanford-ufldl/archive/wiki/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C" title="神经网络">中文</a>
 </p>
 </div>
 
@@ -186,7 +186,7 @@ Expensive parser function count: 0/100
 		<h5>Views</h5>
 		<div class="pBody">
 			<ul>
-				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/Neural_Networks" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-nstab-main" class="selected"><a href="/stanford-ufldl/archive/wiki/Neural_Networks" title="View the content page [c]" accesskey="c">Page</a></li>
 				 <li id="ca-talk" class="new"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
 				 <li id="ca-viewsource"><a href="" title="This page is protected.
 You can view its source [e]" accesskey="e">View source</a></li>
@@ -202,15 +202,15 @@ You can view its source [e]" accesskey="e">View source</a></li>
 		</div>
 	</div>
 	<div class="portlet" id="p-logo">
-		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+		<a style="background-image: url(/stanford-ufldl/archive/wiki/skins/common/images/dolphin-openclipart.png);" href="/stanford-ufldl/archive/wiki/Main_Page" title="Visit the main page"></a>
 	</div>
 	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
 	<div class="generated-sidebar portlet" id="p-ufldl_resources">
 		<h5>ufldl resources</h5>
 		<div class="pBody">
 			<ul>
-				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
-				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+				<li id="n-UFLDL-Tutorial"><a href="/stanford-ufldl/archive/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/stanford-ufldl/archive/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
 			</ul>
 		</div>
 	</div>
@@ -218,7 +218,7 @@ You can view its source [e]" accesskey="e">View source</a></li>
 		<h5>wiki</h5>
 		<div class="pBody">
 			<ul>
-				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-mainpage-description"><a href="/stanford-ufldl/archive/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
 				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
 				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
 				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
@@ -251,9 +251,9 @@ You can view its source [e]" accesskey="e">View source</a></li>
 <div id="footer">
 	<ul id="f-list">
 		<li id="lastmod"> This page was last modified on 6 April 2013, at 19:38.</li>
-		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
-		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
-		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+		<li id="privacy"><a href="/stanford-ufldl/archive/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/stanford-ufldl/archive/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/stanford-ufldl/archive/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
 	</ul>
 </div>
 </div>

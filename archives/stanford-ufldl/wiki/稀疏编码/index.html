@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>稀疏编码 - Ufldl</title>
-<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/common/shared.css" media="screen"/>
-<link rel="stylesheet" href="/wayback-ufldl/stanford-ufldl/wiki/skins/monobook/main.css" media="screen"/>
+<link rel="stylesheet" href="/stanford-ufldl/archive/wiki/skins/common/shared.css" media="screen"/>
+<link rel="stylesheet" href="/stanford-ufldl/archive/wiki/skins/monobook/main.css" media="screen"/>
 
 </head>
 
@@ -30,14 +30,14 @@
 </ul>
 </td></tr></table><script>if (window.showTocToggle) { var tocShowText = "show"; var tocHideText = "hide"; showTocToggle(); } </script>
 <h2> <span class="mw-headline" id=".E7.A8.80.E7.96.8F.E7.BC.96.E7.A0.81"> 稀疏编码 </span></h2>
-<p>稀疏编码算法是一种无监督学习方法，它用来寻找一组“超完备”基向量来更高效地表示样本数据。稀疏编码算法的目的就是找到一组基向量 <img class="tex" alt="\mathbf{\phi}_i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/6/f/96f401a31a42b4a238dbe0c5be68a746.png"/> ，使得我们能将输入向量 <img class="tex" alt="\mathbf{x}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/c/6/3c66d9170d4c3fb75456e1a9fc6ead37.png"/> 表示为这些基向量的线性组合：
+<p>稀疏编码算法是一种无监督学习方法，它用来寻找一组“超完备”基向量来更高效地表示样本数据。稀疏编码算法的目的就是找到一组基向量 <img class="tex" alt="\mathbf{\phi}_i" src="/stanford-ufldl/archive/wiki/images/math/9/6/f/96f401a31a42b4a238dbe0c5be68a746.png"/> ，使得我们能将输入向量 <img class="tex" alt="\mathbf{x}" src="/stanford-ufldl/archive/wiki/images/math/3/c/6/3c66d9170d4c3fb75456e1a9fc6ead37.png"/> 表示为这些基向量的线性组合：
 </p>
 <dl><dd><img class="tex" alt="\begin{align}
 \mathbf{x} = \sum_{i=1}^k a_i \mathbf{\phi}_{i} 
-\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/5/7/95773d0fedcb4bc39aff6546ccd5af25.png"/>
+\end{align}" src="/stanford-ufldl/archive/wiki/images/math/9/5/7/95773d0fedcb4bc39aff6546ccd5af25.png"/>
 </dd></dl>
 <p><br/>
-虽然形如主成分分析技术（PCA）能使我们方便地找到一组“完备”基向量，但是这里我们想要做的是找到一组<b>“超完备”</b>基向量来表示输入向量 <img class="tex" alt="\mathbf{x}\in\mathbb{R}^n" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/0/c/a0c529368bdcd396825fbe6bbbfb9fa8.png"/> （也就是说，<span class="texhtml"><i>k</i> &gt; <i>n</i></span>）。超完备基的好处是它们能更有效地找出隐含在输入数据内部的结构与模式。然而，对于超完备基来说，系数 <span class="texhtml"><i>a</i><sub><i>i</i></sub></span> 不再由输入向量 <img class="tex" alt="\mathbf{x}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/c/6/3c66d9170d4c3fb75456e1a9fc6ead37.png"/> 唯一确定。因此，在稀疏编码算法中，我们另加了一个评判标准<b>“稀疏性”</b>来解决因超完备而导致的退化（degeneracy）问题。
+虽然形如主成分分析技术（PCA）能使我们方便地找到一组“完备”基向量，但是这里我们想要做的是找到一组<b>“超完备”</b>基向量来表示输入向量 <img class="tex" alt="\mathbf{x}\in\mathbb{R}^n" src="/stanford-ufldl/archive/wiki/images/math/a/0/c/a0c529368bdcd396825fbe6bbbfb9fa8.png"/> （也就是说，<span class="texhtml"><i>k</i> &gt; <i>n</i></span>）。超完备基的好处是它们能更有效地找出隐含在输入数据内部的结构与模式。然而，对于超完备基来说，系数 <span class="texhtml"><i>a</i><sub><i>i</i></sub></span> 不再由输入向量 <img class="tex" alt="\mathbf{x}" src="/stanford-ufldl/archive/wiki/images/math/3/c/6/3c66d9170d4c3fb75456e1a9fc6ead37.png"/> 唯一确定。因此，在稀疏编码算法中，我们另加了一个评判标准<b>“稀疏性”</b>来解决因超完备而导致的退化（degeneracy）问题。
 </p><p><br/>
 这里，我们把“稀疏性”定义为：只有很少的几个非零元素或只有很少的几个远大于零的元素。要求系数 <span class="texhtml"><i>a</i><sub><i>i</i></sub></span> 是稀疏的意思就是说：对于一组输入向量，我们只想有尽可能少的几个系数远大于零。选择使用具有稀疏性的分量来表示我们的输入数据是有原因的，因为绝大多数的感官数据，比如自然图像，可以被表示成少量基本元素的叠加，在图像中这些基本元素可以是面或者线。同时，比如与初级视觉皮层的类比过程也因此得到了提升。
 </p><p><br/>
@@ -45,113 +45,113 @@
 </p>
 <dl><dd><img class="tex" alt="\begin{align}
 \text{minimize}_{a^{(j)}_i,\mathbf{\phi}_{i}} \sum_{j=1}^{m} \left|\left| \mathbf{x}^{(j)} - \sum_{i=1}^k a^{(j)}_i \mathbf{\phi}_{i}\right|\right|^{2} + \lambda \sum_{i=1}^{k}S(a^{(j)}_i)
-\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/f/1/1/f110901ddedcba59e339de5f16c547da.png"/>
+\end{align}" src="/stanford-ufldl/archive/wiki/images/math/f/1/1/f110901ddedcba59e339de5f16c547da.png"/>
 </dd></dl>
 <p><br/>
-此处 <span class="texhtml"><i>S</i>(.)</span> 是一个稀疏代价函数，由它来对远大于零的 <span class="texhtml"><i>a</i><sub><i>i</i></sub></span> 进行“惩罚”。我们可以把稀疏编码目标函式的第一项解释为一个重构项，这一项迫使稀疏编码算法能为输入向量 <img class="tex" alt="\mathbf{x}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/c/6/3c66d9170d4c3fb75456e1a9fc6ead37.png"/> 提供一个高拟合度的线性表达式，而公式第二项即“稀疏惩罚”项，它使 <img class="tex" alt="\mathbf{x}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/c/6/3c66d9170d4c3fb75456e1a9fc6ead37.png"/> 的表达式变得“稀疏”。常量 <span class="texhtml">&lambda;</span> 是一个变换量，由它来控制这两项式子的相对重要性。 
+此处 <span class="texhtml"><i>S</i>(.)</span> 是一个稀疏代价函数，由它来对远大于零的 <span class="texhtml"><i>a</i><sub><i>i</i></sub></span> 进行“惩罚”。我们可以把稀疏编码目标函式的第一项解释为一个重构项，这一项迫使稀疏编码算法能为输入向量 <img class="tex" alt="\mathbf{x}" src="/stanford-ufldl/archive/wiki/images/math/3/c/6/3c66d9170d4c3fb75456e1a9fc6ead37.png"/> 提供一个高拟合度的线性表达式，而公式第二项即“稀疏惩罚”项，它使 <img class="tex" alt="\mathbf{x}" src="/stanford-ufldl/archive/wiki/images/math/3/c/6/3c66d9170d4c3fb75456e1a9fc6ead37.png"/> 的表达式变得“稀疏”。常量 <span class="texhtml">&lambda;</span> 是一个变换量，由它来控制这两项式子的相对重要性。 
 </p><p><br/>
-虽然“稀疏性”的最直接测度标准是 "<span class="texhtml"><i>L</i><sub>0</sub></span>" 范式(<img class="tex" alt="S(a_i) = \mathbf{1}(|a_i|>0)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/2/0/9201129fb038db6903ec61196798181d.png"/>)，但这是不可微的，而且通常很难进行优化。在实际中，稀疏代价函数 <span class="texhtml"><i>S</i>(.)</span> 的普遍选择是<span class="texhtml"><i>L</i><sub>1</sub></span> 范式代价函数 <img class="tex" alt="S(a_i)=\left|a_i\right|_1 " src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/8/8/a884849a26a901395faa9eede9b00e81.png"/> 及对数代价函数 <img class="tex" alt="S(a_i)=\log(1+a_i^2)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/c/8/f/c8f980972ea11e452e9d5031c44f95f6.png"/> 。
+虽然“稀疏性”的最直接测度标准是 "<span class="texhtml"><i>L</i><sub>0</sub></span>" 范式(<img class="tex" alt="S(a_i) = \mathbf{1}(|a_i|>0)" src="/stanford-ufldl/archive/wiki/images/math/9/2/0/9201129fb038db6903ec61196798181d.png"/>)，但这是不可微的，而且通常很难进行优化。在实际中，稀疏代价函数 <span class="texhtml"><i>S</i>(.)</span> 的普遍选择是<span class="texhtml"><i>L</i><sub>1</sub></span> 范式代价函数 <img class="tex" alt="S(a_i)=\left|a_i\right|_1 " src="/stanford-ufldl/archive/wiki/images/math/a/8/8/a884849a26a901395faa9eede9b00e81.png"/> 及对数代价函数 <img class="tex" alt="S(a_i)=\log(1+a_i^2)" src="/stanford-ufldl/archive/wiki/images/math/c/8/f/c8f980972ea11e452e9d5031c44f95f6.png"/> 。
 </p><p><br/>
-此外，很有可能因为减小 <span class="texhtml"><i>a</i><sub><i>i</i></sub></span> 或增加 <img class="tex" alt="\mathbf{\phi}_i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/6/f/96f401a31a42b4a238dbe0c5be68a746.png"/> 至很大的常量，使得稀疏惩罚变得非常小。为防止此类事件发生，我们将限制 <img class="tex" alt="\left|\left|\mathbf{\phi}\right|\right|^2" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/1/6/2/162a65a67f9ad82157da95a835185ede.png"/> 要小于某常量 <span class="texhtml"><i>C</i></span> 。包含了限制条件的稀疏编码代价函数的完整形式如下：
+此外，很有可能因为减小 <span class="texhtml"><i>a</i><sub><i>i</i></sub></span> 或增加 <img class="tex" alt="\mathbf{\phi}_i" src="/stanford-ufldl/archive/wiki/images/math/9/6/f/96f401a31a42b4a238dbe0c5be68a746.png"/> 至很大的常量，使得稀疏惩罚变得非常小。为防止此类事件发生，我们将限制 <img class="tex" alt="\left|\left|\mathbf{\phi}\right|\right|^2" src="/stanford-ufldl/archive/wiki/images/math/1/6/2/162a65a67f9ad82157da95a835185ede.png"/> 要小于某常量 <span class="texhtml"><i>C</i></span> 。包含了限制条件的稀疏编码代价函数的完整形式如下：
 </p>
 <dl><dd><img class="tex" alt="\begin{array}{rc}
 \text{minimize}_{a^{(j)}_i,\mathbf{\phi}_{i}} &amp; \sum_{j=1}^{m} \left|\left| \mathbf{x}^{(j)} - \sum_{i=1}^k a^{(j)}_i \mathbf{\phi}_{i}\right|\right|^{2} + \lambda \sum_{i=1}^{k}S(a^{(j)}_i) 
 \\
 \text{subject to}  &amp;  \left|\left|\mathbf{\phi}_i\right|\right|^2 \leq C, \forall i = 1,...,k 
 \\
-\end{array}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/9/3/a93c6a5d7e7a22c66e82490be078b2af.png"/>
+\end{array}" src="/stanford-ufldl/archive/wiki/images/math/a/9/3/a93c6a5d7e7a22c66e82490be078b2af.png"/>
 </dd></dl>
 <p><br/>
 </p>
 <h2> <span class="mw-headline" id=".E6.A6.82.E7.8E.87.E8.A7.A3.E9.87.8A_.5B.E5.9F.BA.E4.BA.8E1996.E5.B9.B4Olshausen.E4.B8.8EField.E7.9A.84.E7.90.86.E8.AE.BA.5D"> 概率解释 [基于1996年Olshausen与Field的理论] </span></h2>
 <p>到目前为止，我们所考虑的稀疏编码，是为了寻找到一个稀疏的、超完备基向量集，来覆盖我们的输入数据空间。现在换一种方式，我们可以从概率的角度出发，将稀疏编码算法当作一种“生成模型”。
 </p><p><br/>
-我们将自然图像建模问题看成是一种线性叠加，叠加元素包括 <span class="texhtml"><i>k</i></span> 个独立的源特征 <img class="tex" alt="\mathbf{\phi}_i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/6/f/96f401a31a42b4a238dbe0c5be68a746.png"/> 以及加性噪声 <span class="texhtml">&nu;</span> ：
+我们将自然图像建模问题看成是一种线性叠加，叠加元素包括 <span class="texhtml"><i>k</i></span> 个独立的源特征 <img class="tex" alt="\mathbf{\phi}_i" src="/stanford-ufldl/archive/wiki/images/math/9/6/f/96f401a31a42b4a238dbe0c5be68a746.png"/> 以及加性噪声 <span class="texhtml">&nu;</span> ：
 </p>
 <dl><dd><img class="tex" alt="\begin{align}
 \mathbf{x} = \sum_{i=1}^k a_i \mathbf{\phi}_{i} + \nu(\mathbf{x})
-\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/4/d/a/4daf9370c4f4e65a8fb7ae213c59b996.png"/>
+\end{align}" src="/stanford-ufldl/archive/wiki/images/math/4/d/a/4daf9370c4f4e65a8fb7ae213c59b996.png"/>
 </dd></dl>
 <p><br/>
-我们的目标是找到一组特征基向量 <img class="tex" alt="\mathbf{\phi}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/a/9/aa970cc66d8a8408dd1811b678a367b0.png"/> ，它使得图像的分布函数 <img class="tex" alt="P(\mathbf{x}\mid\mathbf{\phi})" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/1/9/8198a76b9b1b28d7a299ad59b4aca55b.png"/> 尽可能地近似于输入数据的经验分布函数 <img class="tex" alt="P^*(\mathbf{x})" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/f/c/afc77091b0831f8c4733ab0708062d63.png"/> 。一种实现方式是，最小化 <img class="tex" alt="P^*(\mathbf{x})" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/f/c/afc77091b0831f8c4733ab0708062d63.png"/> 与 <img class="tex" alt="P(\mathbf{x}\mid\mathbf{\phi})" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/1/9/8198a76b9b1b28d7a299ad59b4aca55b.png"/> 之间的 KL 散度，此 KL 散度表示如下：
+我们的目标是找到一组特征基向量 <img class="tex" alt="\mathbf{\phi}" src="/stanford-ufldl/archive/wiki/images/math/a/a/9/aa970cc66d8a8408dd1811b678a367b0.png"/> ，它使得图像的分布函数 <img class="tex" alt="P(\mathbf{x}\mid\mathbf{\phi})" src="/stanford-ufldl/archive/wiki/images/math/8/1/9/8198a76b9b1b28d7a299ad59b4aca55b.png"/> 尽可能地近似于输入数据的经验分布函数 <img class="tex" alt="P^*(\mathbf{x})" src="/stanford-ufldl/archive/wiki/images/math/a/f/c/afc77091b0831f8c4733ab0708062d63.png"/> 。一种实现方式是，最小化 <img class="tex" alt="P^*(\mathbf{x})" src="/stanford-ufldl/archive/wiki/images/math/a/f/c/afc77091b0831f8c4733ab0708062d63.png"/> 与 <img class="tex" alt="P(\mathbf{x}\mid\mathbf{\phi})" src="/stanford-ufldl/archive/wiki/images/math/8/1/9/8198a76b9b1b28d7a299ad59b4aca55b.png"/> 之间的 KL 散度，此 KL 散度表示如下：
 </p>
 <dl><dd><img class="tex" alt="\begin{align}
 D(P^*(\mathbf{x})||P(\mathbf{x}\mid\mathbf{\phi})) = \int P^*(\mathbf{x}) \log \left(\frac{P^*(\mathbf{x})}{P(\mathbf{x}\mid\mathbf{\phi})}\right)d\mathbf{x}
-\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/7/b/3/7b39a1c36dc8d6463e4997495334c0f8.png"/> 
+\end{align}" src="/stanford-ufldl/archive/wiki/images/math/7/b/3/7b39a1c36dc8d6463e4997495334c0f8.png"/> 
 </dd></dl>
 <p><br/>
-因为无论我们如何选择 <img class="tex" alt="\mathbf{\phi}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/a/9/aa970cc66d8a8408dd1811b678a367b0.png"/> ，经验分布函数 <img class="tex" alt="P^*(\mathbf{x})" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/f/c/afc77091b0831f8c4733ab0708062d63.png"/> 都是常量，也就是说我们只需要最大化对数似然函数 <img class="tex" alt="P(\mathbf{x}\mid\mathbf{\phi})" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/1/9/8198a76b9b1b28d7a299ad59b4aca55b.png"/> 。
+因为无论我们如何选择 <img class="tex" alt="\mathbf{\phi}" src="/stanford-ufldl/archive/wiki/images/math/a/a/9/aa970cc66d8a8408dd1811b678a367b0.png"/> ，经验分布函数 <img class="tex" alt="P^*(\mathbf{x})" src="/stanford-ufldl/archive/wiki/images/math/a/f/c/afc77091b0831f8c4733ab0708062d63.png"/> 都是常量，也就是说我们只需要最大化对数似然函数 <img class="tex" alt="P(\mathbf{x}\mid\mathbf{\phi})" src="/stanford-ufldl/archive/wiki/images/math/8/1/9/8198a76b9b1b28d7a299ad59b4aca55b.png"/> 。
 假设 <span class="texhtml">&nu;</span> 是具有方差 <span class="texhtml">&sigma;<sup>2</sup></span> 的高斯白噪音，则有下式：
 </p>
 <dl><dd><img class="tex" alt="\begin{align}
 P(\mathbf{x} \mid \mathbf{a}, \mathbf{\phi}) = \frac{1}{Z} \exp\left(- \frac{(\mathbf{x}-\sum^{k}_{i=1} a_i \mathbf{\phi}_{i})^2}{2\sigma^2}\right)
-\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/d/6/9d634e2a1b3457f439d442bf61f7381b.png"/>
+\end{align}" src="/stanford-ufldl/archive/wiki/images/math/9/d/6/9d634e2a1b3457f439d442bf61f7381b.png"/>
 </dd></dl>
 <p><br/>
-为了确定分布 <img class="tex" alt="P(\mathbf{x}\mid\mathbf{\phi})" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/1/9/8198a76b9b1b28d7a299ad59b4aca55b.png"/> ，我们需要指定先验分布 <img class="tex" alt="P(\mathbf{a})" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/4/9/b/49b4b770c52ed209b950c2fd00216bbf.png"/> 。假定我们的特征变量是独立的，我们就可以将先验概率分解为：
+为了确定分布 <img class="tex" alt="P(\mathbf{x}\mid\mathbf{\phi})" src="/stanford-ufldl/archive/wiki/images/math/8/1/9/8198a76b9b1b28d7a299ad59b4aca55b.png"/> ，我们需要指定先验分布 <img class="tex" alt="P(\mathbf{a})" src="/stanford-ufldl/archive/wiki/images/math/4/9/b/49b4b770c52ed209b950c2fd00216bbf.png"/> 。假定我们的特征变量是独立的，我们就可以将先验概率分解为：
 </p>
 <dl><dd><img class="tex" alt="\begin{align}
 P(\mathbf{a}) = \prod_{i=1}^{k} P(a_i)
-\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/8/9/d89ec802e2b5461efa8d0d2d84f9e829.png"/>
+\end{align}" src="/stanford-ufldl/archive/wiki/images/math/d/8/9/d89ec802e2b5461efa8d0d2d84f9e829.png"/>
 </dd></dl>
 <p><br/>
 此时，我们将“稀疏”假设加入进来——假设任何一幅图像都是由相对较少的一些源特征组合起来的。因此，我们希望 <span class="texhtml"><i>a</i><sub><i>i</i></sub></span> 的概率分布在零值附近是凸起的，而且峰值很高。一个方便的参数化先验分布就是：
 </p>
 <dl><dd><img class="tex" alt="\begin{align}
 P(a_i) = \frac{1}{Z}\exp(-\beta S(a_i))
-\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/5/0/850c6b42874fde83fef6001ba388d0b4.png"/>
+\end{align}" src="/stanford-ufldl/archive/wiki/images/math/8/5/0/850c6b42874fde83fef6001ba388d0b4.png"/>
 </dd></dl>
 <p><br/>
 这里 <span class="texhtml"><i>S</i>(<i>a</i><sub><i>i</i></sub>)</span> 是决定先验分布的形状的函数。
 </p><p><br/>
-当定义了 <img class="tex" alt="P(\mathbf{x} \mid \mathbf{a} , \mathbf{\phi})" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/d/0/2/d02802b0ba8bfd44edb2be30ee7607e5.png"/> 和 <img class="tex" alt=" P(\mathbf{a})" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/4/9/b/49b4b770c52ed209b950c2fd00216bbf.png"/> 后，我们就可以写出在由 <img class="tex" alt="\mathbf{\phi}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/a/9/aa970cc66d8a8408dd1811b678a367b0.png"/> 定义的模型之下的数据 <img class="tex" alt="\mathbf{x}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/c/6/3c66d9170d4c3fb75456e1a9fc6ead37.png"/> 的概率分布：
+当定义了 <img class="tex" alt="P(\mathbf{x} \mid \mathbf{a} , \mathbf{\phi})" src="/stanford-ufldl/archive/wiki/images/math/d/0/2/d02802b0ba8bfd44edb2be30ee7607e5.png"/> 和 <img class="tex" alt=" P(\mathbf{a})" src="/stanford-ufldl/archive/wiki/images/math/4/9/b/49b4b770c52ed209b950c2fd00216bbf.png"/> 后，我们就可以写出在由 <img class="tex" alt="\mathbf{\phi}" src="/stanford-ufldl/archive/wiki/images/math/a/a/9/aa970cc66d8a8408dd1811b678a367b0.png"/> 定义的模型之下的数据 <img class="tex" alt="\mathbf{x}" src="/stanford-ufldl/archive/wiki/images/math/3/c/6/3c66d9170d4c3fb75456e1a9fc6ead37.png"/> 的概率分布：
 </p>
 <dl><dd><img class="tex" alt="\begin{align}
 P(\mathbf{x} \mid \mathbf{\phi}) = \int P(\mathbf{x} \mid \mathbf{a}, \mathbf{\phi}) P(\mathbf{a}) d\mathbf{a}
-\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/6/b/7/6b7b96f043bd1d85571edc7ac556921e.png"/>
+\end{align}" src="/stanford-ufldl/archive/wiki/images/math/6/b/7/6b7b96f043bd1d85571edc7ac556921e.png"/>
 </dd></dl>
 <p><br/>
 那么，我们的问题就简化为寻找：
 </p>
 <dl><dd><img class="tex" alt="\begin{align}
 \mathbf{\phi}^*=\text{argmax}_{\mathbf{\phi}} < \log(P(\mathbf{x} \mid \mathbf{\phi})) >
-\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/6/1/b61b290904ced2463333bdca70ba9a95.png"/>
+\end{align}" src="/stanford-ufldl/archive/wiki/images/math/b/6/1/b61b290904ced2463333bdca70ba9a95.png"/>
 </dd></dl>
 <p><br/>
 这里 <span class="texhtml"> &lt; . &gt; </span> 表示的是输入数据的期望值。
 </p><p><br/>
-不幸的是，通过对 <img class="tex" alt="\mathbf{a}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/c/4/3c47f830945ee6b24984ab0ba188e10e.png"/> 的积分计算 <img class="tex" alt="P(\mathbf{x} \mid \mathbf{\phi})" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/1/9/8198a76b9b1b28d7a299ad59b4aca55b.png"/> 通常是难以实现的。虽然如此，我们注意到如果 <img class="tex" alt="P(\mathbf{x} \mid \mathbf{\phi})" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/1/9/8198a76b9b1b28d7a299ad59b4aca55b.png"/> 的分布（对于相应的 <img class="tex" alt="\mathbf{a}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/c/4/3c47f830945ee6b24984ab0ba188e10e.png"/> ）足够陡峭的话，我们就可以用 <img class="tex" alt="P(\mathbf{x} \mid \mathbf{\phi})" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/8/1/9/8198a76b9b1b28d7a299ad59b4aca55b.png"/> 的最大值来估算以上积分。估算方法如下：
+不幸的是，通过对 <img class="tex" alt="\mathbf{a}" src="/stanford-ufldl/archive/wiki/images/math/3/c/4/3c47f830945ee6b24984ab0ba188e10e.png"/> 的积分计算 <img class="tex" alt="P(\mathbf{x} \mid \mathbf{\phi})" src="/stanford-ufldl/archive/wiki/images/math/8/1/9/8198a76b9b1b28d7a299ad59b4aca55b.png"/> 通常是难以实现的。虽然如此，我们注意到如果 <img class="tex" alt="P(\mathbf{x} \mid \mathbf{\phi})" src="/stanford-ufldl/archive/wiki/images/math/8/1/9/8198a76b9b1b28d7a299ad59b4aca55b.png"/> 的分布（对于相应的 <img class="tex" alt="\mathbf{a}" src="/stanford-ufldl/archive/wiki/images/math/3/c/4/3c47f830945ee6b24984ab0ba188e10e.png"/> ）足够陡峭的话，我们就可以用 <img class="tex" alt="P(\mathbf{x} \mid \mathbf{\phi})" src="/stanford-ufldl/archive/wiki/images/math/8/1/9/8198a76b9b1b28d7a299ad59b4aca55b.png"/> 的最大值来估算以上积分。估算方法如下：
 </p>
 <dl><dd><img class="tex" alt="\begin{align}
 \mathbf{\phi}^{*'}=\text{argmax}_{\mathbf{\phi}} < \max_{\mathbf{a}} \log(P(\mathbf{x} \mid \mathbf{\phi})) >
-\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/9/7/8/97822a58455d3c2c6d965597d0248d7d.png"/>
+\end{align}" src="/stanford-ufldl/archive/wiki/images/math/9/7/8/97822a58455d3c2c6d965597d0248d7d.png"/>
 </dd></dl>
 <p><br/>
-跟之前一样，我们可以通过减小 <span class="texhtml"><i>a</i><sub><i>i</i></sub></span> 或增大 <img class="tex" alt="\mathbf{\phi}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/a/9/aa970cc66d8a8408dd1811b678a367b0.png"/> 来增加概率的估算值（因为 <span class="texhtml"><i>P</i>(<i>a</i><sub><i>i</i></sub>)</span> 在零值附近陡升）。因此我们要对特征向量 <img class="tex" alt="\mathbf{\phi}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/a/9/aa970cc66d8a8408dd1811b678a367b0.png"/> 加一个限制以防止这种情况发生。
+跟之前一样，我们可以通过减小 <span class="texhtml"><i>a</i><sub><i>i</i></sub></span> 或增大 <img class="tex" alt="\mathbf{\phi}" src="/stanford-ufldl/archive/wiki/images/math/a/a/9/aa970cc66d8a8408dd1811b678a367b0.png"/> 来增加概率的估算值（因为 <span class="texhtml"><i>P</i>(<i>a</i><sub><i>i</i></sub>)</span> 在零值附近陡升）。因此我们要对特征向量 <img class="tex" alt="\mathbf{\phi}" src="/stanford-ufldl/archive/wiki/images/math/a/a/9/aa970cc66d8a8408dd1811b678a367b0.png"/> 加一个限制以防止这种情况发生。
 </p><p>最后，我们可以定义一种线性生成模型的能量函数，从而将原先的代价函数重新表述为：
 </p>
 <dl><dd><img class="tex" alt="\begin{array}{rl}
 E\left( \mathbf{x} , \mathbf{a} \mid \mathbf{\phi} \right) &amp; := -\log \left( P(\mathbf{x}\mid \mathbf{\phi},\mathbf{a}\right)P(\mathbf{a})) \\
  &amp;= \sum_{j=1}^{m} \left|\left| \mathbf{x}^{(j)} - \sum_{i=1}^k a^{(j)}_i \mathbf{\phi}_{i}\right|\right|^{2} + \lambda \sum_{i=1}^{k}S(a^{(j)}_i) 
-\end{array}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/3/4/e34c091d504207038943443866f62ccc.png"/>
+\end{array}" src="/stanford-ufldl/archive/wiki/images/math/e/3/4/e34c091d504207038943443866f62ccc.png"/>
 </dd></dl>
 <p><br/>
 其中 <span class="texhtml">&lambda; = 2&sigma;<sup>2</sup>&beta;</span> ，并且关系不大的常量已被隐藏起来。因为最大化对数似然函数等同于最小化能量函数，我们就可以将原先的优化问题重新表述为：
 </p>
 <dl><dd><img class="tex" alt="\begin{align}
 \mathbf{\phi}^{*},\mathbf{a}^{*}=\text{argmin}_{\mathbf{\phi},\mathbf{a}} \sum_{j=1}^{m} \left|\left| \mathbf{x}^{(j)} - \sum_{i=1}^k a^{(j)}_i \mathbf{\phi}_{i}\right|\right|^{2} + \lambda \sum_{i=1}^{k}S(a^{(j)}_i) 
-\end{align}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/b/c/1/bc124bd99a15b3035f82301dacf1993b.png"/>
+\end{align}" src="/stanford-ufldl/archive/wiki/images/math/b/c/1/bc124bd99a15b3035f82301dacf1993b.png"/>
 </dd></dl>
 <p><br/>
-使用概率理论来分析，我们可以发现，选择 <span class="texhtml"><i>L</i><sub>1</sub></span> 惩罚和 <img class="tex" alt="\log(1+a_i^2)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/e/4/d/e4dd083f18a7b80eef831fcd53f6ce56.png"/> 惩罚作为函数 <span class="texhtml"><i>S</i>(.)</span> ，分别对应于使用了拉普拉斯概率 <img class="tex" alt="P(a_i) \propto \exp\left(-\beta|a_i|\right)" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/4/8/a/48a0ca02892923a1a279d84faa1f75c1.png"/> 和柯西先验概率 <img class="tex" alt="P(a_i) \propto \frac{\beta}{1+a_i^2}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/8/b/a8b02506e9e2267b363efcb139af11ad.png"/> 。
+使用概率理论来分析，我们可以发现，选择 <span class="texhtml"><i>L</i><sub>1</sub></span> 惩罚和 <img class="tex" alt="\log(1+a_i^2)" src="/stanford-ufldl/archive/wiki/images/math/e/4/d/e4dd083f18a7b80eef831fcd53f6ce56.png"/> 惩罚作为函数 <span class="texhtml"><i>S</i>(.)</span> ，分别对应于使用了拉普拉斯概率 <img class="tex" alt="P(a_i) \propto \exp\left(-\beta|a_i|\right)" src="/stanford-ufldl/archive/wiki/images/math/4/8/a/48a0ca02892923a1a279d84faa1f75c1.png"/> 和柯西先验概率 <img class="tex" alt="P(a_i) \propto \frac{\beta}{1+a_i^2}" src="/stanford-ufldl/archive/wiki/images/math/a/8/b/a8b02506e9e2267b363efcb139af11ad.png"/> 。
 </p><p><br/>
 </p>
 <h2> <span class="mw-headline" id=".E5.AD.A6.E4.B9.A0.E7.AE.97.E6.B3.95"> 学习算法 </span></h2>
-<p>使用稀疏编码算法学习基向量集的方法，是由两个独立的优化过程组合起来的。第一个是逐个使用训练样本 <img class="tex" alt="\mathbf{x}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/3/c/6/3c66d9170d4c3fb75456e1a9fc6ead37.png"/> 来优化系数 <span class="texhtml"><i>a</i><sub><i>i</i></sub></span> ，第二个是一次性处理多个样本对基向量 <img class="tex" alt="\mathbf{\phi}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/a/9/aa970cc66d8a8408dd1811b678a367b0.png"/> 进行优化。
+<p>使用稀疏编码算法学习基向量集的方法，是由两个独立的优化过程组合起来的。第一个是逐个使用训练样本 <img class="tex" alt="\mathbf{x}" src="/stanford-ufldl/archive/wiki/images/math/3/c/6/3c66d9170d4c3fb75456e1a9fc6ead37.png"/> 来优化系数 <span class="texhtml"><i>a</i><sub><i>i</i></sub></span> ，第二个是一次性处理多个样本对基向量 <img class="tex" alt="\mathbf{\phi}" src="/stanford-ufldl/archive/wiki/images/math/a/a/9/aa970cc66d8a8408dd1811b678a367b0.png"/> 进行优化。
 </p><p><br/>
-如果使用 <span class="texhtml"><i>L</i><sub>1</sub></span> 范式作为稀疏惩罚函数，对 <img class="tex" alt="a^{(j)}_i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/a/5/aa52f3c4e4bbcf7defbe2a8b936bc78e.png"/> 的学习过程就简化为求解 由 <span class="texhtml"><i>L</i><sub>1</sub></span> 范式正则化的最小二乘法问题，这个问题函数在域 <img class="tex" alt="a^{(j)}_i" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/a/5/aa52f3c4e4bbcf7defbe2a8b936bc78e.png"/> 内为凸，已经有很多技术方法来解决这个问题（诸如CVX之类的凸优化软件可以用来解决L1正则化的最小二乘法问题）。如果 <span class="texhtml"><i>S</i>(.)</span> 是可微的，比如是对数惩罚函数，则可以采用基于梯度算法的方法，如共轭梯度法。
+如果使用 <span class="texhtml"><i>L</i><sub>1</sub></span> 范式作为稀疏惩罚函数，对 <img class="tex" alt="a^{(j)}_i" src="/stanford-ufldl/archive/wiki/images/math/a/a/5/aa52f3c4e4bbcf7defbe2a8b936bc78e.png"/> 的学习过程就简化为求解 由 <span class="texhtml"><i>L</i><sub>1</sub></span> 范式正则化的最小二乘法问题，这个问题函数在域 <img class="tex" alt="a^{(j)}_i" src="/stanford-ufldl/archive/wiki/images/math/a/a/5/aa52f3c4e4bbcf7defbe2a8b936bc78e.png"/> 内为凸，已经有很多技术方法来解决这个问题（诸如CVX之类的凸优化软件可以用来解决L1正则化的最小二乘法问题）。如果 <span class="texhtml"><i>S</i>(.)</span> 是可微的，比如是对数惩罚函数，则可以采用基于梯度算法的方法，如共轭梯度法。
 </p><p><br/>
-用 <span class="texhtml"><i>L</i><sub>2</sub></span> 范式约束来学习基向量，同样可以简化为一个带有二次约束的最小二乘问题，其问题函数在域 <img class="tex" alt="\mathbf{\phi}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/a/9/aa970cc66d8a8408dd1811b678a367b0.png"/> 内也为凸。标准的凸优化软件（如CVX）或其它迭代方法就可以用来求解 <img class="tex" alt="\mathbf{\phi}" src="/wayback-ufldl/stanford-ufldl/wiki/images/math/a/a/9/aa970cc66d8a8408dd1811b678a367b0.png"/>，虽然已经有了更有效的方法，比如求解拉格朗日对偶函数（Lagrange dual）。
+用 <span class="texhtml"><i>L</i><sub>2</sub></span> 范式约束来学习基向量，同样可以简化为一个带有二次约束的最小二乘问题，其问题函数在域 <img class="tex" alt="\mathbf{\phi}" src="/stanford-ufldl/archive/wiki/images/math/a/a/9/aa970cc66d8a8408dd1811b678a367b0.png"/> 内也为凸。标准的凸优化软件（如CVX）或其它迭代方法就可以用来求解 <img class="tex" alt="\mathbf{\phi}" src="/stanford-ufldl/archive/wiki/images/math/a/a/9/aa970cc66d8a8408dd1811b678a367b0.png"/>，虽然已经有了更有效的方法，比如求解拉格朗日对偶函数（Lagrange dual）。
 </p><p><br/>
 根据前面的的描述，稀疏编码是有一个明显的局限性的，这就是即使已经学习得到一组基向量，如果为了对新的数据样本进行“编码”，我们必须再次执行优化过程来得到所需的系数。这个显著的“实时”消耗意味着，即使是在测试中,实现稀疏编码也需要高昂的计算成本，尤其是与典型的前馈结构算法相比。
 </p><p><br/>
@@ -194,7 +194,7 @@ E\left( \mathbf{x} , \mathbf{a} \mid \mathbf{\phi} \right) &amp; := -\log \left
 </p><p><br/>
 </p>
 <div style="text-align: left;font-size:small;background-color: #eeeeee; border-style: solid; border-width: 1px; padding: 5px">
-<p>Language&nbsp;: <a href="/wayback-ufldl/stanford-ufldl/wiki/Sparse_Coding" title="Sparse Coding">English</a>
+<p>Language&nbsp;: <a href="/stanford-ufldl/archive/wiki/Sparse_Coding" title="Sparse Coding">English</a>
 </p>
 </div>
 
@@ -216,7 +216,7 @@ Expensive parser function count: 0/100
 		<h5>Views</h5>
 		<div class="pBody">
 			<ul>
-				 <li id="ca-nstab-main" class="selected"><a href="/wayback-ufldl/stanford-ufldl/wiki/%E7%A8%80%E7%96%8F%E7%BC%96%E7%A0%81" title="View the content page [c]" accesskey="c">Page</a></li>
+				 <li id="ca-nstab-main" class="selected"><a href="/stanford-ufldl/archive/wiki/%E7%A8%80%E7%96%8F%E7%BC%96%E7%A0%81" title="View the content page [c]" accesskey="c">Page</a></li>
 				 <li id="ca-talk" class="new"><a href="" title="Discussion about the content page [t]" accesskey="t">Discussion</a></li>
 				 <li id="ca-viewsource"><a href="" title="This page is protected.
 You can view its source [e]" accesskey="e">View source</a></li>
@@ -232,15 +232,15 @@ You can view its source [e]" accesskey="e">View source</a></li>
 		</div>
 	</div>
 	<div class="portlet" id="p-logo">
-		<a style="background-image: url(/wayback-ufldl/stanford-ufldl/wiki/skins/common/images/dolphin-openclipart.png);" href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page"></a>
+		<a style="background-image: url(/stanford-ufldl/archive/wiki/skins/common/images/dolphin-openclipart.png);" href="/stanford-ufldl/archive/wiki/Main_Page" title="Visit the main page"></a>
 	</div>
 	<script type="text/javascript"> if (window.isMSIE55) fixalpha(); </script>
 	<div class="generated-sidebar portlet" id="p-ufldl_resources">
 		<h5>ufldl resources</h5>
 		<div class="pBody">
 			<ul>
-				<li id="n-UFLDL-Tutorial"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
-				<li id="n-Recommended-Readings"><a href="/wayback-ufldl/stanford-ufldl/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
+				<li id="n-UFLDL-Tutorial"><a href="/stanford-ufldl/archive/wiki/UFLDL_Tutorial">UFLDL Tutorial</a></li>
+				<li id="n-Recommended-Readings"><a href="/stanford-ufldl/archive/wiki/UFLDL_Recommended_Readings">Recommended Readings</a></li>
 			</ul>
 		</div>
 	</div>
@@ -248,7 +248,7 @@ You can view its source [e]" accesskey="e">View source</a></li>
 		<h5>wiki</h5>
 		<div class="pBody">
 			<ul>
-				<li id="n-mainpage-description"><a href="/wayback-ufldl/stanford-ufldl/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
+				<li id="n-mainpage-description"><a href="/stanford-ufldl/archive/wiki/Main_Page" title="Visit the main page [z]" accesskey="z">Main page</a></li>
 				<li id="n-recentchanges"><a href="" title="The list of recent changes in the wiki [r]" accesskey="r">Recent changes</a></li>
 				<li id="n-randompage"><a href="" title="Load a random page [x]" accesskey="x">Random page</a></li>
 				<li id="n-help"><a href="" title="The place to find out">Help</a></li>
@@ -281,9 +281,9 @@ You can view its source [e]" accesskey="e">View source</a></li>
 <div id="footer">
 	<ul id="f-list">
 		<li id="lastmod"> This page was last modified on 8 April 2013, at 08:32.</li>
-		<li id="privacy"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
-		<li id="about"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
-		<li id="disclaimer"><a href="/wayback-ufldl/stanford-ufldl/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
+		<li id="privacy"><a href="/stanford-ufldl/archive/wiki/Ufldl_Privacy_policy" title="Ufldl:Privacy policy">Privacy policy</a></li>
+		<li id="about"><a href="/stanford-ufldl/archive/wiki/Ufldl_About" title="Ufldl:About">About Ufldl</a></li>
+		<li id="disclaimer"><a href="/stanford-ufldl/archive/wiki/Ufldl_General_disclaimer" title="Ufldl:General disclaimer">Disclaimers</a></li>
 	</ul>
 </div>
 </div>
