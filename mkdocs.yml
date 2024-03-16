@@ -177,7 +177,7 @@ nav:
       - wiki/Independent_Component_Analysis.md
       - wiki/Exercise_Independent_Component_Analysis.md
 
-  - 教程(中文旧版):
+  - 教程(旧版-中文):
     - wiki/UFLDL教程.md
     - 稀疏自编码器:
       - wiki/神经网络.md
@@ -221,4 +221,4 @@ nav:
     - 独立成分分析样式建模:
       - wiki/独立成分分析.md
 
-  - 镜像: https://qundao.fun/stanford-ufldl/stanford-ufldl/
+  - MirrorSite: https://qundao.github.io/stanford-ufldl/archive/
