@@ -1,34 +1,32 @@
 # Site information
 site_name: Unsupervised Feature Learning and Deep Learning Tutorial
-site_url: https://hantang.github.io/wayback-ufldl/
+site_url: https://qundao.github.io/stanford-ufldl/
 site_description: 
 copyright: A backup of <a href="http://deeplearning.stanford.edu/">Stanford | UFLDL Tutorial (Unsupervised Feature Learning and Deep Learning)</a>
-repo_url: https://github.com/hantang/wayback-ufldl
+repo_url: https://github.com/qundao/stanford-ufldl
 
 theme:
   name: material
-  # favicon: assets/favicon.ico
   icon:
-      logo: material/slot-machine-outline
+    logo: material/sprout
+    repo: fontawesome/brands/github-alt
   font:
-    text: Lora, Georgia, Times New Roman, Times, serif
-    code: Source Code Pro, monospace
+    text: Open Sans, Helvetica Neue, Roboto, sans-serif, serif
+    code: Fira Mono, Fira Code, Roboto Mono, monospace
   palette:
     - media: "(prefers-color-scheme)"
       toggle:
         icon: material/brightness-auto
         name: Switch to light mode
     - media: "(prefers-color-scheme: light)"
-      primary: deep purple
       scheme: default
       toggle:
-        icon: material/toggle-switch
+        icon: material/brightness-7
         name: Switch to dark mode
     - media: "(prefers-color-scheme: dark)"
-      primary: black
       scheme: slate
       toggle:
-        icon: material/toggle-switch-off-outline
+        icon: material/brightness-4
         name: Switch to system preference
   features:
     - navigation.footer
@@ -223,4 +221,4 @@ nav:
     - 独立成分分析样式建模:
       - wiki/独立成分分析.md
 
-  - 镜像: https://hantang.fun/wayback-ufldl/stanford-ufldl/
+  - 镜像: https://qundao.fun/stanford-ufldl/stanford-ufldl/

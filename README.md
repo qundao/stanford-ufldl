@@ -1,4 +1,4 @@
-# wayback-ufldl
+# stanford-ufldl
 
 A backup of [Stanford | UFLDL Tutorial (Unsupervised Feature Learning and Deep Learning)](http://deeplearning.stanford.edu/).
 
@@ -6,4 +6,4 @@ A backup of [Stanford | UFLDL Tutorial (Unsupervised Feature Learning and Deep L
 
 - Stanford UFLDL (by Andrew Ng)
   - source: <http://ufldl.stanford.edu/>
-  - backup: <https://hantang.github.io/wayback-ufldl>
+  - backup: <https://qundao.github.io/stanford-ufldl>
